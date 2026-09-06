@@ -124,10 +124,28 @@ a{color:inherit;text-decoration:none}
 .view-page.chatpage.on{display:flex;flex-direction:column;position:absolute;inset:0}
 #main-content{position:relative}
 
+.sb-scrim{display:none}
 .demo-toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);background:var(--forest-night);
   color:var(--on-dark);border:1px solid var(--line-2);border-radius:12px;padding:11px 18px;
   font:500 13px var(--body);opacity:0;pointer-events:none;transition:.25s var(--ease);z-index:6000;box-shadow:var(--shadow-dark)}
 .demo-toast.on{opacity:1;transform:translate(-50%,0)}
+.pv-gate{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(6,20,13,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.pv-gate.on{display:flex}
+.pv-gate-box{position:relative;width:min(420px,100%);background:var(--ivory-2,#fbf7f2);color:var(--ink,#16241c);border:1px solid var(--bd,#e7e0d6);border-radius:20px;padding:30px 30px 24px;box-shadow:0 30px 70px -24px rgba(6,20,13,.5);text-align:left}
+.pv-gate-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border:0;border-radius:9px;background:transparent;color:var(--muted,#556458);cursor:pointer;display:grid;place-items:center}
+.pv-gate-x:hover{background:var(--ivory-3,#efe6d9);color:var(--ink,#16241c)}
+.pv-gate-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.pv-gate-eyebrow{display:block;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald,#10B981);margin-bottom:10px}
+.pv-gate h2{font-family:var(--serif,Georgia,serif);font-size:24px;line-height:1.2;font-weight:600;margin:0 0 10px}
+.pv-gate h2 em{font-style:italic;color:var(--forest,#1B4332)}
+.pv-gate-sub{font-size:14px;line-height:1.55;color:var(--muted,#556458);margin:0 0 20px}
+.pv-gate-actions{display:flex;flex-direction:column;gap:9px}
+.pv-gate-btn{display:block;text-align:center;text-decoration:none;border-radius:999px;padding:13px 18px;font-size:14px;font-weight:700;background:var(--forest,#1B4332);color:var(--on-dark,#eaf3ee);border:1px solid var(--forest,#1B4332);transition:background .2s}
+.pv-gate-btn:hover{background:var(--forest-2,#143726)}
+.pv-gate-btn--quiet{background:transparent;color:var(--forest,#1B4332)}
+.pv-gate-btn--quiet:hover{background:var(--ivory-3,#efe6d9)}
+.pv-gate-foot{margin:16px 0 0;text-align:center;font-size:12.5px;color:var(--muted-2,#6c7a70)}
+@media(max-width:600px){.pv-gate{padding:0;align-items:flex-end}.pv-gate-box{border-radius:20px 20px 0 0;padding:26px 22px calc(22px + env(safe-area-inset-bottom))}}
 
 /* ─────────────────────────────────────────────────────────────────────────
    DESIGN TOKENS — single source of truth.
@@ -1411,6 +1429,9 @@ img,svg,video,canvas{max-width:100%}
   :root{--sb:0px}
   .sidebar{position:fixed;left:0;top:0;bottom:0;width:288px;max-width:86vw;z-index:1200;transform:translateX(-100%);transition:transform .4s cubic-bezier(.22,1,.3,1);box-shadow:0 30px 80px -20px rgba(6,20,13,.5)}
   .sidebar.open{transform:none}
+  .sb-scrim{display:block;position:fixed;inset:0;z-index:1150;border:0;padding:0;background:rgba(6,20,13,.5);opacity:0;pointer-events:none;transition:opacity .3s}
+  body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
+  body.sb-open{overflow:hidden}
   .platform{grid-template-columns:1fr}
   .tb-burger{display:flex}
   .sb-toggle{display:none}
@@ -6640,8 +6661,9 @@ body.lp-done #landing-page { display:none; }
 </style>
 </head>
 <body>
-<div class="platform" style="--sb:248px">
+<div class="platform">
 
+<button class="sb-scrim" id="sbScrim" type="button" tabindex="-1" aria-hidden="true"></button>
 <aside class="sidebar" aria-label="Primary">
   <div class="sb-head">
     <div class="sb-head-top">
@@ -6652,7 +6674,7 @@ body.lp-done #landing-page { display:none; }
           <span class="sub">by GoXL Entrepreneurship</span>
         </span>
       </div>
-      <button class="sb-toggle" aria-label="Collapse sidebar" title="Collapse sidebar" data-toast="Sidebar collapse is available in the full app">
+      <button class="sb-toggle" id="sbToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">
         <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
       </button>
     </div>
@@ -6661,36 +6683,36 @@ body.lp-done #landing-page { display:none; }
   <nav class="sb-nav" aria-label="Sections">
     <div>
       <div class="sb-group">HOME</div>
-      <button class="nav-item" type="button" data-route="compass" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="lbl">Compass</span></button>
-      <button class="nav-item" type="button" data-route="ally-chat" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="lbl">Talk to Ally</span></button>
+      <button class="nav-item" type="button" data-route="compass" data-tip="Compass" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="lbl">Compass</span></button>
+      <button class="nav-item" type="button" data-route="ally-chat" data-tip="Talk to Ally" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="lbl">Talk to Ally</span></button>
     </div>
     <div>
       <div class="sb-group">FOUNDER DIAGNOSIS</div>
-      <button class="nav-item" type="button" data-route="diagnosis" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-7.5-2.1 2.1M7.6 16.4l-2.1 2.1m0-12.9 2.1 2.1m8.7 8.7 2.1 2.1"/></svg><span class="lbl">Adaptive diagnosis</span></button>
-      <button class="nav-item" type="button" data-route="founder-dna" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lbl">Founder DNA</span></button>
-      <button class="nav-item" type="button" data-route="business-dna" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg><span class="lbl">Business DNA</span></button>
-      <button class="nav-item" type="button" data-route="vision" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">Your Vision</span></button>
-      <button class="nav-item locked" type="button" data-route="journey" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="lbl">Journey</span><svg class="nav-lock" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
-      <button class="nav-item locked" type="button" data-route="achievements" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span class="lbl">Your Achievements</span><svg class="nav-lock" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
-      <button class="nav-item" type="button" data-route="goals" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="lbl">Goals</span></button>
-      <button class="nav-item" type="button" data-route="recommendations" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12c1 1 1 2 1 3h6c0-1 0-2 1-3a7 7 0 0 0-3-12Z"/></svg><span class="lbl">Recommendations</span></button>
-      <button class="nav-item" type="button" data-route="report" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6m-6 4h4"/></svg><span class="lbl">Report</span></button>
-      <button class="nav-item" type="button" data-route="next-steps" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="lbl">Next steps</span></button>
-      <button class="nav-item" type="button" data-route="plan" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="lbl">Plan Your Day</span></button>
-      <button class="nav-item" type="button" data-route="discovery-call" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="lbl">Discovery call</span></button>
+      <button class="nav-item" type="button" data-route="diagnosis" data-tip="Adaptive diagnosis" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-7.5-2.1 2.1M7.6 16.4l-2.1 2.1m0-12.9 2.1 2.1m8.7 8.7 2.1 2.1"/></svg><span class="lbl">Adaptive diagnosis</span></button>
+      <button class="nav-item" type="button" data-route="founder-dna" data-tip="Founder DNA" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lbl">Founder DNA</span></button>
+      <button class="nav-item" type="button" data-route="business-dna" data-tip="Business DNA" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg><span class="lbl">Business DNA</span></button>
+      <button class="nav-item" type="button" data-route="vision" data-tip="Your Vision" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">Your Vision</span></button>
+      <button class="nav-item locked" type="button" data-route="journey" data-tip="Journey" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="lbl">Journey</span><svg class="nav-lock" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
+      <button class="nav-item locked" type="button" data-route="achievements" data-tip="Your Achievements" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span class="lbl">Your Achievements</span><svg class="nav-lock" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
+      <button class="nav-item" type="button" data-route="goals" data-tip="Goals" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="lbl">Goals</span></button>
+      <button class="nav-item" type="button" data-route="recommendations" data-tip="Recommendations" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12c1 1 1 2 1 3h6c0-1 0-2 1-3a7 7 0 0 0-3-12Z"/></svg><span class="lbl">Recommendations</span></button>
+      <button class="nav-item" type="button" data-route="report" data-tip="Report" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6m-6 4h4"/></svg><span class="lbl">Report</span></button>
+      <button class="nav-item" type="button" data-route="next-steps" data-tip="Next steps" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="lbl">Next steps</span></button>
+      <button class="nav-item" type="button" data-route="plan" data-tip="Plan Your Day" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="lbl">Plan Your Day</span></button>
+      <button class="nav-item" type="button" data-route="discovery-call" data-tip="Discovery call" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="lbl">Discovery call</span></button>
     </div>
     <div>
       <div class="sb-group">KNOWLEDGE</div>
-      <button class="nav-item" type="button" data-route="frameworks" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="lbl">Frameworks</span></button>
+      <button class="nav-item" type="button" data-route="frameworks" data-tip="Frameworks" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="lbl">Frameworks</span></button>
     </div>
     <div>
       <div class="sb-group">YOUR FEEDBACK</div>
-      <button class="nav-item" type="button" data-route="feedback" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="lbl">Send feedback</span></button>
+      <button class="nav-item" type="button" data-route="feedback" data-tip="Send feedback" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="lbl">Send feedback</span></button>
     </div>
     <div>
       <div class="sb-group">ACCOUNT</div>
-      <button class="nav-item" type="button" data-route="profile" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15H4.5a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 6 9.4a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 11 4.6h.09A2 2 0 0 1 15 4.6a1.65 1.65 0 0 0 1.82-.33"/></svg><span class="lbl">Profile</span></button>
-      <button class="nav-item" type="button" data-route="help" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg><span class="lbl">Help & Support</span></button>
+      <button class="nav-item" type="button" data-route="profile" data-tip="Profile" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15H4.5a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 6 9.4a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 11 4.6h.09A2 2 0 0 1 15 4.6a1.65 1.65 0 0 0 1.82-.33"/></svg><span class="lbl">Profile</span></button>
+      <button class="nav-item" type="button" data-route="help" data-tip="Help & Support" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg><span class="lbl">Help & Support</span></button>
     </div>
   </nav>
   <div class="nav-upsell">
@@ -6721,7 +6743,7 @@ body.lp-done #landing-page { display:none; }
     <div class="tb-right">
       <button class="tb-pill" type="button" data-route="billing"><span class="tb-pill-dot"></span>Ally Plus</button>
       <div style="position:relative">
-        <button class="tb-icon" type="button" aria-label="Notifications, 1 unread" data-toast="Reminders live in Plan Your Day"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="n-badge" aria-hidden="true">1</span></button>
+        <button class="tb-icon" type="button" aria-label="Notifications, 1 unread" data-route="plan"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="n-badge" aria-hidden="true">1</span></button>
       </div>
     </div>
   </div>
@@ -6983,7 +7005,7 @@ body.lp-done #landing-page { display:none; }
   </div>
   <div class="btn-row stagger d4" style="margin-top:24px">
     <button class="btn btn-em" type="button" data-route="report">Read your report <svg class="" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-    <button class="btn btn-ghost" type="button" data-toast="One diagnosis per account — this sample has used its run">Start a new diagnosis</button>
+    <button class="btn btn-ghost" type="button" data-signin="start a new diagnosis">Start a new diagnosis</button>
   </div>
 </div></div><div class="view-page" data-view="vision">
 <div class="vis-page">
@@ -7001,7 +7023,7 @@ body.lp-done #landing-page { display:none; }
     <div class="vt-tags"><span class="vt-tag">Business</span><span class="vt-tag muted">Written 3 weeks ago</span></div>
   </div>
   <div class="btn-row" style="margin-top:22px">
-    <button class="btn btn-em" type="button" data-toast="Editing your vision opens in the full app">Edit vision</button>
+    <button class="btn btn-em" type="button" data-signin="edit your vision">Edit vision</button>
     <button class="btn btn-ghost" type="button" data-discuss="Read my vision back to me — is this week actually moving toward it?"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Talk it through with Ally</button>
   </div>
 </div></div><div class="view-page" data-view="journey">
@@ -7083,7 +7105,7 @@ body.lp-done #landing-page { display:none; }
   </div>
   <div class="btn-row stagger d4" style="margin-top:26px">
     <button class="btn btn-em" type="button" data-route="next-steps">Work the plan <svg class="" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-    <button class="btn btn-ghost" type="button" data-toast="PDF export runs from the full app">Download PDF</button>
+    <button class="btn btn-ghost" type="button" data-signin="download your report">Download PDF</button>
   </div>
 </div></div><div class="view-page" data-view="next-steps">
 <div class="fd-container">
@@ -7247,7 +7269,7 @@ body.lp-done #landing-page { display:none; }
         </div>
         <div class="dc-days-row" id="dc-days"></div>
         <div class="dc-times-grid" id="dc-times"></div>
-        <button class="dc-confirm-btn" type="button" data-toast="Calls are booked inside the full app — this is a sample account">Confirm booking</button>
+        <button class="dc-confirm-btn" type="button" data-signin="book a call">Confirm booking</button>
       </div>
 
       <div class="dc-booked" style="margin-top:16px">
@@ -7277,7 +7299,7 @@ body.lp-done #landing-page { display:none; }
         <div class="pc-tag">One adaptive diagnosis and your Clarity Report</div>
         <div class="pc-price"><span class="cur">₹</span><span class="amt">199</span><span class="per">once</span></div>
         <div class="pc-sub"><s>₹300</s> · one-time payment</div>
-        <button class="pc-cta primary" type="button" data-toast="Checkout opens inside the full app — this is a sample account">Start Starter</button>
+        <button class="pc-cta primary" type="button" data-signin="change your plan">Start Starter</button>
         <ul class="pc-feats">
           <li><span class="fk"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="2 6 5 9 10 3"/></svg></span>One adaptive diagnosis</li>
           <li><span class="fk"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="2 6 5 9 10 3"/></svg></span>Your Clarity Report</li>
@@ -7308,7 +7330,7 @@ body.lp-done #landing-page { display:none; }
         <div class="pc-tag">Ally as your standing advisor</div>
         <div class="pc-price"><span class="cur">₹</span><span class="amt">999</span><span class="per">/mo</span></div>
         <div class="pc-sub"><s>₹1,200</s> · billed monthly</div>
-        <button class="pc-cta primary" type="button" data-toast="Checkout opens inside the full app — this is a sample account">Start Pro</button>
+        <button class="pc-cta primary" type="button" data-signin="change your plan">Start Pro</button>
         <ul class="pc-feats">
           <li><span class="fk"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="2 6 5 9 10 3"/></svg></span>8,000 tokens per day</li>
           <li><span class="fk"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="2 6 5 9 10 3"/></svg></span>Chat with Ally</li>
@@ -7494,11 +7516,11 @@ body.lp-done #landing-page { display:none; }
           <span class="hp-action-ic"><svg viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.465V19a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.535c0-.9.36-1.76.99-2.393l.553-.553z"/></svg></span>
           <span class="hp-action-lbl">Request a feature</span>
         </button>
-        <button class="hp-action-btn" type="button" data-toast="Support messages send from inside the full app — this is a sample account">
+        <button class="hp-action-btn" type="button" data-signin="message the team">
           <span class="hp-action-ic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
           <span class="hp-action-lbl">Contact support</span>
         </button>
-        <button class="hp-action-btn" type="button" data-toast="Discovery calls are booked inside the full app — this is a sample account">
+        <button class="hp-action-btn" type="button" data-signin="book a call">
           <span class="hp-action-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           <span class="hp-action-lbl">Schedule assistance</span>
         </button>
@@ -7671,7 +7693,7 @@ body.lp-done #landing-page { display:none; }
       <p class="hp-footer-desc">Our founders' support team and Ally are one click away. Tell us what's happening and we'll get you unblocked.</p>
     </div>
     <div class="hp-footer-actions">
-      <button class="hp-footer-btn-green" type="button" data-toast="Support messages send from inside the full app — this is a sample account">
+      <button class="hp-footer-btn-green" type="button" data-signin="message the team">
         <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Message support
       </button>
@@ -7692,6 +7714,27 @@ body.lp-done #landing-page { display:none; }
   <button class="hw-fab" id="hw-fab" type="button" aria-expanded="false" aria-label="Help assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em" aria-hidden="true"><path d="M12 2.5v2.4"/><circle cx="12" cy="1.9" r="1.05" fill="currentColor" stroke="none"/><rect x="4" y="5" width="16" height="12.5" rx="4.5"/><rect x="6.9" y="8.2" width="10.2" height="5.4" rx="2.4" opacity=".45"/><circle cx="9.6" cy="10.9" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.4" cy="10.9" r="1.15" fill="currentColor" stroke="none"/><path d="M4 9.6H2.4M20 9.6h1.6"/><path d="M7.5 17.5v1.2a2.5 2.5 0 0 0 2.5 2.5h4a2.5 2.5 0 0 0 2.5-2.5v-1.2"/></svg><span class="hw-fab-pulse" aria-hidden="true"></span></button>
 </div>
 <div class="demo-toast" id="toast"></div>
+
+<!-- Everything in this sample is real to look at and free to walk around: every
+     page in the sidebar opens. This panel is what a visitor meets only when
+     they try to DO something -- start a diagnosis, book a call, pay, send a
+     message -- because those need an account of their own. One panel with one
+     way forward, rather than nine different one-line excuses. -->
+<div class="pv-gate" id="pvGate" role="dialog" aria-modal="true" aria-labelledby="pvGateTitle" aria-hidden="true">
+  <div class="pv-gate-box">
+    <button class="pv-gate-x" id="pvGateClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <span class="pv-gate-eyebrow">Preview</span>
+    <h2 id="pvGateTitle">Sign in to Ally to <em>use</em> the full app.</h2>
+    <p class="pv-gate-sub" id="pvGateSub">This is a sample account, so you can look around every page. To do this for your own business, you need an account of your own.</p>
+    <div class="pv-gate-actions">
+      <a class="pv-gate-btn" id="pvGateRegister" href="/#early-access">Register for access</a>
+      <a class="pv-gate-btn pv-gate-btn--quiet" id="pvGateLogin" href="https://app.goxlally.ai/guided/login">I already have an account</a>
+    </div>
+    <p class="pv-gate-foot">Keep exploring the sample &mdash; nothing here is locked.</p>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -7720,9 +7763,76 @@ body.lp-done #landing-page { display:none; }
     mainEl.style.overflowY = isChat ? 'hidden' : 'auto';
   }
   window.addEventListener('hashchange', function(){ show(route()); });
+  /* ---------- the phone drawer ---------- */
+  /* The menu button existed and was styled, but nothing listened to it: on a
+     phone the sidebar stayed off-screen and not one page of this sample could
+     be reached. It opens the drawer; the backdrop and any navigation close it. */
+  var sidebarEl=document.querySelector('.sidebar'), scrim=document.getElementById('sbScrim');
+  function openDrawer(){ sidebarEl.classList.add('open'); document.body.classList.add('sb-open'); }
+  function closeDrawer(){ sidebarEl.classList.remove('open'); document.body.classList.remove('sb-open'); }
+  var burger=document.querySelector('.tb-burger');
+  if(burger) burger.addEventListener('click', function(){
+    if(sidebarEl.classList.contains('open')) closeDrawer(); else openDrawer();
+  });
+  if(scrim) scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeDrawer(); });
+
+  /* ---------- sidebar collapse ---------- */
+  /* The styles for the collapsed rail (68px, icons only, hover labels) were
+     already written; only the class was never toggled. Above 768px the button
+     collapses; below it, the sidebar is a drawer and this button closes it. */
+  var sbToggle=document.getElementById('sbToggle');
+  if(sbToggle){
+    sbToggle.addEventListener('click', function(){
+      /* Hidden below 768px, where the drawer's own controls apply; guarded so
+         a future style change cannot turn this into a dead button. */
+      if(window.matchMedia('(max-width:767px)').matches){ closeDrawer(); return; }
+      var collapsed=document.body.classList.toggle('sb-collapsed');
+      sbToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      sbToggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+      sbToggle.setAttribute('title', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+    });
+  }
+
+  /* ---------- the preview gate ---------- */
+  var gate=document.getElementById('pvGate'), gateSub=document.getElementById('pvGateSub'), gateLast=null;
+  var GATE_SUB='This is a sample account, so you can look around every page. To do this for your own business, you need an account of your own.';
+  function openGate(what){
+    if(!gate) return;
+    gateLast=document.activeElement;
+    gateSub.textContent = what
+      ? 'This is a sample account, so you can look around every page. To ' + what + ' you need an account of your own.'
+      : GATE_SUB;
+    gate.classList.add('on');
+    gate.setAttribute('aria-hidden','false');
+    var first=document.getElementById('pvGateRegister');
+    if(first) first.focus();
+  }
+  function closeGate(){
+    if(!gate) return;
+    gate.classList.remove('on');
+    gate.setAttribute('aria-hidden','true');
+    if(gateLast && gateLast.focus) { try{ gateLast.focus(); }catch(err){} }
+    gateLast=null;
+  }
+  if(gate){
+    document.getElementById('pvGateClose').addEventListener('click', closeGate);
+    gate.addEventListener('click', function(e){ if(e.target===gate) closeGate(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape' && gate.classList.contains('on')) closeGate(); });
+    /* The sample is shown inside a frame on the home page. A link opened in
+       the frame would put the registration form in a 900px box inside a
+       dashboard; these two go to the page the visitor is actually on. */
+    ['pvGateRegister','pvGateLogin'].forEach(function(id){
+      var a=document.getElementById(id);
+      if(a) a.setAttribute('target','_top');
+    });
+  }
+
   document.addEventListener('click', function(e){
+    var g=e.target.closest('[data-signin]');
+    if(g){ openGate(g.dataset.signin); return; }
     var el=e.target.closest('[data-route]');
-    if(el){ location.hash='/'+el.dataset.route; return; }
+    if(el){ closeDrawer(); location.hash='/'+el.dataset.route; return; }
     var d=e.target.closest('[data-discuss]');
     if(d){ pendingPrefill = "Let's talk through this: \""+d.dataset.discuss+"\""; location.hash='/ally-chat'; return; }
     var tb=e.target.closest('[data-toast]');
