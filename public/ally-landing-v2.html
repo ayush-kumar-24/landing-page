@@ -34,7 +34,14 @@
      Inter Tight for figures. Same stylesheet ally-platform.html requests. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<!-- The fonts stylesheet used to be a render-blocking request to Google:
+     nothing painted until it answered (about a second on mobile). It is now
+     fetched early but attached by script, which does not block rendering;
+     text shows in the fallback face and swaps. The CSP forbids inline event
+     handlers, so the usual media="print" onload trick is not available. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<script>(function(){var l=document.createElement('link');l.rel='stylesheet';l.href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap";document.head.appendChild(l);})();</script>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap"></noscript>
 
 <style>
 /* ============================================================
@@ -1680,10 +1687,13 @@ html.ea-open .hw{ display:none; }
     <span class="hero-lbl hero-lbl--m" aria-hidden="true"><i></i>Your next move</span>
     <span class="hero-lbl hero-lbl--m2" aria-hidden="true"><i></i>You are here</span>
     <span class="hero-lbl hero-lbl--m3" aria-hidden="true">Where you want to be</span>
+    <!-- No src until the page has painted: with autoplay the browser fetched
+         all 1.5 MB before anything else mattered, and the film was the LCP.
+         The poster is the first paint; the film joins it afterwards. -->
     <video id="heroFilm" autoplay muted loop playsinline
-           preload="metadata"
+           preload="none"
            poster="/assets/founder-journey-poster.v1.jpg">
-      <source src="/assets/founder-journey.v1.mp4" type="video/mp4">
+      <source data-src="/assets/founder-journey.v1.mp4" type="video/mp4">
     </video>
   </div>
   <div class="hero-veil" aria-hidden="true"></div>
@@ -2350,15 +2360,27 @@ html.ea-open .hw{ display:none; }
     film.pause();
     return;
   }
-  film.play && film.play().catch(function(){});   /* poster remains on refusal */
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if(e.isIntersecting){ film.play().catch(function(){}); }
-        else{ film.pause(); }
-      });
-    }, { threshold: 0.1 }).observe(film);
+  /* The film starts after the page has loaded (or 1.5s in, whichever is
+     first), so the poster is what the visitor sees first and the 1.5 MB
+     download never competes with fonts, copy and the form. */
+  var started = false;
+  function start(){
+    if(started) return; started = true;
+    var src = film.querySelector('source[data-src]');
+    if(src){ src.src = src.getAttribute('data-src'); src.removeAttribute('data-src'); film.load(); }
+    film.play && film.play().catch(function(){});   /* poster remains on refusal */
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){ film.play().catch(function(){}); }
+          else{ film.pause(); }
+        });
+      }, { threshold: 0.1 }).observe(film);
+    }
   }
+  if(document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+  setTimeout(start, 1500);
 })();
 
 /* ============================================================
