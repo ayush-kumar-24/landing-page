@@ -8,6 +8,10 @@
  *      host (www.goxlally.ai). Previews and local dev never load it.
  *   4. The banner is shown only when there is no valid saved choice; the
  *      footer's "Cookie preferences" link reopens it at any time.
+ *   5. Whenever a choice leaves Analytics off, Google Analytics' own
+ *      first-party cookies (_ga, _ga_*) are removed from the browser, so a
+ *      withdrawal is a withdrawal. Nothing else is touched: not the site's
+ *      own storage, not the consent record, not any other cookie.
  *
  * Google Analytics is configured INSIDE the container. There is no gtag.js on
  * the site and there must not be: GTM is the only client-side tag loader.
@@ -121,6 +125,64 @@
     var f = doc.getElementsByTagName('script')[0];
     if (f && f.parentNode) f.parentNode.insertBefore(j, f); else (doc.head || doc.documentElement).appendChild(j);
     return true;
+  }
+
+  /* ── Google Analytics cookie cleanup ─────────────────────────────────── */
+
+  /* GA4's cookies and only those: `_ga` (the client id) and `_ga_<stream>`
+     (the session cookie). `_gid`, `_gat`, `_gcl_*` and everything else are
+     left alone: they are not set by this site's configuration, and a cleanup
+     that guesses is a cleanup that one day deletes the wrong thing. */
+  var GA_COOKIE = /^_ga(_[A-Za-z0-9]+)?$/;
+
+  function gaCookieNames(cookieString) {
+    var out = [];
+    String(cookieString || '').split(';').forEach(function (part) {
+      var name = part.split('=')[0].replace(/^\s+|\s+$/g, '');
+      if (name && GA_COOKIE.test(name) && out.indexOf(name) === -1) out.push(name);
+    });
+    return out;
+  }
+
+  /* Every domain the cookie could have been set on: host-only, the host
+     itself, and each parent with at least two labels (GA4 picks the widest
+     it can, so on www.goxlally.ai its cookies live on goxlally.ai). A cookie
+     can only be removed with the domain and path it was set with, and script
+     cannot read those, so each candidate is tried; the misses are no-ops. */
+  function cookieDomainCandidates(hostname) {
+    var host = String(hostname || '').toLowerCase();
+    var out = [''];
+    if (!host || /^[0-9.]+$/.test(host) || host.indexOf('.') === -1) return out;
+    var labels = host.split('.');
+    for (var i = 0; i <= labels.length - 2; i++) {
+      var d = labels.slice(i).join('.');
+      if (out.indexOf(d) === -1) out.push(d);
+      if (out.indexOf('.' + d) === -1) out.push('.' + d);
+    }
+    return out;
+  }
+
+  /* Removes _ga / _ga_* for this site. Returns the names that are gone
+     afterwards. Only names matching GA_COOKIE are ever written to. */
+  function deleteGaCookies(doc, hostname, pathname) {
+    var names = gaCookieNames(doc.cookie);
+    if (!names.length) return [];
+    var domains = cookieDomainCandidates(hostname);
+    var paths = ['/'];
+    var segs = String(pathname || '/').split('/').filter(Boolean);
+    for (var i = 1; i <= segs.length; i++) {
+      var p = '/' + segs.slice(0, i).join('/');
+      if (paths.indexOf(p) === -1) paths.push(p);
+    }
+    names.forEach(function (name) {
+      domains.forEach(function (domain) {
+        paths.forEach(function (path) {
+          doc.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=' + path + (domain ? '; domain=' + domain : '');
+        });
+      });
+    });
+    var left = gaCookieNames(doc.cookie);
+    return names.filter(function (n) { return left.indexOf(n) === -1; });
   }
 
   /* What a page load should do, given what is known. Pure, so it is testable
@@ -275,6 +337,12 @@
     function choose(cats) {
       write(storage, cats);
       pushUpdate(win.dataLayer, cats);
+      /* Google is told first, so a tag that is already running stops
+         writing; then the cookies it wrote are removed. Runs on every save
+         that leaves Analytics off, not only on a granted -> denied change:
+         it is idempotent, and it also covers a cookie left behind by a
+         choice made under an older policy version. */
+      if (!cats.analytics) deleteGaCookies(doc, win.location.hostname, win.location.pathname);
       hide();
     }
 
@@ -316,6 +384,7 @@
     KEY: KEY, POLICY_VERSION: POLICY_VERSION, GTM_ID: GTM_ID, SIGNALS: SIGNALS,
     categories: categories, toGoogle: toGoogle, allDenied: allDenied, isProductionHost: isProductionHost,
     read: read, write: write, clear: clear, pushDefault: pushDefault, pushUpdate: pushUpdate,
+    gaCookieNames: gaCookieNames, cookieDomainCandidates: cookieDomainCandidates, deleteGaCookies: deleteGaCookies,
     loadGtm: loadGtm, decide: decide, boot: boot
   };
 
