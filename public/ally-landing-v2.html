@@ -44,7 +44,19 @@
      request started two seconds late. Asked for first, explicitly. -->
 <link rel="preload" as="image" href="/assets/founder-journey-poster.v1.webp" fetchpriority="high">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap">
-<script>(function(){var l=document.createElement('link');l.rel='stylesheet';l.href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap";document.head.appendChild(l);})();</script>
+<script>
+/* Fonts attach once the hero poster has arrived (it is preloaded above), so
+   the two do not share the first second of a slow connection; the poster is
+   the paint the page is judged on. Bounded: 1.2s at most, then the fonts
+   come regardless. On a fast connection the poster is here in a blink and
+   nothing changes. */
+(function(){
+  var done = false;
+  function attach(){ if(done) return; done = true; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap"; document.head.appendChild(l); }
+  var img = new Image(); img.onload = attach; img.onerror = attach; img.src = '/assets/founder-journey-poster.v1.webp';
+  setTimeout(attach, 1200);
+})();
+</script>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap"></noscript>
 
 <style>
@@ -1864,7 +1876,11 @@ html.ea-open .hw{ display:none; }
       </button>
     </div>
     <div class="meet-screen" id="allyScreen">
-      <iframe src="/ally-dashboard.html" title="The Ally dashboard"
+      <!-- No src until the frame is about to be seen. loading="lazy" alone
+           did not do that: on a slow connection Chrome's lazy threshold is
+           thousands of pixels, so the whole sample dashboard (its own styles,
+           fonts and images) downloaded alongside the hero. -->
+      <iframe data-src="/ally-dashboard.html" title="The Ally dashboard"
               loading="lazy" fetchpriority="low" allow="fullscreen"></iframe>
     </div>
   </div>
@@ -2428,8 +2444,23 @@ html.ea-open .hw{ display:none; }
 
   var lastFocus = null;
 
+  /* The frame gets its src when the section is within 400px of the viewport,
+     or when full screen is asked for -- whichever comes first, and once. */
+  function ensureLoaded(){
+    var f = screen.querySelector('iframe') || host.querySelector('iframe');
+    if(f && !f.getAttribute('src')){ f.src = f.getAttribute('data-src'); f.removeAttribute('data-src'); }
+  }
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es, io){
+      if(es.some(function(e){ return e.isIntersecting; })){ ensureLoaded(); io.disconnect(); }
+    }, { rootMargin: '400px 0px' }).observe(screen);
+  } else {
+    ensureLoaded();
+  }
+
   function open(){
     lastFocus = document.activeElement;
+    ensureLoaded();
     var f = screen.querySelector('iframe');
     if(f) host.appendChild(f);
     viewer.classList.add('is-open');
