@@ -20,13 +20,21 @@ const contentSecurityPolicy = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // Google Tag Manager is the only third-party script; GA4 arrives through it
+  // (gtag/js is served from the same host). Consent Mode keeps every signal
+  // denied until the visitor chooses, so the container alone sets no cookie.
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
   "script-src-attr 'none'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  "img-src 'self' data: blob:",
-  "connect-src 'self'",
-  "frame-src 'self'",
+  // GA4's fallback beacon is an image request; the container also loads
+  // one for its own diagnostics.
+  "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
+  // GA4 sends its hits to google-analytics.com, or to a regional endpoint
+  // when Google routes the visitor there. Named hosts, not wildcards.
+  "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
+  // The no-JavaScript container frame, and the Tag Assistant debug badge.
+  "frame-src 'self' https://www.googletagmanager.com",
   "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",

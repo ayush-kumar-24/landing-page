@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- consent:start — Google Consent Mode defaults (all denied), the saved
+     choice, then Google Tag Manager, in that order and only on the production
+     host. GA4 is configured inside the container; there is no gtag.js here.
+     async: nothing blocks rendering, and GTM cannot run before the defaults
+     because this file is the only thing that loads it. -->
+<script async src="/assets/consent.v1.js"></script>
+<!-- consent:end -->
 <link rel="icon" href="/assets/ally-logo.v1.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/ally-logo.v1.png">
 <meta name="theme-color" content="#f7f1eb">
@@ -256,6 +263,10 @@ strong{ font-weight:600; color:var(--ink); }
 </style>
 </head>
 <body>
+<!-- Container frame for visitors without JavaScript (Google's standard
+     snippet). Google Analytics 4 does not fire through it; it exists so the
+     container is complete. -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W79JTTG5" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
 
 <header class="nav shell">
   <a class="brand" href="/" aria-label="GoXL Ally home">
@@ -428,6 +439,7 @@ strong{ font-weight:600; color:var(--ink); }
   <nav class="foot-links" aria-label="Footer">
     <a href="/privacy.html">Privacy</a><span class="divider" aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span class="divider" aria-hidden="true">|</span>
+    <a href="#cookie-preferences" data-consent-open>Cookie preferences</a><span class="divider" aria-hidden="true">|</span>
     <a href="/">Home</a><span class="divider" aria-hidden="true">|</span>
     <a href="https://www.instagram.com/goxl_ally?igsh=MWgzYXZxaHU5cGw2bA%3D%3D&amp;igsi=MWgzYXZxaHU5cGw2bA%3D%3D" target="_blank" rel="noopener noreferrer">Instagram</a><span class="divider" aria-hidden="true">|</span>
     <a href="https://www.linkedin.com/showcase/goxl-ally-ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>

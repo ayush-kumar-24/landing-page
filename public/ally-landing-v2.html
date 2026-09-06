@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- consent:start — Google Consent Mode defaults (all denied), the saved
+     choice, then Google Tag Manager, in that order and only on the production
+     host. GA4 is configured inside the container; there is no gtag.js here.
+     async: nothing blocks rendering, and GTM cannot run before the defaults
+     because this file is the only thing that loads it. -->
+<script async src="/assets/consent.v1.js"></script>
+<!-- consent:end -->
 <title>GoXL Ally — The Founder’s Compass</title>
 <meta name="description" content="GoXL Ally helps founders understand what is actually happening, what matters, and what to do next. Register for early access.">
 <link rel="canonical" href="https://www.goxlally.ai/">
@@ -1632,6 +1639,10 @@ html.ea-open .hw{ display:none; }
 </style>
 </head>
 <body>
+<!-- Container frame for visitors without JavaScript (Google's standard
+     snippet). Google Analytics 4 does not fire through it; it exists so the
+     container is complete. -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W79JTTG5" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
 
 <header class="nav shell">
   <a class="brand" href="#top" aria-label="GoXL Ally home">
@@ -2331,6 +2342,7 @@ html.ea-open .hw{ display:none; }
   <nav class="foot-links" aria-label="Footer">
     <a href="/privacy.html">Privacy</a><span class="divider" aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span class="divider" aria-hidden="true">|</span>
+    <a href="#cookie-preferences" data-consent-open>Cookie preferences</a><span class="divider" aria-hidden="true">|</span>
     <a href="/about.html">Our Story</a><span class="divider" aria-hidden="true">|</span>
     <a href="/pricing.html">Pricing</a><span class="divider" aria-hidden="true">|</span>
     <a href="https://www.instagram.com/goxl_ally?igsh=MWgzYXZxaHU5cGw2bA%3D%3D&amp;igsi=MWgzYXZxaHU5cGw2bA%3D%3D" target="_blank" rel="noopener noreferrer">Instagram</a><span class="divider" aria-hidden="true">|</span>
