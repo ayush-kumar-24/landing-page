@@ -70,6 +70,15 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Shared Clarity Report links. Before the split, reports were shared as
+      // goxlally.ai/r/<token>; those links are in inboxes and chats and cannot
+      // be recalled. The product now lives on app., so the address is sent on.
+      // Temporary, so a future change of the report host is not cached forever.
+      {
+        source: "/r/:token",
+        destination: "https://app.goxlally.ai/r/:token",
+        permanent: false,
+      },
       // There is no separate sign-up page: registering IS the form on the home
       // page. The stub that used to live here only added a click before it.
       {
