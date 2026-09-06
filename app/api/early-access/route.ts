@@ -28,7 +28,35 @@ const EMAIL_MAX = 120;
 const PHONE_MAX = 24;
 const LINKEDIN_MAX = 200;
 const SOURCE = "ally_landing_early_access";
-const POLICY_VERSION = "2026-08-15";
+/**
+ * The published Terms and Privacy Policy in force, as a date stamp. It is a
+ * marker for "which documents were on the site when this person accepted",
+ * not either document's own version number: the Privacy Policy is v1.1 of
+ * 6 September 2026, the Terms are still v1.0, and one field covers the pair
+ * the checkbox asks about.
+ */
+const POLICY_VERSION = "2026-09-06";
+/**
+ * Versions a registration may still be submitted under, newest first.
+ *
+ * The landing page is static HTML served with `max-age=0, must-revalidate`,
+ * so a fresh load after a deploy always carries the new value -- but a tab
+ * that was already open does not. Someone who opened the page, went to find
+ * their LinkedIn URL and came back ten minutes later would post the previous
+ * version to the new API, and with a single accepted value that registration
+ * would be refused with "Please review the latest Terms and Privacy Policy"
+ * for something they had no way to know about. Registration is the one thing
+ * this site exists to do, so the previous version stays valid for a while.
+ *
+ * What is recorded is what was actually submitted, never this constant, so a
+ * registration made under 2026-08-15 says 2026-08-15 forever.
+ *
+ * REMOVE "2026-08-15" once the deploy that introduced 2026-09-06 has been
+ * live longer than any plausible open tab -- a week is generous; the entry
+ * is then dead weight and its presence would let a much older cached page
+ * register under a policy nobody is reading any more.
+ */
+const ACCEPTED_POLICY_VERSIONS: readonly string[] = [POLICY_VERSION, "2026-08-15"];
 
 const GENERIC_ERROR = "Something went wrong. Please try again.";
 type RateBucket = { count: number; resetAt: number };
@@ -240,7 +268,7 @@ export async function POST(request: Request) {
     if (!termsAccepted) {
       return json({ ok: false, error: "Terms and Privacy acknowledgement required" }, 400);
     }
-    if (policyVersion !== POLICY_VERSION) {
+    if (!ACCEPTED_POLICY_VERSIONS.includes(policyVersion)) {
       return json({ ok: false, error: "Please review the latest Terms and Privacy Policy" }, 400);
     }
 
@@ -251,7 +279,11 @@ export async function POST(request: Request) {
 
     phone = normalizedPhone.value || null;
     linkedinUrl = normalizedLinkedin.value || null;
-    source = `${SOURCE}|policy=${POLICY_VERSION}|marketing=${marketingConsent ? "yes" : "no"}`;
+    // The version this person actually accepted, not the current one. They
+    // are the same for every registration from an up-to-date page; they differ
+    // for the open tab described above, and the record has to say what was on
+    // the screen that was agreed to.
+    source = `${SOURCE}|policy=${policyVersion}|marketing=${marketingConsent ? "yes" : "no"}`;
   } catch (error) {
     console.error("[ally-beta] request parsing failed", error);
     return json({ ok: false, error: GENERIC_ERROR }, 500);

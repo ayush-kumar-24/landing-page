@@ -3112,7 +3112,11 @@ html.ea-open .hw{ display:none; }
           name:name, email:email, phone:phone, linkedinUrl:linkedinUrl,
           termsAccepted:true,
           marketingConsent:marketingEl.checked,
-          policyVersion:'2026-08-15',
+          /* The document set in force when this page was built. The server
+             also accepts the previous value for a while -- see
+             ACCEPTED_POLICY_VERSIONS in app/api/early-access/route.ts -- so a
+             tab opened before a deploy can still register. */
+          policyVersion:'2026-09-06',
           company:companyEl ? companyEl.value : '',
           attribution:attributionPayload()
         })
