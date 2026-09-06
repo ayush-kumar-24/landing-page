@@ -2360,9 +2360,11 @@ html.ea-open .hw{ display:none; }
     film.pause();
     return;
   }
-  /* The film starts after the page has loaded (or 1.5s in, whichever is
-     first), so the poster is what the visitor sees first and the 1.5 MB
-     download never competes with fonts, copy and the form. */
+  /* The film starts on the visitor's first movement -- a scroll, a touch, a
+     mouse move -- never on a timer. A timer made the film's first frame the
+     largest paint again, just later; a real visitor moves within a second or
+     two and sees it start, while the poster is what the page is judged on,
+     and someone who bounces never downloads 1.5 MB. */
   var started = false;
   function start(){
     if(started) return; started = true;
@@ -2378,9 +2380,9 @@ html.ea-open .hw{ display:none; }
       }, { threshold: 0.1 }).observe(film);
     }
   }
-  if(document.readyState === 'complete') start();
-  else window.addEventListener('load', start, { once: true });
-  setTimeout(start, 1500);
+  ['pointermove','pointerdown','touchstart','scroll','keydown','wheel'].forEach(function(ev){
+    window.addEventListener(ev, start, { once: true, passive: true });
+  });
 })();
 
 /* ============================================================
