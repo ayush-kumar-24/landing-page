@@ -7,7 +7,7 @@
 - Adaptive diagnosis: about 20 minutes of questions on how the founder decides and works, the current problem, and the business itself.
 - Clarity Report: generated in seconds when the diagnosis finishes; surfaces the constraint most worth addressing first, rather than the symptom.
 - Talk to Ally: ongoing chat, with voice, that already knows the founder's context.
-- Next 3 steps, Goals, Plan Your Day: turns the diagnosis into a sequence of actions and a daily habit.
+- Next Critical Steps, Set your Set your Goals, Plan Your Day: turns the diagnosis into a sequence of actions and a daily habit.
 - Discovery call: 30 minutes with a GoXL advisor who has read the report, ₹300 on any plan.
 
 ## Who it is for
