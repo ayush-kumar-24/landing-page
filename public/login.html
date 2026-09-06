@@ -143,6 +143,29 @@ footer{
   <a class="nav-back" href="/">&larr; Back to home</a>
 </header>
 
+<script>
+/* Where this visitor came from, kept for the registration record: UTM tags,
+   ad click ids, and the referrer's origin and path (never its query). Same
+   snippet as the home page; the registration dialog there reads what it kept. */
+(function(){
+  var FIRST = 'ally_touch_first', LAST = 'ally_touch_last';
+  var q; try{ q = new URLSearchParams(location.search); }catch(_){ return; }
+  var t = {}, utm = { source:'utm_source', medium:'utm_medium', campaign:'utm_campaign', content:'utm_content', term:'utm_term' }, k;
+  for(k in utm){ var v = (q.get(utm[k]) || '').trim().slice(0, 100); if(v && v.indexOf('@') < 0) t[k] = v; }
+  var ids = ['fbclid','gclid','li_fat_id','msclkid','ttclid'], c = {}, any = false;
+  ids.forEach(function(id){ var v = (q.get(id) || '').trim().slice(0, 200); if(v){ c[id] = v; any = true; } });
+  if(any) t.clickIds = c;
+  try{ if(document.referrer){ var r = new URL(document.referrer); if(r.host !== location.host) t.referrer = r.origin + r.pathname.slice(0, 200); } }catch(_){}
+  if(!Object.keys(t).length) return;
+  t.landing = location.pathname.slice(0, 200);
+  t.at = new Date().toISOString();
+  try{
+    if(!localStorage.getItem(FIRST)) localStorage.setItem(FIRST, JSON.stringify(t));
+    localStorage.setItem(LAST, JSON.stringify(t));
+  }catch(_){}
+})();
+</script>
+
 <main>
   <div class="auth">
     <p class="eyebrow">Log in</p>
