@@ -7166,7 +7166,7 @@ body.lp-done #landing-page { display:none; }
           <div class="pl-input-header-text"><span class="pl-input-title">Tell me about your day, Priya.</span><span class="pl-input-subtitle">Meetings, calls, deadlines — however it comes to you.</span></div>
         </div>
         <textarea id="pl-day" class="pl-textarea" placeholder="Call Rajesh about pricing, draft the follow-up email, book the factory visit…"></textarea>
-        <div class="pl-input-footer"><button class="pl-plan-btn" type="button" id="pl-plan-btn">Plan my day</button></div>
+        <div class="pl-input-footer"><button class="pl-plan-btn" type="button" id="pl-plan-btn" data-signin="have Ally plan your day">Plan my day</button></div>
       </div>
       <div class="pl-input-card" id="panel-manual" style="display:none">
         <div class="pl-input-header"><div class="pl-input-header-text"><span class="pl-input-title">Add a task</span></div></div>
@@ -7828,7 +7828,16 @@ body.lp-done #landing-page { display:none; }
     });
   }
 
+  /* The Help page's FAQs button carried data-faq-scroll and the heading its
+     id, but nothing ever listened -- the only control in this sample that
+     answered to nothing at all. The answers are on the same page, below. */
   document.addEventListener('click', function(e){
+    var fq=e.target.closest('[data-faq-scroll]');
+    if(fq){
+      var h=document.getElementById('hp-faqs');
+      if(h) h.scrollIntoView({ behavior:'smooth', block:'start' });
+      return;
+    }
     var g=e.target.closest('[data-signin]');
     if(g){ openGate(g.dataset.signin); return; }
     var el=e.target.closest('[data-route]');
