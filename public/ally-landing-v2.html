@@ -2046,7 +2046,7 @@ html.ea-open .hw{ display:none; }
     <div class="jr-stage jr-stage--open">
       <span class="jr-num">02</span>
       <h3>Adaptive diagnosis</h3>
-      <span class="jr-when">20 to 30 minutes, resumable</span>
+      <span class="jr-when">About 20 minutes, resumable</span>
       <div class="jr-dna">
         <div>
           <h4><i>A</i>Founder DNA</h4>
@@ -2278,8 +2278,8 @@ html.ea-open .hw{ display:none; }
         <button class="btn" type="submit" id="eaSubmit">Start your founder journey</button>
       </form>
       <div class="ea-done" id="eaDone" hidden>
-        <p id="eaDoneMsg">You&rsquo;re on the approval list.</p>
-        <p class="ea-done__sub" id="eaDoneSub">Our team will verify your details. Keep an eye on your inbox &mdash; we&rsquo;ll email you the moment you&rsquo;re approved.</p>
+        <p id="eaDoneMsg">Registration received.</p>
+        <p class="ea-done__sub" id="eaDoneSub">Checking your access status&hellip;</p>
         <p class="ea-done__sub" id="eaDoneDev" hidden></p>
         <a class="btn" id="eaDoneCta" href="#early-access" hidden></a>
         <p class="ea-done__sub" id="eaAnotherWrap"><a href="#early-access" id="eaAnother">Register a different email</a></p>
@@ -2852,7 +2852,8 @@ html.ea-open .hw{ display:none; }
     if(!titleEl) return;
     if(state === 'new'){ titleEl.innerHTML = TITLE_NEW; if(subEl) subEl.hidden = false; return; }
     if(subEl) subEl.hidden = true;
-    titleEl.textContent = state === 'waiting' ? 'You’re on the list.'
+    titleEl.textContent = state === 'checking' ? 'One moment.'
+      : state === 'waiting' ? 'You’re on the list.'
       : state === 'approved' ? 'You’re in.'
       : 'Welcome back.';
   }
@@ -2870,6 +2871,9 @@ html.ea-open .hw{ display:none; }
 
   var current = { state: 'new', loginUrl: '' };
   var COPY = {
+    /* Shown while the server is being asked. Says nothing about a queue,
+       because for the first batch there is none: the founder may be in. */
+    checking: ['Registration received.', 'Checking your access status…'],
     /* waiting's second line is normally built from the queue position; this
        is the fallback for when the server could not work one out. */
     waiting:  ['You’re on the waitlist.', 'We open access in batches. We’ll email you the moment a place opens.'],
@@ -2893,6 +2897,17 @@ html.ea-open .hw{ display:none; }
   }
 
   function render(state, extra){
+    if(state === 'checking'){
+      /* Transitional: the card says "checking", the buttons keep whatever
+         they showed, and nothing is offered until the truth arrives. */
+      setHeading(state);
+      doneMsg.textContent = COPY.checking[0];
+      doneSub.textContent = COPY.checking[1];
+      if(doneCta) doneCta.hidden = true;
+      if(anotherWrap) anotherWrap.hidden = true;
+      showDone();
+      return;
+    }
     current = { state: state, loginUrl: (extra && extra.loginUrl) || '' };
     setHeading(state);
     if(state === 'new'){
@@ -2939,12 +2954,14 @@ html.ea-open .hw{ display:none; }
     }).catch(function(){ return { state: 'waiting' }; });
   }
 
-  function resolveAndRender(){
+  function resolveAndRender(optimistic){
     var h = hint();
     if(h === 'in' || h === 'out'){ render(h); return Promise.resolve(); }
     var id = storedId();
     if(!id){ render('new'); return Promise.resolve(); }
-    render('waiting', null);
+    /* Never "waiting" on speculation: a founder let straight in must not
+       read "you're on the waitlist" for even a moment. */
+    render(optimistic || 'checking', null);
     return checkStatus(id).then(function(r){
       if(r.state === 'new') forget();
       render(r.state, r);
@@ -3050,7 +3067,7 @@ html.ea-open .hw{ display:none; }
       /* A repeat submission may belong to someone already approved, and a new
          one may have been let straight in, so the state comes from the server
          rather than being assumed either way. */
-      resolveAndRender().then(function(){
+      resolveAndRender(data.granted ? 'approved' : 'checking').then(function(){
         if(data.granted && current.state === 'approved'){
           doneMsg.textContent = 'You’re in.';
           doneSub.textContent = 'Your Ally account is ready — check your inbox, or go straight to sign in.';
