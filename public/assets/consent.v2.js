@@ -211,6 +211,10 @@
     'padding:24px 24px 20px;font:14px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;',
     'padding-bottom:max(20px,env(safe-area-inset-bottom))}',
     '.ally-consent[hidden]{display:none}',
+    /* `hidden` is display:none only in the browser's own stylesheet, which
+       every class rule below outranks. Without this the two layers could be
+       painted together however correctly the code sets the flags. */
+    '.ally-consent [hidden]{display:none !important}',
     '.ally-consent *{box-sizing:border-box}',
     '.ally-consent__eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1B4332;margin:0 0 10px}',
     '.ally-consent__title{font:600 20px/1.2 Fraunces,Georgia,serif;letter-spacing:-.01em;margin:0 0 10px;color:#16241c}',
@@ -268,7 +272,7 @@
     '</div>' +
     '<div class="ally-consent__actions" id="allyConsentPrefActions" hidden>' +
       '<button type="button" class="ally-consent__btn" data-consent="save">Save preferences</button>' +
-      '<button type="button" class="ally-consent__btn ally-consent__btn--quiet" data-consent="accept">Accept all</button>' +
+      '<button type="button" class="ally-consent__btn ally-consent__btn--quiet" data-consent="back">Back</button>' +
     '</div>' +
     '<div class="ally-consent__links">' +
       '<button type="button" class="ally-consent__link" data-consent="manage">Manage preferences</button>' +
@@ -317,6 +321,7 @@
         else if (what === 'necessary') choose(categories(false, false));
         else if (what === 'save') choose(categories(analyticsBox.checked, advertisingBox.checked));
         else if (what === 'manage') showPrefs();
+        else if (what === 'back') showChoice();
       });
       el.addEventListener('keydown', function (ev) {
         if (ev.key === 'Escape' && read(storage)) hide();     /* only once a choice exists */
