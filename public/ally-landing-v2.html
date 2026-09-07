@@ -3209,6 +3209,10 @@ html.ea-open .hw{ display:none; }
    model, and it does not pretend to be one; when it has no answer it points at
    the form or at email rather than inventing something. */
 (function(){
+  /* The Ally backend. Must also appear in the CSP connect-src in
+     next.config.ts, or the browser blocks the call with no visible error. */
+  var HW_API = 'https://api.goxlally.ai';
+
   var FAQS = [{"q":"What is GoXL Ally?","a":"Ally is a Founder's Compass: an AI that learns how you lead and how your business actually works before it advises you. It runs an adaptive diagnosis, writes you a Clarity Report, and tells you the one thing worth doing next.","k":"what is who explain product about ally goxl"},{"q":"How long does it take?","a":"About 20 minutes for the diagnosis. You answer questions about how you decide and work, then about your current problem, then about the business. The report is generated in seconds once you finish.","k":"time long duration minutes how quick fast"},{"q":"How do I get access?","a":"Register on this page. We open access in batches, so you either come straight in or join the queue — either way you get an email with a link to set up your account. Nobody gets in without registering here first.","k":"sign up signup join access invite waitlist queue register early"},{"q":"What does it cost?","a":"Three plans: Starter ₹199 paid once (one adaptive diagnosis and your Clarity Report), Plus ₹499/month (adds Talk to Ally, your Next Critical Steps, Set your Goals and Plan Your Day), and Pro ₹999/month (adds Ally recommending your steps, Build your Vision Board and email reminders). A discovery call with a GoXL advisor is ₹300 per 30 minutes on any plan.","k":"price pricing cost plans money rupees free trial subscription how much"},{"q":"Is this a sales call in disguise?","a":"No. The diagnosis is the product. If you book a discovery call, the advisor has already read your report and the 30 minutes go on your plan, not on a pitch.","k":"sales pitch demo call trap catch"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product. You can export or delete everything from inside the app at any time.","k":"privacy private data secure safe confidential sold shared gdpr delete"},{"q":"Who is it for?","a":"Founders running a real business who know something is off but not what. It is most useful when you have customers and momentum and are deciding where to put the next month of effort.","k":"who for founders stage suitable early startup right fit"},{"q":"I already have an account","a":"Use the Log in button at the top of this page. Your email is your login — if you have forgotten your password, choose \"Email me a code\" on the sign-in page and you can set a new one.","k":"login log in sign in existing account password forgot returning"},{"q":"Can I talk to a person?","a":"Yes. Email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST). Inside the app you can also book a discovery call with an advisor.","k":"human contact support email team speak person call"}];
   var ROBOT = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" aria-hidden=\"true\"><path d=\"M12 2.5v2.4\"/><circle cx=\"12\" cy=\"1.9\" r=\"1.05\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"4\" y=\"5\" width=\"16\" height=\"12.5\" rx=\"4.5\"/><rect x=\"6.9\" y=\"8.2\" width=\"10.2\" height=\"5.4\" rx=\"2.4\" opacity=\".45\"/><circle cx=\"9.6\" cy=\"10.9\" r=\"1.15\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"14.4\" cy=\"10.9\" r=\"1.15\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M4 9.6H2.4M20 9.6h1.6\"/><path d=\"M7.5 17.5v1.2a2.5 2.5 0 0 0 2.5 2.5h4a2.5 2.5 0 0 0 2.5-2.5v-1.2\"/></svg>";
   var STARTERS = ['What is GoXL Ally?','How do I get access?','What does it cost?','Is my data private?'];
@@ -3274,15 +3278,65 @@ html.ea-open .hw{ display:none; }
     var typing = el('<div class="hw-msg is-bot"><span class="hw-msg-avatar" aria-hidden="true">'+ROBOT+'</span><div class="hw-bubble hw-typing" aria-label="Looking that up"><i></i><i></i><i></i></div></div>');
     feed().appendChild(typing); scrollDown();
     clearTimeout(timer);
-    timer = setTimeout(function(){
+    /* THE REAL BOT FIRST, the nine offline answers only as a safety net.
+       FAQS below is a hand-written subset kept in this file; the live bot
+       answers from `support_bot_answers`, 277 entries the team edits in the
+       database without a deploy. Asking the API means a visitor here gets the
+       same answer a signed-in founder would, and the team corrects both at
+       once -- two bots disagreeing about the price is worse than one bot.
+
+       The endpoint is deliberately public (`/support/public/ask`): the most
+       valuable question this widget can be asked is "why can't I sign in?",
+       and that is exactly the person who has no account to sign in with. It
+       carries its own per-IP and global rate limits, so it cannot be turned
+       into free model access.
+
+       FALLS BACK, NEVER FAILS. Offline, blocked, rate-limited, API down --
+       every one of those lands on the local answers rather than an error. A
+       help widget that shows a stack trace is worse than one that answers from
+       a shorter list. */
+    var settled = false;
+    function finish(fn){
+      if(settled) return;
+      settled = true;
+      clearTimeout(timer);
       typing.remove();
+      fn();
+    }
+    function offline(){
       var hits = search(text);
       if(!hits.length){
         addMsg('bot', "I don't have an answer for that one. Register below and we'll be in touch, or email us and a person will reply.", {miss:true});
       } else {
         addMsg('bot', hits[0].a, {related: hits.slice(1,3).map(function(f){return f.q;})});
       }
-    }, 380);
+    }
+
+    /* Ten seconds, then the local answer. Someone waiting on a help widget has
+       already decided something is confusing; a spinner past that point is a
+       second problem, not a slower solution. */
+    var giveUp = setTimeout(function(){ finish(offline); }, 10000);
+
+    fetch(HW_API + '/api/v1/support/public/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({question: text.slice(0, 500)})
+    })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        clearTimeout(giveUp);
+        if(!data || !data.answer){ finish(offline); return; }
+        finish(function(){ addMsg('bot', data.answer, {miss: !data.answered}); });
+      })
+      .catch(function(){
+        clearTimeout(giveUp);
+        finish(offline);
+      });
+
+    /* The old canned path also waited 380ms so the typing dots read as
+       thinking. Kept only as the floor for how fast a reply may appear -- the
+       real call usually takes longer than this anyway. */
+    timer = setTimeout(function(){}, 380);
   }
 
   function setFull(v){
@@ -3311,7 +3365,7 @@ html.ea-open .hw{ display:none; }
     panel = el('<div class="hw-panel" role="dialog" aria-label="Ask about Ally">'
       + '<div class="hw-head">'
       +   '<div class="hw-head-id"><span class="hw-avatar" aria-hidden="true">'+ROBOT+'</span>'
-      +     '<div><div class="hw-title">Ask about Ally</div><div class="hw-sub">Straight answers · '+FAQS.length+' topics</div></div>'
+      +     '<div><div class="hw-title">Ask about Ally</div><div class="hw-sub">Straight answers, from the team</div></div>'
       +   '</div>'
       +   '<div class="hw-head-actions">'
       +     '<button class="hw-icon-btn hw-expand" type="button" aria-label="Open full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>'

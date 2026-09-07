@@ -32,7 +32,12 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
   // GA4 sends its hits to google-analytics.com, or to a regional endpoint
   // when Google routes the visitor there. Named hosts, not wildcards.
-  "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
+  // api.goxlally.ai is the Ally backend. The help widget below the fold asks
+  // it real questions against the same 277-answer content the signed-in bot
+  // uses; without this entry the browser blocks the call outright and the
+  // widget silently falls back to its nine offline answers with nothing in
+  // the console to explain why. Named host, not a wildcard.
+  "connect-src 'self' https://api.goxlally.ai https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
   // The no-JavaScript container frame, and the Tag Assistant debug badge.
   "frame-src 'self' https://www.googletagmanager.com",
   "media-src 'self'",
