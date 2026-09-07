@@ -21,7 +21,7 @@
  * booleans, a timestamp and a policy version — no identifier of any kind.
  *
  * This file lives under /assets, which is cached for a year by URL. Any edit
- * means a new filename (consent.v3.js) and updating the six pages that load it.
+ * means a new filename (consent.v4.js) and updating the six pages that load it.
  *
  * Loaded with `async`: it does not block rendering, and ordering is still
  * guaranteed because GTM is only ever loaded from inside this script. In Node

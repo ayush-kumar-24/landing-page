@@ -1,12 +1,12 @@
 /* Consent + Google Tag Manager foundation — run with `pnpm test` (node --test).
- * Exercises the pure part of public/assets/consent.v2.js with a fake storage,
+ * Exercises the pure part of public/assets/consent.v3.js with a fake storage,
  * a fake dataLayer and a fake document; no browser needed. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const C = require('../public/assets/consent.v2.js');
+const C = require('../public/assets/consent.v3.js');
 
 const DENIED = { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' };
 const GRANTED = { analytics_storage: 'granted', ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' };
