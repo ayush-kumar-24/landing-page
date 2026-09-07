@@ -23,13 +23,13 @@ const contentSecurityPolicy = [
   // Google Tag Manager is the only third-party script; GA4 arrives through it
   // (gtag/js is served from the same host). Consent Mode keeps every signal
   // denied until the visitor chooses, so the container alone sets no cookie.
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.clarity.ms",
   "script-src-attr 'none'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   // GA4's fallback beacon is an image request; the container also loads
   // one for its own diagnostics.
-  "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
+  "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com",
   // GA4 sends its hits to google-analytics.com, or to a regional endpoint
   // when Google routes the visitor there. Named hosts, not wildcards.
   // api.goxlally.ai is the Ally backend. The help widget below the fold asks
@@ -37,7 +37,7 @@ const contentSecurityPolicy = [
   // uses; without this entry the browser blocks the call outright and the
   // widget silently falls back to its nine offline answers with nothing in
   // the console to explain why. Named host, not a wildcard.
-  "connect-src 'self' https://api.goxlally.ai https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
+  "connect-src 'self' https://api.goxlally.ai https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://*.clarity.ms https://c.bing.com",
   // The no-JavaScript container frame, and the Tag Assistant debug badge.
   "frame-src 'self' https://www.googletagmanager.com",
   "media-src 'self'",
