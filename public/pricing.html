@@ -244,20 +244,58 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
    ad click ids, and the referrer's origin and path (never its query). Same
    snippet as the home page; the registration dialog there reads what it kept. */
 (function(){
-  var FIRST = 'ally_touch_first', LAST = 'ally_touch_last';
+  var FIRST = 'ally_touch_first', LAST = 'ally_touch_last', WINDOW_MS = 90 * 864e5;
+  function drop(key){ try{ localStorage.removeItem(key); }catch(_){} }
+  /* A stored touch counts only while it parses, carries a real timestamp, and
+     that timestamp is inside the window. Anything else is removed here rather
+     than left to rot: a damaged record would otherwise block a new first touch
+     for good, and a stale one would credit a campaign seen a season ago. */
+  function stored(key){
+    var raw; try{ raw = localStorage.getItem(key); }catch(_){ return null; }
+    if(!raw) return null;
+    var o; try{ o = JSON.parse(raw); }catch(_){ drop(key); return null; }
+    if(!o || typeof o !== 'object' || Object.prototype.toString.call(o) !== '[object Object]'){ drop(key); return null; }
+    var at = Date.parse(o.at);
+    /* A day of tolerance for a clock that is merely wrong; beyond that the
+       date is impossible and the record is not trusted. */
+    if(!(at > 0) || at - Date.now() > 864e5 || Date.now() - at > WINDOW_MS){ drop(key); return null; }
+    return o;
+  }
+  /* Strong: they arrived on a campaign link or an ad click. Weak: no tags at
+     all, another site simply sent them. Read from the touch itself; there is
+     no extra field, and none is stored. */
+  function strong(t){ return !!(t && (t.source || t.medium || t.campaign || t.content || t.term || t.clickIds)); }
+  /* Our own pages are not a referrer. Anchored to a label boundary on the
+     hostname, so app.goxlally.ai is ours and evilgoxlally.ai is not -- a
+     substring test would hand the second one our attribution. */
+  function internal(h){ h = String(h || '').toLowerCase(); return !h || h === String(location.hostname).toLowerCase() || /(^|\.)goxlally\.ai$/.test(h); }
+
+  /* Read first, and before anything else: expiry has to happen even on a
+     visit that carries nothing, or a dead record would outlive its window
+     simply because nobody arrived on a link. */
+  var first = stored(FIRST), last = stored(LAST);
+
+  /* If the query string cannot be read at all, the visit is abandoned rather
+     than falling back to the referrer -- the same as before this window and
+     strength work. Expiry above has already run, which is deliberate: a stale
+     record should not outlive its window because of a parser failure. */
   var q; try{ q = new URLSearchParams(location.search); }catch(_){ return; }
   var t = {}, utm = { source:'utm_source', medium:'utm_medium', campaign:'utm_campaign', content:'utm_content', term:'utm_term' }, k;
   for(k in utm){ var v = (q.get(utm[k]) || '').trim().slice(0, 100); if(v && v.indexOf('@') < 0) t[k] = v; }
   var ids = ['fbclid','gclid','li_fat_id','msclkid','ttclid'], c = {}, any = false;
-  ids.forEach(function(id){ var v = (q.get(id) || '').trim().slice(0, 200); if(v){ c[id] = v; any = true; } });
+  ids.forEach(function(id){ var w = (q.get(id) || '').trim().slice(0, 200); if(w){ c[id] = w; any = true; } });
   if(any) t.clickIds = c;
-  try{ if(document.referrer){ var r = new URL(document.referrer); if(r.host !== location.host) t.referrer = r.origin + r.pathname.slice(0, 200); } }catch(_){}
-  if(!Object.keys(t).length) return;
+  try{ if(document.referrer){ var r = new URL(document.referrer); if(!internal(r.hostname)) t.referrer = r.origin + r.pathname.slice(0, 200); } }catch(_){}
+  if(!Object.keys(t).length) return;   /* nothing to attribute: change nothing */
   t.landing = location.pathname.slice(0, 200);
   t.at = new Date().toISOString();
+
   try{
-    if(!localStorage.getItem(FIRST)) localStorage.setItem(FIRST, JSON.stringify(t));
-    localStorage.setItem(LAST, JSON.stringify(t));
+    if(!first) localStorage.setItem(FIRST, JSON.stringify(t));
+    /* A campaign or a click always becomes the last touch. A referrer-only
+       visit does so only when there is nothing better to lose -- it must not
+       erase the paid click that actually found this founder. */
+    if(!last || strong(t) || !strong(last)) localStorage.setItem(LAST, JSON.stringify(t));
   }catch(_){}
 })();
 </script>
