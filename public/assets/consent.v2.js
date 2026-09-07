@@ -21,7 +21,7 @@
  * booleans, a timestamp and a policy version — no identifier of any kind.
  *
  * This file lives under /assets, which is cached for a year by URL. Any edit
- * means a new filename (consent.v2.js) and updating the six pages that load it.
+ * means a new filename (consent.v3.js) and updating the six pages that load it.
  *
  * Loaded with `async`: it does not block rendering, and ordering is still
  * guaranteed because GTM is only ever loaded from inside this script. In Node
@@ -205,25 +205,35 @@
     /* Above the floating help button (z 900), which sits in the same corner
      on phones; the button is back the moment the banner closes. Below the
      registration dialog is not needed: that one covers the page. */
-    '.ally-consent{position:fixed;left:16px;right:16px;bottom:16px;z-index:950;max-width:480px;margin:0 auto 0 0;',
-    'background:#fbf7f2;color:#16241c;border:1px solid #e7e0d6;border-radius:18px;',
-    'box-shadow:0 2px 6px -2px rgba(6,20,13,.18),0 30px 60px -24px rgba(6,20,13,.35);',
-    'padding:20px 22px 18px;font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;',
-    'padding-bottom:max(18px,env(safe-area-inset-bottom))}',
+    '.ally-consent{position:fixed;left:20px;right:20px;bottom:20px;z-index:950;max-width:452px;margin:0 auto 0 0;',
+    'background:#fbf7f2;color:#16241c;border:1px solid #e7e0d6;border-radius:16px;',
+    'box-shadow:0 1px 2px -1px rgba(6,20,13,.14),0 18px 44px -20px rgba(6,20,13,.30);',
+    'padding:24px 24px 20px;font:14px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;',
+    'padding-bottom:max(20px,env(safe-area-inset-bottom))}',
     '.ally-consent[hidden]{display:none}',
     '.ally-consent *{box-sizing:border-box}',
-    '.ally-consent__eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#1B4332;margin:0 0 6px}',
-    '.ally-consent__title{font:600 18px/1.25 Fraunces,Georgia,serif;margin:0 0 8px;color:#16241c}',
-    '.ally-consent__text{margin:0 0 14px;color:#556458}',
+    '.ally-consent__eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1B4332;margin:0 0 10px}',
+    '.ally-consent__title{font:600 20px/1.2 Fraunces,Georgia,serif;letter-spacing:-.01em;margin:0 0 10px;color:#16241c}',
+    '.ally-consent__text{margin:0 0 18px;color:#556458}',
+    '.ally-consent__text p{margin:0 0 8px}',
+    '.ally-consent__text p:last-child{margin:0}',
     '.ally-consent__text a{color:#1B4332;text-decoration:underline;text-underline-offset:2px}',
-    '.ally-consent__actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}',
-    '.ally-consent__btn{appearance:none;border:1px solid #1B4332;border-radius:999px;padding:10px 16px;font:700 13.5px/1 Inter,system-ui,sans-serif;',
+    '.ally-consent__actions{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}',
+    '.ally-consent__actions .ally-consent__btn{flex:1 1 0;min-width:150px;text-align:center}',
+    '.ally-consent__btn{appearance:none;border:1px solid #1B4332;border-radius:999px;padding:12px 18px;font:700 13.5px/1 Inter,system-ui,sans-serif;',
     'cursor:pointer;background:#1B4332;color:#eaf3ee;transition:background .2s,border-color .2s}',
     '.ally-consent__btn:hover{background:#143726}',
     '.ally-consent__btn--quiet{background:transparent;color:#1B4332}',
     '.ally-consent__btn--quiet:hover{background:#efe6d9}',
-    '.ally-consent__btn--link{border:0;background:transparent;color:#556458;padding:10px 4px;font-weight:600;text-decoration:underline;text-underline-offset:2px}',
-    '.ally-consent__btn--link:hover{color:#1B4332;background:transparent}',
+    '.ally-consent__links{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:center;margin:16px 0 0}',
+    '.ally-consent__link{appearance:none;border:0;background:transparent;padding:2px 0;cursor:pointer;',
+    'font:600 12.5px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#6c7a70;',
+    'text-decoration:underline;text-underline-offset:3px}',
+    '.ally-consent__link:hover{color:#1B4332}',
+    '.ally-consent__link:focus-visible{outline:2px solid #10B981;outline-offset:3px;border-radius:4px}',
+    /* Offering to open the detailed view while it is open reads as broken.
+       Done in CSS so no consent code has to know about this row. */
+    '#allyConsentPrefs:not([hidden]) ~ .ally-consent__links [data-consent="manage"]{display:none}',
     '.ally-consent__btn:focus-visible{outline:2px solid #10B981;outline-offset:2px}',
     '.ally-consent__prefs[hidden]{display:none}',
     '.ally-consent__row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-top:1px solid #e7e0d6}',
@@ -232,15 +242,21 @@
     '.ally-consent__row p{margin:2px 0 0;font-size:13px;color:#556458}',
     '.ally-consent__row small{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#10B981}',
     '.ally-consent__row input{margin:4px 0 0;width:18px;height:18px;flex:none;accent-color:#10B981}',
-    '@media (max-width:600px){.ally-consent{left:0;right:0;bottom:0;max-width:none;border-radius:18px 18px 0 0}}',
+    '@media (max-width:600px){.ally-consent{left:0;right:0;bottom:0;max-width:none;border-radius:16px 16px 0 0;padding:22px 18px 18px;',
+    'padding-bottom:max(18px,env(safe-area-inset-bottom))}',
+    '.ally-consent__actions{flex-direction:column;gap:9px}',
+    '.ally-consent__actions .ally-consent__btn{width:100%}}',
     '@media (prefers-reduced-motion:no-preference){.ally-consent{animation:allyConsentIn .35s ease-out}',
     '@keyframes allyConsentIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}}'
   ].join('');
 
   var HTML =
     '<p class="ally-consent__eyebrow">GoXL Ally</p>' +
-    '<h2 class="ally-consent__title" id="allyConsentTitle">Cookies on this site</h2>' +
-    '<p class="ally-consent__text" id="allyConsentText">Necessary cookies keep the site working. With your permission we also use analytics to see which pages founders find useful, and advertising cookies to measure our campaigns. Nothing is switched on until you choose. <a href="/privacy.html">Privacy Policy</a></p>' +
+    '<h2 class="ally-consent__title" id="allyConsentTitle">Help us improve Ally</h2>' +
+    '<div class="ally-consent__text" id="allyConsentText">' +
+      '<p>We use optional analytics to understand which parts of the website are useful and where founders get stuck.</p>' +
+      '<p>Private diagnosis and chat content are never tracked.</p>' +
+    '</div>' +
     '<div class="ally-consent__prefs" id="allyConsentPrefs" hidden>' +
       '<div class="ally-consent__row"><input type="checkbox" id="allyConsentNecessary" checked disabled><div><label for="allyConsentNecessary">Necessary<small>Always active</small></label><p>Registration status, your cookie choice and the basics that keep the site running.</p></div></div>' +
       '<div class="ally-consent__row"><input type="checkbox" id="allyConsentAnalytics"><div><label for="allyConsentAnalytics">Analytics</label><p>Helps us understand which pages are read and where founders get stuck.</p></div></div>' +
@@ -248,12 +264,15 @@
     '</div>' +
     '<div class="ally-consent__actions" id="allyConsentActions">' +
       '<button type="button" class="ally-consent__btn" data-consent="accept">Accept all</button>' +
-      '<button type="button" class="ally-consent__btn ally-consent__btn--quiet" data-consent="necessary">Necessary only</button>' +
-      '<button type="button" class="ally-consent__btn ally-consent__btn--link" data-consent="manage">Manage preferences</button>' +
+      '<button type="button" class="ally-consent__btn ally-consent__btn--quiet" data-consent="necessary">Use necessary only</button>' +
     '</div>' +
     '<div class="ally-consent__actions" id="allyConsentPrefActions" hidden>' +
       '<button type="button" class="ally-consent__btn" data-consent="save">Save preferences</button>' +
       '<button type="button" class="ally-consent__btn ally-consent__btn--quiet" data-consent="accept">Accept all</button>' +
+    '</div>' +
+    '<div class="ally-consent__links">' +
+      '<button type="button" class="ally-consent__link" data-consent="manage">Manage preferences</button>' +
+      '<a class="ally-consent__link" href="/privacy.html">Privacy Policy</a>' +
     '</div>';
 
   function boot(env) {
