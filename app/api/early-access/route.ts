@@ -1,3 +1,5 @@
+import { after } from "next/server";
+
 import { grantAccess, landingGrantsAccess } from "../../lib/access";
 import { forwardToAllyWaitlist } from "../../lib/ally-waitlist";
 import {
@@ -13,14 +15,19 @@ import { parseAttribution, type Attribution } from "../../lib/attribution";
 /**
  * The slow path is a registration made while the database is down: a
  * connection that has to time out first (10s, see db.ts), then the forward to
- * the Ally panel (5s), then the mail that catches what neither held. That is
- * comfortably past the ten seconds a serverless function gets by default, and
+ * the Ally panel (5s), then the mail that catches what neither held (7s, see
+ * SEND_DEADLINE_MS in email.ts) -- 22s before the founder gets an answer, and
+ * the confirmation sent behind the response can add its own 7s to the
+ * invocation. Past the ten seconds a serverless function gets by default, and
  * a function killed mid-flight writes nothing, sends nothing and answers the
  * founder with an error -- the precise failure the fallback below exists to
- * prevent. The budget is a ceiling, not a target: a normal registration still
- * answers in well under a second.
+ * prevent.
+ *
+ * The budget is a ceiling, not a target. A normal registration answers in well
+ * under a second and never comes near it; only an outage spends it, and every
+ * step above is separately capped so nothing here can hang until this does.
  */
-export const maxDuration = 30;
+export const maxDuration = 40;
 
 // Room for the attribution object (two touches, each with tags and click ids).
 const MAX_BODY_BYTES = 4_096;
@@ -360,34 +367,51 @@ export async function POST(request: Request) {
     // plainly that it is the only copy, and carries no Approve button, because
     // there is no row here to approve.
     //
-    // Awaited rather than sent alongside the confirmation: the confirmation
-    // promises the founder they are registered, and that promise must not be
-    // made until somewhere is actually holding them.
-    const notified = await sendInternalNotificationEmail({
-      id: null,
-      name,
-      email,
-      phone,
-      linkedinUrl,
-      attribution,
-      registeredAt: new Date(),
-      source,
-      baseUrl: devOrigin,
-      recordedIn: forwarded.ok ? "ally-panel" : "nowhere",
-    });
+    // How long the founder waits is the constraint here, and it is a tight
+    // one. This path only runs when the database is already timing out (10s)
+    // and after the forward has had its 5s, so the emails are spending a
+    // budget that is mostly gone. Each send has a 7s ceiling of its own (see
+    // SEND_DEADLINE_MS in email.ts), and TWO of them in sequence is what turns
+    // a slow registration into a browser sitting on "Registering…" for half a
+    // minute. So exactly one send is ever awaited, and only when its outcome
+    // decides the answer.
+    const notify = () =>
+      sendInternalNotificationEmail({
+        id: null,
+        name,
+        email,
+        phone,
+        linkedinUrl,
+        attribution,
+        registeredAt: new Date(),
+        source,
+        baseUrl: devOrigin,
+        recordedIn: forwarded.ok ? "ally-panel" : "nowhere",
+      });
+    const confirm = () => sendBetaConfirmationEmail({ name, email, baseUrl: devOrigin });
 
-    if (!forwarded.ok && !notified) {
+    if (forwarded.ok) {
+      // The panel has them. The answer is settled and no email can change it,
+      // so both go out after the response rather than in front of it.
+      console.warn(`[ally-beta] ${email} recorded in the Ally panel only — this site's insert failed`);
+      after(() => Promise.allSettled([notify(), confirm()]));
+      return json({ ok: true, duplicate: false });
+    }
+
+    // Nothing else is holding this registration, so whether that mail arrives
+    // IS the answer, and it is the one send worth making the founder wait on.
+    const notified = await notify();
+    if (!notified) {
       // Every channel is down. Only now is this a failure the founder has to
       // see, and only now is asking them to try again honest.
       console.error(`[ally-beta] ${email} could not be recorded anywhere — insert, forward and notification all failed`);
       return json({ ok: false, error: GENERIC_ERROR }, 500);
     }
 
-    console.warn(
-      `[ally-beta] ${email} recorded ${forwarded.ok ? "in the Ally panel only" : "by internal email only"} — this site's insert failed`,
-    );
-
-    await sendBetaConfirmationEmail({ name, email, baseUrl: devOrigin });
+    console.warn(`[ally-beta] ${email} recorded by internal email only — this site's insert failed`);
+    // Sent after the response for the same reason: the founder has been told
+    // they are registered, and they are -- the mail above is holding them.
+    after(confirm);
 
     // No id to report: this browser cannot follow a registration this site did
     // not store. The page reads that as "registered, position unknown", which
