@@ -39,6 +39,23 @@ export function platformLoginUrl(email?: string): string {
   return email ? `${base}#email=${encodeURIComponent(email)}` : base;
 }
 
+/**
+ * The sign-in page, for a founder who has just pressed Sign in on this site.
+ *
+ * Carries `?from=landing`, which is what makes the platform play its splash:
+ * that crossing -- from the marketing site into the product -- is the one
+ * arrival the splash marks. The invitation links above deliberately do not
+ * carry it; a founder opening an email is not making that crossing, and gets
+ * the sign-in page straight away. The platform reads the mark once and takes
+ * it back out of the address bar.
+ *
+ * Only the query string; no fragment, so nothing to keep ordered against
+ * `#email=`. The server-side target is still fixed -- see /go/login.
+ */
+export function platformLoginFromLandingUrl(): string {
+  return `${platformLoginUrl()}?from=landing`;
+}
+
 /** The founder's dashboard. The platform checks the real session on arrival. */
 export function platformAppUrl(): string {
   return `${resolvePlatformUrl()}/app`;
