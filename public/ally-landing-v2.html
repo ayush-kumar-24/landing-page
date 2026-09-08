@@ -2904,7 +2904,18 @@ html.ea-open .hw{ display:none; }
     return m ? m[1] : '';
   }
   function showDone(){ form.hidden = true; done.hidden = false; }
-  function showForm(){ form.hidden = false; done.hidden = true; }
+  /* Whenever the form comes back it comes back usable. The submit button is
+     disabled and relabelled "Registering…" while a registration is in
+     flight, and several paths put the form back on screen after that point
+     (a status check that says the id is gone, the no-id case below). Each of
+     them used to leave the founder looking at their own filled-in form with a
+     dead button and no error to explain it, which reads as a hung page. */
+  function showForm(){
+    form.hidden = false;
+    done.hidden = true;
+    submit.disabled = false;
+    submit.textContent = submitLabel;
+  }
 
   /* The dialog. One opener for the whole site: every "#early-access" link,
      the CTAs, the help assistant's "Register" buttons and a /#early-access
@@ -2967,6 +2978,7 @@ html.ea-open .hw{ display:none; }
     if(state === 'new'){ titleEl.innerHTML = TITLE_NEW; if(subEl) subEl.hidden = false; return; }
     if(subEl) subEl.hidden = true;
     titleEl.textContent = state === 'checking' ? 'One moment.'
+      : state === 'registered' ? 'You’re registered.'
       : state === 'waiting' ? 'You’re on the list.'
       : state === 'approved' ? 'You’re in.'
       : 'Welcome back.';
@@ -2991,6 +3003,12 @@ html.ea-open .hw{ display:none; }
     /* waiting's second line is normally built from the queue position; this
        is the fallback for when the server could not work one out. */
     waiting:  ['You’re on the waitlist.', 'We open access in batches. We’ll email you the moment a place opens.'],
+    /* Registered, but this browser has no id to follow it with -- the server
+       could not hand one back (its database was down and the registration was
+       recorded elsewhere), or storage is blocked here. There is no position to
+       quote and no status to check, so the card says the one thing that is
+       certainly true and stops. */
+    registered: ['Thank you for registering.', 'We’ve sent a confirmation to your inbox — check spam if it doesn’t arrive. We’ll email you the moment your place opens.'],
     approved: ['You’re approved.', 'Your invite is in your inbox — or go straight to sign in.'],
     in:       ['You’re all set.', 'Your Ally account is active.'],
     out:      ['Welcome back.', 'Log in to pick up where you left off.']
@@ -3039,6 +3057,7 @@ html.ea-open .hw{ display:none; }
     if(anotherWrap) anotherWrap.hidden = (state === 'in' || state === 'out');
     var to = '#early-access', label = 'Start your founder journey', nav = 'Sign up';
     if(state === 'waiting'){ label = 'You’re on the waitlist'; nav = 'Waitlist'; }
+    if(state === 'registered'){ label = 'You’re registered'; nav = 'Registered'; }
     if(state === 'approved'){ to = current.loginUrl || '/go/login'; label = 'Sign in to Ally'; nav = 'Sign in'; }
     if(state === 'in'){ to = '/go/app'; label = 'Go to my dashboard'; nav = 'Dashboard'; }
     if(state === 'out'){ to = '/go/login'; label = 'Log in'; nav = 'Log in'; }
@@ -3047,7 +3066,7 @@ html.ea-open .hw{ display:none; }
     setCta(navCta, nav, to);
     setCta(menuCta, nav, to);
     if(doneCta){
-      if(state === 'waiting'){ doneCta.hidden = true; }
+      if(state === 'waiting' || state === 'registered'){ doneCta.hidden = true; }
       else { setCta(doneCta, label, to); doneCta.hidden = false; }
     }
     showDone();
@@ -3182,6 +3201,26 @@ html.ea-open .hw{ display:none; }
         }
       }
       rememberId(data.id);
+      /* Registered, with nothing to follow it by.
+
+         Three of the server's success answers carry no id: the two paths taken
+         when this site's database is down and the registration is held by the
+         Ally panel or by an internal email instead, and a duplicate whose
+         lookup failed. Storage being blocked in this browser has the same
+         effect -- rememberId writes nothing and storedId() stays empty.
+
+         resolveAndRender() reads an empty id as "this visitor is new" and
+         renders the empty form again. The founder had just been registered,
+         and what they saw was their own form back with the button still
+         disabled on "Registering…" and no message either way -- a hung page,
+         after a registration that in fact succeeded. So the no-id case is
+         answered here, with the truth: they are registered, and there is no
+         position to quote because nothing here can look one up. */
+      if(!storedId()){
+        render('registered');
+        if(data.duplicate){ doneSub.textContent = 'We already have your details. ' + doneSub.textContent; }
+        return;
+      }
       /* A repeat submission may belong to someone already approved, and a new
          one may have been let straight in, so the state comes from the server
          rather than being assumed either way. */
@@ -3192,7 +3231,11 @@ html.ea-open .hw{ display:none; }
         } else if(data.duplicate && current.state === 'waiting'){
           doneSub.textContent = 'We already have your details. ' + doneSub.textContent;
         }
-      });
+      /* The registration is already made and this is only the card that
+         reports it, so a failure here must not read as a failed
+         registration -- and must never be the thing that leaves the form
+         sitting on "Registering…" again. */
+      }).catch(function(){ render('registered'); });
     }catch(_){
       err.textContent = 'Something went wrong. Please try again.';
       submit.disabled = false;
