@@ -213,12 +213,13 @@ em{ font-style:italic; }
    rather than broken: a founder meets a page with nothing to click
    instead of a form that fails after they have typed everything.
 
-   Hidden: Log in and Sign up in the header, the same two in the phone
-   menu, and the two "Start your founder journey" buttons.
+   Hidden: Sign up in the header, the same in the phone menu, and the two
+   "Start your founder journey" buttons. Log in stays -- nothing is broken
+   for founders who already have an account, and the team needs the way in.
 
    TO RESTORE: delete this rule and the ACCESS_PAUSED guard in
    openAccess(). Nothing else was touched. */
-.nav-login, .menu-login, #navCta, #menuCta, #heroCta, #closeCta{ display:none !important; }
+#navCta, #menuCta, #heroCta, #closeCta{ display:none !important; }
 
 .nav-login{ font-size:14px; font-weight:600; color:var(--muted); }
 .nav-login:hover{ color:var(--forest); }
