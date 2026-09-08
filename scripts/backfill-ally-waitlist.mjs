@@ -36,8 +36,10 @@ const SOURCE_MAX = 60;
 /**
  * The endpoint allows 5 registrations per 5 minutes PER IP, and every request
  * from this script comes from one machine -- so a backfill of any size WILL be
- * throttled. That is not a failure and the script does not treat it as one: it
- * waits out the window and re-sends the same person.
+ * throttled, UNLESS ALLY_WAITLIST_FORWARD_SECRET is set (see .env.example and
+ * app/lib/ally-waitlist.ts). Without it, being throttled is not a failure and
+ * the script does not treat it as one: it waits out the window and re-sends
+ * the same person.
  *
  * Sending is fast until the first 429, then settles to roughly one a minute,
  * which is the rate the endpoint actually allows. A queue of fifty therefore
@@ -53,6 +55,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const dryRun = process.argv.includes("--dry-run");
 const url = process.env.ALLY_WAITLIST_URL?.trim() || DEFAULT_URL;
+const forwardSecret = process.env.ALLY_WAITLIST_FORWARD_SECRET?.trim();
 const connectionString = process.env.DATABASE_URL?.trim();
 
 if (!connectionString) {
@@ -86,6 +89,11 @@ try {
 
   console.log(`${rows.length} registration(s) in beta_users`);
   console.log(`Target: ${url}${dryRun ? "  (dry run — nothing will be sent)" : ""}`);
+  console.log(
+    forwardSecret
+      ? "Forward secret is set — rate-limit exempt, this will run at full speed."
+      : "No forward secret set — expect ~1/minute after the first five (see .env.example).",
+  );
 
   let sent = 0;
   const failures = [];
@@ -104,7 +112,10 @@ try {
       try {
         const response = await fetch(url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(forwardSecret ? { "X-Waitlist-Forward-Secret": forwardSecret } : {}),
+          },
           body: JSON.stringify(payload),
           signal: AbortSignal.timeout(10_000),
         });

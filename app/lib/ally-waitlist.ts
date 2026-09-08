@@ -23,6 +23,19 @@
  * already approved -- identically, on purpose, so that endpoint cannot be used
  * to find out who is on the founder list. So a 202 here means "it arrived",
  * never "a row was created".
+ *
+ * THE FORWARD SECRET
+ * Every forward from this site arrives from a small pool of serverless
+ * egress IPs, not from the visitor's own address -- so to the platform's
+ * per-IP rate limit (5 registrations per 5 minutes, meant to stop one person
+ * scripting the form) this site's traffic looks like one caller. Without
+ * `ALLY_WAITLIST_FORWARD_SECRET`, the sixth founder to register anywhere on
+ * this site within five minutes gets silently rate-limited on the platform
+ * side -- exactly the launch-day traffic pattern this exists to survive.
+ * Set it to the same value as the platform's `WAITLIST_FORWARD_SECRET`; blank
+ * on either side means no exemption, which is a slower failure mode, not a
+ * broken one -- this site's own RATE_LIMIT/RATE_WINDOW_MS still applies
+ * before a request ever reaches here.
  */
 
 const DEFAULT_URL = "https://api.goxlally.ai/api/v1/waitlist";
@@ -85,10 +98,18 @@ export async function forwardToAllyWaitlist(
 ): Promise<AllyForwardResult> {
   const url = process.env.ALLY_WAITLIST_URL?.trim() || DEFAULT_URL;
 
+  const secret = process.env.ALLY_WAITLIST_FORWARD_SECRET?.trim();
+
   try {
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // Omitted entirely when unset, rather than sent empty -- an empty
+        // header is still a header, and the platform's comparison should
+        // never have to special-case "present but blank".
+        ...(secret ? { "X-Waitlist-Forward-Secret": secret } : {}),
+      },
       body: JSON.stringify(allyWaitlistPayload(input)),
       signal: AbortSignal.timeout(TIMEOUT_MS),
       cache: "no-store",
