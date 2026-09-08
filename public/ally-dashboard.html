@@ -5795,6 +5795,13 @@ body.lp-done #landing-page { display:none; }
 
 .pr-field {
   padding: 10px 0;
+  /* The label and the value are both spans, so they sat side by side and ran
+     together -- NAMEPriya Sharma. The label already carries a margin-bottom,
+     which says the intent was always a label above its value, the way every
+     other small-caps label in the product reads. A column makes that true
+     whatever the children are. */
+  display: flex;
+  flex-direction: column;
 }
 
 .pr-lbl {
