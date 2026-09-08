@@ -10,6 +10,18 @@ import { parseAttribution, type Attribution } from "../../lib/attribution";
 // direct you to remove the `runtime` export (the Edge runtime is deprecated).
 // POST handlers are never cached, so no `dynamic` export is needed either.
 
+/**
+ * The slow path is a registration made while the database is down: a
+ * connection that has to time out first (10s, see db.ts), then the forward to
+ * the Ally panel (5s), then the mail that catches what neither held. That is
+ * comfortably past the ten seconds a serverless function gets by default, and
+ * a function killed mid-flight writes nothing, sends nothing and answers the
+ * founder with an error -- the precise failure the fallback below exists to
+ * prevent. The budget is a ceiling, not a target: a normal registration still
+ * answers in well under a second.
+ */
+export const maxDuration = 30;
+
 // Room for the attribution object (two touches, each with tags and click ids).
 const MAX_BODY_BYTES = 4_096;
 // Per client, per window. The client is the nearest IP plus the user agent,
@@ -328,21 +340,54 @@ export async function POST(request: Request) {
 
     const forwarded = await forwardToAllyWaitlist({ email, name, phone, linkedinUrl, source });
     if (!forwarded.ok) {
-      // Both places are unreachable. Only now is this a failure the founder
-      // has to see, and only now is asking them to try again honest.
       console.error(`[ally-beta] waitlist forward also failed for ${email}: ${forwarded.error}`);
+    }
+
+    // The third channel, and the reason a failed forward is no longer the end.
+    //
+    // The panel's waitlist endpoint allows five calls per five minutes PER IP
+    // -- that is the limit scripts/backfill-ally-waitlist.mjs spends most of
+    // its time waiting out. Every registration from this site arrives there
+    // from the same handful of Vercel addresses, so the whole site shares one
+    // allowance. While the database is up that costs nothing: the forward is
+    // best effort and a 429 is a log line. While it is DOWN the forward is the
+    // only path, and the sixth founder in five minutes met a 429 and then
+    // "Something went wrong. Please try again." -- which they then did, adding
+    // another call to the window they were already outside of.
+    //
+    // SMTP shares no infrastructure with either the database or the panel, so
+    // it is the one channel still standing when both are down. The mail says
+    // plainly that it is the only copy, and carries no Approve button, because
+    // there is no row here to approve.
+    //
+    // Awaited rather than sent alongside the confirmation: the confirmation
+    // promises the founder they are registered, and that promise must not be
+    // made until somewhere is actually holding them.
+    const notified = await sendInternalNotificationEmail({
+      id: null,
+      name,
+      email,
+      phone,
+      linkedinUrl,
+      attribution,
+      registeredAt: new Date(),
+      source,
+      baseUrl: devOrigin,
+      recordedIn: forwarded.ok ? "ally-panel" : "nowhere",
+    });
+
+    if (!forwarded.ok && !notified) {
+      // Every channel is down. Only now is this a failure the founder has to
+      // see, and only now is asking them to try again honest.
+      console.error(`[ally-beta] ${email} could not be recorded anywhere — insert, forward and notification all failed`);
       return json({ ok: false, error: GENERIC_ERROR }, 500);
     }
 
-    console.warn(`[ally-beta] ${email} recorded in the Ally panel only — this site's insert failed`);
+    console.warn(
+      `[ally-beta] ${email} recorded ${forwarded.ok ? "in the Ally panel only" : "by internal email only"} — this site's insert failed`,
+    );
 
-    // The confirmation is sent; the internal notification is not. That mail
-    // carries an Approve link keyed to a row in THIS database, and a link that
-    // 404s is worse than no mail -- the registration is in the panel, which is
-    // where the team is now looking.
-    await Promise.allSettled([
-      sendBetaConfirmationEmail({ name, email, baseUrl: devOrigin }),
-    ]);
+    await sendBetaConfirmationEmail({ name, email, baseUrl: devOrigin });
 
     // No id to report: this browser cannot follow a registration this site did
     // not store. The page reads that as "registered, position unknown", which

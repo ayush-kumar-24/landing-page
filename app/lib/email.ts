@@ -36,8 +36,11 @@ type ConfirmationRecipient = {
 };
 
 type InternalNotification = {
-  /** beta_users.id — signed into the Approve link. */
-  id: string;
+  /**
+   * beta_users.id — signed into the Approve link. Null when this site's
+   * database refused the registration: there is then no row to approve.
+   */
+  id: string | null;
   name: string;
   email: string;
   phone: string | null;
@@ -48,6 +51,19 @@ type InternalNotification = {
   baseUrl?: string;
   /** True when the batch was open and they were let straight in. */
   granted?: boolean;
+  /**
+   * Where the registration is actually recorded, which decides what this mail
+   * can offer. Defaults to "site": the normal case, a row in `beta_users`.
+   *
+   * "ally-panel" means our database was unreachable and the panel took the
+   * registration instead -- there is no row here, so no Approve button, and
+   * the team approves in the panel.
+   *
+   * "nowhere" means our database AND the panel were both unreachable. THIS
+   * EMAIL IS THEN THE ONLY RECORD that this person registered, which is why
+   * it says so in the subject line as well as the body.
+   */
+  recordedIn?: "site" | "ally-panel" | "nowhere";
 };
 
 type ApprovalRecipient = {
@@ -217,23 +233,45 @@ export async function sendInternalNotificationEmail(
     ["Source", registration.source],
   ];
 
-  // Someone the open batch already let in needs no Approve button; showing one
-  // invites a click that does nothing and makes the team wonder whether it
-  // worked. The line above the details says which happened.
-  const approveUrl = registration.granted ? null : approveUrlFor(registration.id, registration.baseUrl);
+  const recordedIn = registration.recordedIn ?? "site";
+
+  // Approving works by signing a `beta_users` id, so the button is only
+  // offered when there is a row here to approve. Someone the open batch
+  // already let in needs no button either; showing one invites a click that
+  // does nothing and makes the team wonder whether it worked. The line above
+  // the details says which of the four happened.
+  const approveUrl =
+    registration.granted || recordedIn !== "site" || !registration.id
+      ? null
+      : approveUrlFor(registration.id, registration.baseUrl);
+
   const statusHtml = registration.granted
     ? `<p style="margin:0 0 16px;padding:10px 14px;background:#eefbf3;border-left:3px solid #10B981;font-size:13.5px;">
       <b>Access granted automatically</b> &mdash; they were inside the open batch, so their account is created and the invite has been sent. Nothing to do.
     </p>`
-    : `<p style="margin:0 0 16px;padding:10px 14px;background:#fffaf0;border-left:3px solid #e0a800;font-size:13.5px;">
+    : recordedIn === "nowhere"
+      ? `<p style="margin:0 0 16px;padding:10px 14px;background:#fff5f5;border-left:3px solid #b00020;font-size:13.5px;">
+      <b>Not recorded anywhere &mdash; this email is the only copy.</b> This site's database and the Ally waitlist endpoint were both unreachable, so there is no row here and nothing in the panel. The founder has been told they are registered, because they are &mdash; in this message. Add them to the panel by hand from the details below. <code>scripts/backfill-ally-waitlist.mjs</code> cannot help here: it re-sends what this site's database holds, and this registration never reached it.
+    </p>`
+      : recordedIn === "ally-panel"
+        ? `<p style="margin:0 0 16px;padding:10px 14px;background:#f4f8ff;border-left:3px solid #3b6fd4;font-size:13.5px;">
+      <b>In the Ally panel only</b> &mdash; this site's database was unreachable, so the registration went straight to the panel. There is no row here to approve; approve them in the panel as usual.
+    </p>`
+        : `<p style="margin:0 0 16px;padding:10px 14px;background:#fffaf0;border-left:3px solid #e0a800;font-size:13.5px;">
       <b>Waiting</b> &mdash; the batch is full, so they are in the queue. They will be let in when the next batch opens, or you can approve them now with the button below.
     </p>`;
+
+  // No button, and no explanation of its absence, when the status line above
+  // has already given the reason. The APPROVAL_SECRET note is for the one case
+  // where a button was expected and could not be built.
   const approveHtml = approveUrl
     ? `<p style="margin:24px 0 0;">
       <a href="${escapeHtml(approveUrl)}" style="display:inline-block;padding:12px 20px;background:#2fe3ac;color:#04120c;font-weight:700;border-radius:8px;text-decoration:none;">Approve &amp; send invite &rarr;</a>
     </p>
     <p style="margin:8px 0 0;font-size:12px;color:#6b736f;">Opens a confirmation page first &mdash; nothing happens until you confirm there.</p>`
-    : `<p style="margin:24px 0 0;font-size:13px;color:#b00020;">Approval link unavailable: APPROVAL_SECRET is not configured on the server.</p>`;
+    : registration.granted || recordedIn !== "site"
+      ? ""
+      : `<p style="margin:24px 0 0;font-size:13px;color:#b00020;">Approval link unavailable: APPROVAL_SECRET is not configured on the server.</p>`;
 
   const html = `<!doctype html>
 <html lang="en">
@@ -252,27 +290,38 @@ export async function sendInternalNotificationEmail(
   </body>
 </html>`;
 
+  const statusText = registration.granted
+    ? "ACCESS GRANTED AUTOMATICALLY — inside the open batch; account created and invite sent. Nothing to do."
+    : recordedIn === "nowhere"
+      ? "NOT RECORDED ANYWHERE — this site's database and the Ally waitlist endpoint were both unreachable. This email is the only copy of this registration; add them to the panel by hand."
+      : recordedIn === "ally-panel"
+        ? "IN THE ALLY PANEL ONLY — this site's database was unreachable, so there is no row here to approve. Approve them in the panel."
+        : "WAITING — the batch is full, so they are in the queue.";
+
   const text = [
     "New Ally Early Access Registration",
     "",
-    registration.granted
-      ? "ACCESS GRANTED AUTOMATICALLY — inside the open batch; account created and invite sent. Nothing to do."
-      : "WAITING — the batch is full, so they are in the queue.",
+    statusText,
     "",
     ...rows.map(([label, value]) => `${label}: ${value}`),
     "",
-    registration.granted
+    registration.granted || recordedIn !== "site"
       ? ""
       : approveUrl
         ? `Approve & send invite now: ${approveUrl}`
         : "Approval link unavailable: APPROVAL_SECRET is not configured.",
   ].join("\n");
 
+  // The subject carries the warning too: an inbox rule or a phone notification
+  // shows the subject and nothing else, and the one registration the team must
+  // not scroll past is the one no database is holding for them.
+  const subjectPrefix = recordedIn === "nowhere" ? "[NOT STORED] " : "";
+
   return send(
     {
       from,
       to,
-      subject: `New Ally Early Access Registration — ${registration.name}`,
+      subject: `${subjectPrefix}New Ally Early Access Registration — ${registration.name}`,
       html,
       text,
       replyTo: registration.email,
