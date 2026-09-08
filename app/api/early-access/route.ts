@@ -1,4 +1,5 @@
-import { grantAccess } from "../../lib/access";
+import { grantAccess, landingGrantsAccess } from "../../lib/access";
+import { forwardToAllyWaitlist } from "../../lib/ally-waitlist";
 import {
   findBetaUserByEmail, findBetaUserById, getCapacity, insertBetaUser, positionOf,
 } from "../../lib/db";
@@ -59,6 +60,13 @@ const POLICY_VERSION = "2026-09-06";
 const ACCEPTED_POLICY_VERSIONS: readonly string[] = [POLICY_VERSION, "2026-08-15"];
 
 const GENERIC_ERROR = "Something went wrong. Please try again.";
+
+/**
+ * Thrown to leave the instant-grant block early without logging. A plain
+ * `return` cannot be used there -- the block is inside the request handler and
+ * the response below still has to be built and sent.
+ */
+class SkipGrant extends Error {}
 type RateBucket = { count: number; resetAt: number };
 
 const rateBuckets = new Map<string, RateBucket>();
@@ -343,6 +351,10 @@ export async function POST(request: Request) {
      below reports the outcome and the page reads it. */
   let granted = false;
   try {
+    // Skipped entirely rather than attempted and refused: with approval moved
+    // to the Ally panel there is no instant grant to make, and calling into it
+    // would log an error on every single registration.
+    if (!landingGrantsAccess()) throw new SkipGrant();
     const position = await positionOf(registration.id);
     const capacity = await getCapacity();
     if (position !== null && position <= capacity) {
@@ -358,7 +370,9 @@ export async function POST(request: Request) {
       }
     }
   } catch (error) {
-    console.error("[ally-beta] instant grant check failed", error);
+    if (!(error instanceof SkipGrant)) {
+      console.error("[ally-beta] instant grant check failed", error);
+    }
   }
 
   // Best-effort delivery. Both helpers swallow their own failures and log
@@ -375,7 +389,20 @@ export async function POST(request: Request) {
   // button, image URLs) rather than the production site, so the captured
   // copies in /dev/outbox are followable. In production `baseUrl` stays
   // undefined and the templates use their configured origin.
+  // Sent with the emails, not before them, for the same reason they are sent
+  // together: the row is already committed, the founder is waiting on this
+  // response, and none of these three may add its latency to the other two.
+  // A failure is logged and left for scripts/backfill-ally-waitlist.mjs --
+  // this site still holds the registration either way.
+  const forwardToAlly = forwardToAllyWaitlist({ email, name, phone, linkedinUrl, source })
+    .then((result) => {
+      if (!result.ok) {
+        console.error(`[ally-beta] waitlist forward failed for ${email}: ${result.error}`);
+      }
+    });
+
   await Promise.allSettled([
+    forwardToAlly,
     granted ? Promise.resolve() : sendBetaConfirmationEmail({ name, email, baseUrl: devOrigin }),
     sendInternalNotificationEmail({
       id: registration.id,

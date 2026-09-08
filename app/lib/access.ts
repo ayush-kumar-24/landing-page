@@ -27,6 +27,25 @@ import { metadataFrom } from "./attribution";
  * admin page and the approval page offer to send it again.
  */
 
+/**
+ * Whether THIS site may still create logins and email founders.
+ *
+ * It no longer does. The Ally admin panel is where the team decides who comes
+ * in -- that is where the founder, their plan and everything else about them
+ * already lives, and every registration made here is forwarded there (see
+ * `lib/ally-waitlist.ts`). Two systems minting Supabase identities against the
+ * same project is how one person ends up with two "you're in" emails and two
+ * different ideas of how many places are left.
+ *
+ * The code stays, behind an off-by-default switch, because turning it back on
+ * has to be one environment variable rather than a revert: if the panel is
+ * ever unavailable on a day the queue must move, `LANDING_PAGE_GRANTS_ACCESS=true`
+ * restores the batch and the Approve links exactly as they were.
+ */
+export function landingGrantsAccess(): boolean {
+  return process.env.LANDING_PAGE_GRANTS_ACCESS?.trim().toLowerCase() === "true";
+}
+
 export type GrantOutcome =
   | { ok: true; alreadyHad: boolean; emailed: boolean; supabaseSkipped: boolean; loginUrl: string }
   | { ok: false; error: string };
@@ -41,6 +60,15 @@ export async function grantAccess(
   { baseUrl, resend = false }: { baseUrl?: string; resend?: boolean } = {},
 ): Promise<GrantOutcome> {
   const loginUrl = platformLoginUrl(user.email);
+
+  if (!landingGrantsAccess()) {
+    return {
+      ok: false,
+      error:
+        "Approval happens in the Ally admin panel now. This site records the " +
+        "registration and forwards it there; it no longer creates logins.",
+    };
+  }
 
   // Already in: only send again if that is what was asked for. Re-approving
   // must not mail a second "you're in" to someone who got one last week.
@@ -95,6 +123,15 @@ export async function grantNextBatch(
   { limit = GRANT_CHUNK, baseUrl }: { limit?: number; baseUrl?: string } = {},
 ): Promise<BatchResult> {
   const queue = await pendingGrants(limit);
+
+  // Refused as a batch rather than row by row: with grants disabled every
+  // single one would come back as a failure, and a page full of identical
+  // errors hides the one fact worth reading -- that this is switched off here
+  // on purpose.
+  if (!landingGrantsAccess()) {
+    return { granted: 0, failed: [], emailFailures: 0, remaining: queue.length };
+  }
+
   const failed: BatchResult["failed"] = [];
   let granted = 0;
   let emailFailures = 0;
