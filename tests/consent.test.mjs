@@ -1,12 +1,12 @@
 /* Consent + Google Tag Manager foundation — run with `pnpm test` (node --test).
- * Exercises the pure part of public/assets/consent.v3.js with a fake storage,
+ * Exercises the pure part of public/assets/consent.v4.js with a fake storage,
  * a fake dataLayer and a fake document; no browser needed. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const C = require('../public/assets/consent.v3.js');
+const C = require('../public/assets/consent.v4.js');
 
 const DENIED = { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' };
 const GRANTED = { analytics_storage: 'granted', ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' };
@@ -147,4 +147,56 @@ test('Blocked storage: defaults still apply, the banner shows, nothing throws', 
   assert.deepEqual(cmds(dl)[0], ['consent', 'default', DENIED]);
   assert.equal(plan.showBanner, true);
   assert.doesNotThrow(() => C.write(broken, C.categories(true, true)));
+});
+
+/* ── ally_ad_consent_granted ──────────────────────────────────────────────
+   The false → true edge only, so a tag gated on ad_storage can fire on the
+   visit where consent was actually given instead of the one after it. */
+
+const AD_ON = C.categories(false, true);
+const AD_OFF = C.categories(false, false);
+
+test('the event fires on false -> true and on nothing else', () => {
+  assert.equal(C.adConsentTurnedOn(AD_OFF, AD_ON), true, 'false -> true');
+  assert.equal(C.adConsentTurnedOn(AD_OFF, AD_OFF), false, 'false -> false');
+  assert.equal(C.adConsentTurnedOn(AD_ON, AD_ON), false, 'true -> true');
+  assert.equal(C.adConsentTurnedOn(AD_ON, AD_OFF), false, 'withdrawal');
+  /* analytics moving either way is not this event's business */
+  assert.equal(C.adConsentTurnedOn(AD_OFF, C.categories(true, false)), false, 'analytics only');
+  assert.equal(C.adConsentTurnedOn(C.categories(true, true), C.categories(false, true)), false, 'analytics dropped, advertising kept');
+  /* no prior state at all — a first choice from the denied defaults */
+  assert.equal(C.adConsentTurnedOn(null, AD_ON), true, 'nothing saved -> accept all');
+  assert.equal(C.adConsentTurnedOn(null, AD_OFF), false, 'nothing saved -> necessary only');
+});
+
+test('the event carries a name and nothing else', () => {
+  const dl = [];
+  C.pushAdGranted(dl);
+  assert.equal(dl.length, 1);
+  assert.deepEqual(dl[0], { event: 'ally_ad_consent_granted' });
+  assert.deepEqual(Object.keys(dl[0]), ['event']);
+  assert.equal(C.AD_GRANTED_EVENT, 'ally_ad_consent_granted');
+});
+
+test('the consent update is issued before the event, never after', () => {
+  const dl = [];
+  C.pushUpdate(dl, AD_ON);
+  C.pushAdGranted(dl);
+  const update = dl.findIndex((e) => typeof e.length === 'number' && e[1] === 'update');
+  const custom = dl.findIndex((e) => e && e.event === 'ally_ad_consent_granted');
+  assert.ok(update !== -1 && custom !== -1);
+  assert.ok(update < custom, 'ad_storage must already be granted when GTM sees the event');
+  assert.equal(Array.from(dl[update])[2].ad_storage, 'granted');
+});
+
+test('the edge itself still reports a re-grant — the once-per-page cap is the caller\'s rule', () => {
+  /* adConsentTurnedOn answers one question only: did advertising go from off
+     to on? A visitor who withdraws and grants again really has done that, and
+     the function says so. Whether a second event is worth sending is a
+     different question, answered by a page-scoped flag in boot(), because it
+     depends on what has already been sent during this page load rather than
+     on the two states being compared. Keeping them apart is what lets this
+     function stay pure and testable. */
+  assert.equal(C.adConsentTurnedOn(AD_ON, AD_OFF), false);
+  assert.equal(C.adConsentTurnedOn(AD_OFF, AD_ON), true, 'granted again after a withdrawal is still an edge');
 });

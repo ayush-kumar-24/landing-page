@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const C = require('../public/assets/consent.v3.js');
+const C = require('../public/assets/consent.v4.js');
 
 /* A document.cookie stand-in. `seed` is [{name, value, domain, path}]. */
 function jar(seed) {

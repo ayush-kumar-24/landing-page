@@ -17,11 +17,13 @@
  * the site and there must not be: GTM is the only client-side tag loader.
  *
  * Nothing personal is ever pushed to the dataLayer from here: only the four
- * consent signals and GTM's own start event. The saved choice holds three
- * booleans, a timestamp and a policy version — no identifier of any kind.
+ * consent signals, GTM's own start event, and one bare custom event
+ * (`ally_ad_consent_granted`) carrying no properties at all. The saved choice
+ * holds three booleans, a timestamp and a policy version — no identifier of
+ * any kind.
  *
  * This file lives under /assets, which is cached for a year by URL. Any edit
- * means a new filename (consent.v4.js) and updating the six pages that load it.
+ * means a new filename (consent.v5.js) and updating the six pages that load it.
  *
  * Loaded with `async`: it does not block rendering, and ordering is still
  * guaranteed because GTM is only ever loaded from inside this script. In Node
@@ -109,6 +111,28 @@
 
   function pushUpdate(dataLayer, cats) {
     gtagInto(dataLayer)('consent', 'update', toGoogle(cats));
+  }
+
+  /* ── "advertising was just switched on" ───────────────────────────────────
+     A tag gated on ad_storage fires on the next page load once consent is
+     granted, which means the visit where the visitor actually said yes is the
+     one it misses. This event marks that single moment so a tag can fire
+     immediately instead.
+
+     Only the false → true edge, and only within the page the visitor is on:
+     a reload with advertising already saved as true is not a change, and the
+     ordinary page-load trigger covers it. Withdrawal is not a change this
+     event describes either — nothing should start on the way down. */
+  var AD_GRANTED_EVENT = 'ally_ad_consent_granted';
+
+  function adConsentTurnedOn(before, after) {
+    return !(before && before.advertising === true) && !!(after && after.advertising === true);
+  }
+
+  /* Deliberately bare. GTM needs the name and nothing else, and anything more
+     would be the first personal thing this file ever sent anywhere. */
+  function pushAdGranted(dataLayer) {
+    dataLayer.push({ event: AD_GRANTED_EVENT });
   }
 
   /* The standard container snippet, guarded so a second call is a no-op. */
@@ -291,6 +315,20 @@
     var plan = decide({ storage: storage, dataLayer: win.dataLayer, hostname: env.hostname || win.location.hostname });
     if (plan.loadGtm) loadGtm(doc, win, GTM_ID);
 
+    /* What consent is in force right now, this page session. It starts at
+       whatever was restored above — no saved choice means denied, which is
+       also what the defaults said — and is the only thing a later save is
+       compared against, so a save that changes nothing reads as no change. */
+    var applied = plan.saved ? plan.saved.categories : categories(false, false);
+
+    /* Once per page load, no matter how many times the visitor changes their
+       mind afterwards. The event exists to recover the one PageView that the
+       ordinary trigger could not send while consent was denied; a second
+       push would be a duplicate of a hit that has already gone. Deliberately
+       a plain variable — it must reset on the next page load, which is when
+       the ordinary trigger takes over again, so it is never stored. */
+    var adGrantSent = false;
+
     /* ── banner ── */
     var el = null, prefs, actions, prefActions, analyticsBox, advertisingBox, lastFocus = null;
 
@@ -359,8 +397,14 @@
     }
 
     function choose(cats) {
+      var turnedOn = adConsentTurnedOn(applied, cats);
+      applied = categories(cats.analytics, cats.advertising);
       write(storage, cats);
       pushUpdate(win.dataLayer, cats);
+      /* After the update, never before it: by the time GTM sees this event
+         ad_storage is already granted, so a tag gated on it is free to fire
+         on the same push rather than being held back and losing the visit. */
+      if (turnedOn && !adGrantSent) { adGrantSent = true; pushAdGranted(win.dataLayer); }
       /* Google is told first, so a tag that is already running stops
          writing; then the cookies it wrote are removed. Runs on every save
          that leaves Analytics off, not only on a granted -> denied change:
@@ -406,6 +450,7 @@
 
   var api = {
     KEY: KEY, POLICY_VERSION: POLICY_VERSION, GTM_ID: GTM_ID, SIGNALS: SIGNALS,
+    AD_GRANTED_EVENT: AD_GRANTED_EVENT, adConsentTurnedOn: adConsentTurnedOn, pushAdGranted: pushAdGranted,
     categories: categories, toGoogle: toGoogle, allDenied: allDenied, isProductionHost: isProductionHost,
     read: read, write: write, clear: clear, pushDefault: pushDefault, pushUpdate: pushUpdate,
     gaCookieNames: gaCookieNames, cookieDomainCandidates: cookieDomainCandidates, deleteGaCookies: deleteGaCookies,
