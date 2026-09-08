@@ -207,20 +207,6 @@ em{ font-style:italic; }
 /* Log in is for people who already have an account, so it stays a
    quiet link; Sign up is the action we want and carries the weight. */
 .nav-auth{ display:inline-flex; align-items:center; gap:20px; }
-/* ─── TEMPORARY: access paused ────────────────────────────────────────
-   The database behind registration is down, so every attempt to sign up
-   ends in "Something went wrong". Until it is back the way in is closed
-   rather than broken: a founder meets a page with nothing to click
-   instead of a form that fails after they have typed everything.
-
-   Hidden: Sign up in the header, the same in the phone menu, and the two
-   "Start your founder journey" buttons. Log in stays -- nothing is broken
-   for founders who already have an account, and the team needs the way in.
-
-   TO RESTORE: delete this rule and the ACCESS_PAUSED guard in
-   openAccess(). Nothing else was touched. */
-#navCta, #menuCta, #heroCta, #closeCta{ display:none !important; }
-
 .nav-login{ font-size:14px; font-weight:600; color:var(--muted); }
 .nav-login:hover{ color:var(--forest); }
 .nav-cta{
@@ -2932,15 +2918,8 @@ html.ea-open .hw{ display:none; }
   var subEl = document.getElementById('eaSub');
   var TITLE_NEW = titleEl ? titleEl.innerHTML : '';
   var opener = null;
-  /* TEMPORARY, paired with the display:none rule above: registration is
-     paused while its database is down. Every way into this dialog goes
-     through openAccess -- a link, a bookmarked #early-access, the sample
-     dashboard's gate, the help assistant -- so one flag closes them all,
-     including the ones a hidden button cannot. Set to false to restore. */
-  var ACCESS_PAUSED = true;
   function modalOpen(){ return !!(modal && modal.classList.contains('is-open')); }
   function openAccess(from){
-    if(ACCESS_PAUSED) return;
     if(!modal) return;
     if(!modalOpen()){
       opener = from || document.activeElement;

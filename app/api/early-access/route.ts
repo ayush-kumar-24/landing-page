@@ -297,14 +297,57 @@ export async function POST(request: Request) {
     return json({ ok: false, error: GENERIC_ERROR }, 500);
   }
 
-  // The database is the source of truth. Nothing after this point may turn a
-  // committed registration into a user-visible failure.
-  let registration: Awaited<ReturnType<typeof insertBetaUser>>;
+  // Outside production the emails link back to THIS server (the Approve
+  // button, image URLs) rather than the production site, so the captured
+  // copies in /dev/outbox are followable. In production `baseUrl` stays
+  // undefined and the templates use their configured origin.
+  //
+  // Read before the insert, because the failure path below sends mail too.
+  const devOrigin = process.env.NODE_ENV === "production" ? undefined : new URL(request.url).origin;
+
+  // This site's table is where a registration is RECORDED. It is no longer the
+  // only place one can live: the Ally panel is where the team answers it, and
+  // that is a different database on different infrastructure.
+  //
+  // So a failure here is not the end of the registration any more. It used to
+  // be -- and that is why registration was switched off on the landing page in
+  // 2e9cfb1 when this database went down: every attempt ended in "Something
+  // went wrong" after the founder had typed everything. Somebody who wants in
+  // must not be turned away because OUR storage is having a bad day, when the
+  // system that decides is up and reachable.
+  //
+  // What is lost when this path runs: the duplicate check (Ally's endpoint is
+  // ON CONFLICT DO NOTHING, so it dedupes by address anyway), the attribution,
+  // and the id this browser uses to follow its own place in the queue. What is
+  // kept is the only thing that cannot be recovered later -- the person.
+  let registration: Awaited<ReturnType<typeof insertBetaUser>> | null = null;
   try {
     registration = await insertBetaUser({ name, email, phone, linkedinUrl, source, attribution });
   } catch (error) {
     console.error("[ally-beta] registration insert failed", error);
-    return json({ ok: false, error: GENERIC_ERROR }, 500);
+
+    const forwarded = await forwardToAllyWaitlist({ email, name, phone, linkedinUrl, source });
+    if (!forwarded.ok) {
+      // Both places are unreachable. Only now is this a failure the founder
+      // has to see, and only now is asking them to try again honest.
+      console.error(`[ally-beta] waitlist forward also failed for ${email}: ${forwarded.error}`);
+      return json({ ok: false, error: GENERIC_ERROR }, 500);
+    }
+
+    console.warn(`[ally-beta] ${email} recorded in the Ally panel only — this site's insert failed`);
+
+    // The confirmation is sent; the internal notification is not. That mail
+    // carries an Approve link keyed to a row in THIS database, and a link that
+    // 404s is worse than no mail -- the registration is in the panel, which is
+    // where the team is now looking.
+    await Promise.allSettled([
+      sendBetaConfirmationEmail({ name, email, baseUrl: devOrigin }),
+    ]);
+
+    // No id to report: this browser cannot follow a registration this site did
+    // not store. The page reads that as "registered, position unknown", which
+    // is exactly true.
+    return json({ ok: true, duplicate: false });
   }
 
   if (!registration.created) {
@@ -335,8 +378,6 @@ export async function POST(request: Request) {
   // button, image URLs) rather than the production site, so the captured
   // copies in /dev/outbox are followable. In production `baseUrl` stays
   // undefined and the templates use their configured origin.
-  const devOrigin = process.env.NODE_ENV === "production" ? undefined : new URL(request.url).origin;
-
   /* Inside the open batch? Then this founder does not wait for anybody: their
      account is created and the invite goes out now, in the same request that
      registered them.
