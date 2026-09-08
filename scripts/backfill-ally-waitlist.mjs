@@ -33,8 +33,23 @@ const EMAIL_MAX = 255;
 const NOTE_MAX = 2_000;
 const SOURCE_MAX = 60;
 
-/** Gentle on purpose: the endpoint rate-limits per IP, and this is not a race. */
-const DELAY_MS = 250;
+/**
+ * The endpoint allows 5 registrations per 5 minutes PER IP, and every request
+ * from this script comes from one machine -- so a backfill of any size WILL be
+ * throttled. That is not a failure and the script does not treat it as one: it
+ * waits out the window and re-sends the same person.
+ *
+ * Sending is fast until the first 429, then settles to roughly one a minute,
+ * which is the rate the endpoint actually allows. A queue of fifty therefore
+ * takes the better part of an hour. Leave it running -- it prints each address
+ * as it lands, and re-running it later is safe anyway.
+ */
+const DELAY_MS = 1_000;
+/** No Retry-After comes back, so this is the window plus a little slack. */
+const THROTTLED_WAIT_MS = 65_000;
+const MAX_THROTTLE_RETRIES = 10;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const dryRun = process.argv.includes("--dry-run");
 const url = process.env.ALLY_WAITLIST_URL?.trim() || DEFAULT_URL;
@@ -82,27 +97,46 @@ try {
       continue;
     }
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(10_000),
-      });
-      if (response.status === 202) {
-        sent += 1;
-        console.log(`  sent  ${payload.email}`);
-      } else {
-        const detail = await response.text().catch(() => "");
-        failures.push({ email: payload.email, error: `${response.status} ${detail.slice(0, 200)}` });
-        console.error(`  FAIL  ${payload.email}  ${response.status}`);
+    // Retries only the throttle. Every other outcome is decided on the first
+    // attempt: a 422 means the payload is wrong and will be wrong again, and
+    // re-sending it would only bury the one line that says so.
+    for (let attempt = 0; attempt <= MAX_THROTTLE_RETRIES; attempt += 1) {
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(10_000),
+        });
+
+        if (response.status === 429) {
+          if (attempt === MAX_THROTTLE_RETRIES) {
+            failures.push({ email: payload.email, error: "429 after repeated waits" });
+            console.error(`  FAIL  ${payload.email}  still throttled after ${attempt} waits`);
+            break;
+          }
+          console.log(`  wait  ${Math.round(THROTTLED_WAIT_MS / 1000)}s (rate limit) then retry ${payload.email}`);
+          await sleep(THROTTLED_WAIT_MS);
+          continue;
+        }
+
+        if (response.status === 202) {
+          sent += 1;
+          console.log(`  sent  ${payload.email}`);
+        } else {
+          const detail = await response.text().catch(() => "");
+          failures.push({ email: payload.email, error: `${response.status} ${detail.slice(0, 200)}` });
+          console.error(`  FAIL  ${payload.email}  ${response.status}`);
+        }
+        break;
+      } catch (error) {
+        failures.push({ email: payload.email, error: String(error?.message || error) });
+        console.error(`  FAIL  ${payload.email}  ${error?.message || error}`);
+        break;
       }
-    } catch (error) {
-      failures.push({ email: payload.email, error: String(error?.message || error) });
-      console.error(`  FAIL  ${payload.email}  ${error?.message || error}`);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+    await sleep(DELAY_MS);
   }
 
   if (!dryRun) {
