@@ -2956,9 +2956,9 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
 <!-- ===================================================================
      LAUNCH DAY WELCOME — TEMPORARY. Delete this whole block afterwards.
 
-     For the 24 hours after launch, a visitor arriving on the landing page is
-     told Ally has launched: a burst of confetti and sprinkles, and a banner
-     saying so. Once per visitor, so a second page view is the ordinary site.
+     For the 24 hours after launch, every arrival on the landing page is told
+     Ally has launched: a burst of confetti and sprinkles, and a banner saying
+     so. Every page load inside the window, not once per visitor.
 
      Everything lives in this IIFE and is appended to the body on fire and
      removed on finish: one <canvas> (pointer-events:none, aria-hidden) and
@@ -2975,10 +2975,8 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
   var RUN   = 8000;   // visible lifetime of one burst
   var SEED  = 4000;   // new particles are emitted for this long
   var HOLD  = 6500;   // how long the banner stays up
-  var KEY   = 'ally-launch-welcome-2026-09-09';
 
   if (Date.now() >= END) return;                       // window is over
-  try { if (localStorage.getItem(KEY)) return; } catch (e) {}  // already seen
 
   // Confetti is the decoration; the banner is the message. Someone who asked
   // for less motion still gets told Ally launched, just without the animation.
@@ -3004,10 +3002,6 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
     // where nobody can see it.
     ready(function(){ visible(function(){
       if (Date.now() >= END) return;
-      try {
-        if (localStorage.getItem(KEY)) return;
-        localStorage.setItem(KEY, '1');   // claimed only once it is really shown
-      } catch (e) {}
       fire();
     }); });
   }
