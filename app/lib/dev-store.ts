@@ -1,4 +1,5 @@
 import type { Attribution } from "./attribution";
+import type { BillingProfile } from "./billing";
 import { randomUUID } from "crypto";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
@@ -78,6 +79,7 @@ export type DevBetaUser = {
   updated_at: string;
   invited_at?: string | null;
   attribution?: Attribution | null;
+  billing?: BillingProfile | null;
 };
 
 const SETTINGS_FILE = path.join(DEV_DIR, "access.json");
@@ -90,6 +92,7 @@ type DevInsertInput = {
   linkedinUrl: string | null;
   source: string;
   attribution?: Attribution | null;
+  billing?: BillingProfile | null;
 };
 
 async function readWaitlist(): Promise<DevBetaUser[]> {
@@ -115,6 +118,7 @@ export async function devInsertBetaUser(
       status: "NEW",
       source: input.source,
       attribution: input.attribution ?? null,
+      billing: input.billing ?? null,
       created_at: now,
       updated_at: now,
     };

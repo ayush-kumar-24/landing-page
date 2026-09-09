@@ -219,6 +219,48 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
   .plan-card, .pc-cta, .cta{ transition:none; }
   .pr-eye .lv{ animation:none; }
 }
+
+/* ---------- personal / business use, and the GST details an invoice needs ----------
+   Asked here rather than at checkout: a founder buying through their company
+   needs the GSTIN on the invoice to claim input tax credit, and every field
+   they leave blank is one the accounts team has to chase by email later.
+   Everything below the choice is optional -- nothing here may stand between a
+   founder and a plan. */
+.use-picker{max-width:760px;margin:0 auto 6px;background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:22px 22px 20px;box-shadow:0 1px 2px -1px rgba(6,20,13,.12),0 6px 16px -8px rgba(6,20,13,.14)}
+.use-picker fieldset{border:0;padding:0;margin:0;min-width:0}
+.up-legend{display:block;font-family:var(--serif);font-size:18px;font-weight:600;color:#0E2A1C;letter-spacing:-.01em;padding:0}
+.up-note{font-size:13px;line-height:1.55;color:#6b7a6e;margin:4px 0 14px}
+.up-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:10px}
+.up-opt{position:relative;display:flex;align-items:flex-start;gap:11px;border:1px solid #e0d8cc;border-radius:14px;padding:13px 14px;cursor:pointer;background:#fdfcf9;transition:border-color .2s ease,background .2s ease,box-shadow .2s ease}
+.up-opt:hover{border-color:#bdd3c3}
+.up-opt input{position:absolute;opacity:0;width:0;height:0}
+.up-dot{flex:0 0 auto;width:18px;height:18px;margin-top:2px;border-radius:50%;border:1.5px solid #c3cdc5;background:#fff;transition:border-color .2s ease,box-shadow .2s ease}
+.up-opt input:checked ~ .up-dot{border-color:#10B981;border-width:5.5px;box-shadow:0 0 0 3px rgba(16,185,129,.14)}
+.up-opt:has(input:checked){border-color:#10B981;background:rgba(16,185,129,.06);box-shadow:0 6px 18px -12px rgba(16,185,129,.9)}
+.up-opt input:focus-visible ~ .up-dot{outline:2.5px solid var(--emerald-bright);outline-offset:3px}
+.up-title{display:block;font-size:14.5px;font-weight:600;color:#16241c;line-height:1.35}
+.up-sub{display:block;font-size:12.5px;color:#6b7a6e;line-height:1.45;margin-top:2px}
+.up-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px;margin-top:16px;padding-top:16px;border-top:1px dashed #e0d8cc}
+.up-f{display:block;font-size:12.5px;font-weight:600;color:#3d4a41;letter-spacing:.01em}
+.up-f-wide{grid-column:1 / -1}
+.up-tag{font-weight:500;color:#8b9990}
+.up-f input,.up-f textarea{
+  display:block;width:100%;margin-top:6px;padding:11px 12px;
+  font:inherit;font-size:14.5px;font-weight:400;color:#16241c;line-height:1.5;
+  background:#fdfcf9;border:1px solid #ddd5c9;border-radius:11px;
+  transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.up-f textarea{resize:vertical;min-height:78px}
+.up-f input::placeholder,.up-f textarea::placeholder{color:#a9b3ab}
+.up-f input:focus,.up-f textarea:focus{background:#fff;border-color:#10B981;box-shadow:0 0 0 3px rgba(16,185,129,.13)}
+.up-f input[aria-invalid="true"]{border-color:#c0492f;box-shadow:0 0 0 3px rgba(192,73,47,.12)}
+#upGstin{text-transform:uppercase;letter-spacing:.04em}
+.up-msg{grid-column:1 / -1;min-height:18px;margin:0;font-size:12.5px;line-height:1.5;color:#6b7a6e}
+.up-msg.is-err{color:#c0492f}
+.up-msg.is-ok{color:#0d8a5f}
+@media (max-width:520px){
+  .use-picker{padding:18px 16px 16px;border-radius:16px}
+}
 </style>
 </head>
 <body>
@@ -307,6 +349,47 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
     <h1>Simple plans, <em>powerful</em> clarity</h1>
     <p>Every plan includes the adaptive diagnosis and your Clarity Report. Upgrade for chat, planning and Ally&rsquo;s own recommendations.</p>
   </div>
+
+  <!-- Who the subscription is for. Answered before a plan is picked, kept in
+       this browser, and sent with the registration so the invoice can be
+       raised correctly the first time. See app/lib/billing.ts. -->
+  <form class="use-picker reveal" id="usePicker" autocomplete="on" novalidate>
+    <fieldset>
+      <legend class="up-legend">Who is this subscription for?</legend>
+      <p class="up-note">Buying through your company? Add your GST details and we&rsquo;ll put them on every invoice &mdash; all three fields are optional and you can add them later.</p>
+      <div class="up-opts">
+        <label class="up-opt">
+          <input type="radio" name="allyUse" value="personal" checked>
+          <span class="up-dot" aria-hidden="true"></span>
+          <span>
+            <span class="up-title">For personal use</span>
+            <span class="up-sub">The invoice is raised in your own name</span>
+          </span>
+        </label>
+        <label class="up-opt">
+          <input type="radio" name="allyUse" value="business">
+          <span class="up-dot" aria-hidden="true"></span>
+          <span>
+            <span class="up-title">For business use</span>
+            <span class="up-sub">GST invoice in your company&rsquo;s name</span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="up-fields" id="upFields" hidden>
+      <label class="up-f" for="upCompany">Company name <span class="up-tag">(optional)</span>
+        <input id="upCompany" name="organization" type="text" maxlength="120" autocomplete="organization" placeholder="Your registered business name">
+      </label>
+      <label class="up-f" for="upGstin">GST number <span class="up-tag">(optional)</span>
+        <input id="upGstin" name="gstin" type="text" maxlength="20" inputmode="text" spellcheck="false" autocapitalize="characters" autocomplete="off" placeholder="22AAAAA0000A1Z5" aria-describedby="upMsg">
+      </label>
+      <label class="up-f up-f-wide" for="upAddress">Billing address <span class="up-tag">(optional)</span>
+        <textarea id="upAddress" name="street-address" rows="3" maxlength="400" autocomplete="street-address" placeholder="Street, city, state and PIN code"></textarea>
+      </label>
+      <p class="up-msg" id="upMsg" role="status" aria-live="polite"></p>
+    </div>
+  </form>
 
   <div class="reveal">
   <div class="plans">
@@ -539,5 +622,139 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
   document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
 })();
 </script>
+<script>
+/* ---------- personal / business use ----------
+   The choice and the invoice details are kept in this browser under
+   `ally_billing` and sent with the registration on the home page, the same
+   way the attribution touches above are. Nothing is posted from here: there
+   is no account yet to attach them to, and asking the founder to submit a
+   second form before they have even registered would be one step too many.
+
+   Everything is optional. A GSTIN that does not have the right shape is
+   pointed out here and left out of what is stored -- the server drops it too
+   -- but it never blocks anything, because this page's job is to sell a plan,
+   not to audit a tax number. */
+(function(){
+  var KEY = 'ally_billing';
+  var form = document.getElementById('usePicker');
+  var fields = document.getElementById('upFields');
+  var company = document.getElementById('upCompany');
+  var gstin = document.getElementById('upGstin');
+  var address = document.getElementById('upAddress');
+  var msg = document.getElementById('upMsg');
+  if(!form || !fields || !company || !gstin || !address || !msg) return;
+
+  var radios = form.querySelectorAll('input[name="allyUse"]');
+  /* Same shape the server accepts (app/lib/billing.ts): state code, PAN,
+     entity number, 'Z', checksum. The checksum itself is not computed --
+     a wrong one is a typo the invoice draft will show. */
+  var GSTIN_RE = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][0-9A-Z]Z[0-9A-Z]$/;
+  var saveTimer = null, okTimer = null;
+
+  /* This page never submits; Enter in a field would otherwise reload it and
+     throw away what was typed. */
+  form.addEventListener('submit', function(e){ e.preventDefault(); });
+
+  function chosen(){
+    for(var i = 0; i < radios.length; i++){ if(radios[i].checked) return radios[i].value; }
+    return 'personal';
+  }
+  function cleanGstin(){ return gstin.value.replace(/[\s-]/g, '').toUpperCase(); }
+  function gstinOk(){ var v = cleanGstin(); return !v || GSTIN_RE.test(v); }
+
+  function say(text, kind){
+    msg.textContent = text || '';
+    msg.className = 'up-msg' + (kind ? ' is-' + kind : '');
+  }
+  function flashSaved(){
+    if(okTimer) clearTimeout(okTimer);
+    say('Saved. We’ll use these details on your invoice.', 'ok');
+    okTimer = setTimeout(function(){ if(msg.classList.contains('is-ok')) say(''); }, 2600);
+  }
+
+  function store(){
+    var use = chosen();
+    var data = { v:1, use:use, at:new Date().toISOString() };
+    /* Details belong to the business answer. Someone who switches back to
+       personal has said the invoice is theirs, not their company's, and
+       keeping their GSTIN in storage after that would be keeping something
+       they just took back. The inputs hold on to it for as long as the page
+       is open, so switching to and fro loses nothing typed. */
+    if(use === 'business'){
+      var c = company.value.trim().replace(/\s+/g, ' ').slice(0, 120);
+      var g = cleanGstin();
+      var a = address.value.replace(/\r\n?/g, '\n').trim().slice(0, 400);
+      if(c) data.company = c;
+      if(g && GSTIN_RE.test(g)) data.gstin = g;
+      if(a) data.address = a;
+    }
+    try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(_){}
+  }
+
+  function saveSoon(){
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){ store(); flashSaved(); }, 600);
+  }
+
+  function showFields(on, focus){
+    fields.hidden = !on;
+    if(on && focus) setTimeout(function(){ company.focus(); }, 30);
+    if(!on) say('');
+  }
+
+  /* What this browser answered last time, so a founder comparing plans over
+     two visits is not asked twice. A damaged record is removed rather than
+     left to block every later write. */
+  (function restore(){
+    var raw; try{ raw = localStorage.getItem(KEY); }catch(_){ return; }
+    if(!raw) return;
+    var o; try{ o = JSON.parse(raw); }catch(_){ try{ localStorage.removeItem(KEY); }catch(__){} return; }
+    if(!o || typeof o !== 'object'){ try{ localStorage.removeItem(KEY); }catch(__){} return; }
+    var business = o.use === 'business';
+    for(var i = 0; i < radios.length; i++){ radios[i].checked = radios[i].value === (business ? 'business' : 'personal'); }
+    if(business){
+      if(typeof o.company === 'string') company.value = o.company;
+      if(typeof o.gstin === 'string') gstin.value = o.gstin;
+      if(typeof o.address === 'string') address.value = o.address;
+    }
+    showFields(business, false);
+  })();
+
+  for(var i = 0; i < radios.length; i++){
+    radios[i].addEventListener('change', function(){
+      var business = chosen() === 'business';
+      showFields(business, true);
+      store();
+      if(!business) flashSaved();
+    });
+  }
+
+  [company, address].forEach(function(el){ el.addEventListener('input', saveSoon); });
+
+  gstin.addEventListener('input', function(){
+    if(gstinOk()){ gstin.removeAttribute('aria-invalid'); saveSoon(); }
+  });
+  /* Only once they have moved on: telling someone their GSTIN is wrong at the
+     third character is telling them off for not having finished typing. */
+  gstin.addEventListener('blur', function(){
+    var v = cleanGstin();
+    gstin.value = v;
+    if(gstinOk()){
+      gstin.removeAttribute('aria-invalid');
+      store();
+      if(v) flashSaved();
+      return;
+    }
+    gstin.setAttribute('aria-invalid', 'true');
+    say('That GST number doesn’t look right — it should be 15 characters, like 22AAAAA0000A1Z5. We’ve saved the rest.', 'err');
+    store();
+  });
+
+  /* A tab closed mid-typing still keeps what was typed: the debounce above may
+     not have fired yet. */
+  window.addEventListener('pagehide', function(){ if(saveTimer){ clearTimeout(saveTimer); store(); } });
+})();
+</script>
+
 </body>
 </html>

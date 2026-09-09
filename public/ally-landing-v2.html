@@ -2888,6 +2888,17 @@ html.ea-open .hw{ display:none; }
     }catch(_){}
     return (out.first || out.last) ? out : null;
   }
+  /* Personal or business use, and the invoice details, as answered on the
+     pricing page (see public/pricing.html). Absent for someone who registered
+     without ever opening it; the server treats that as "not stated" rather
+     than assuming either answer. */
+  function billingPayload(){
+    var raw; try{ raw = localStorage.getItem('ally_billing'); }catch(_){ return null; }
+    if(!raw) return null;
+    var o; try{ o = JSON.parse(raw); }catch(_){ return null; }
+    if(!o || typeof o !== 'object' || (o.use !== 'personal' && o.use !== 'business')) return null;
+    return o;
+  }
   var heroCta = document.getElementById('heroCta');
   var navCta = document.getElementById('navCta');
   var closeCta = document.getElementById('closeCta');
@@ -3187,7 +3198,8 @@ html.ea-open .hw{ display:none; }
              tab opened before a deploy can still register. */
           policyVersion:'2026-09-06',
           company:companyEl ? companyEl.value : '',
-          attribution:attributionPayload()
+          attribution:attributionPayload(),
+          billing:billingPayload()
         })
       });
       var data = await res.json().catch(function(){ return {}; });

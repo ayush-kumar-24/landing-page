@@ -52,6 +52,12 @@ change to `app/lib/supabase-admin.ts` only.
 Database: **no schema change.** `status` (`NEW → INVITED`) and `updated_at`
 already exist in `db/schema.sql`.
 
+Since then one column has been added — `billing`, the personal/business answer
+and the GST invoice details from the pricing page. Re-run `psql "$DATABASE_URL"
+-f db/schema.sql` (every statement in it is idempotent) before the deploy that
+carries it; until the column exists, registrations that reach the database
+fail and fall through to the Ally panel and the notification email.
+
 ## B. Supabase dashboard — the platform's project
 
 1. Authentication → Sign In / Providers → Email → **"Allow new users to sign

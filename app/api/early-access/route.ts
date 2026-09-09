@@ -7,6 +7,7 @@ import {
 } from "../../lib/db";
 import { sendBetaConfirmationEmail, sendInternalNotificationEmail } from "../../lib/email";
 import { parseAttribution, type Attribution } from "../../lib/attribution";
+import { parseBilling, type BillingProfile } from "../../lib/billing";
 
 // Note on Next.js 16: `nodejs` is already the default runtime and the docs
 // direct you to remove the `runtime` export (the Edge runtime is deprecated).
@@ -29,8 +30,9 @@ import { parseAttribution, type Attribution } from "../../lib/attribution";
  */
 export const maxDuration = 40;
 
-// Room for the attribution object (two touches, each with tags and click ids).
-const MAX_BODY_BYTES = 4_096;
+// Room for the attribution object (two touches, each with tags and click ids)
+// and the billing profile (company name, GSTIN, billing address).
+const MAX_BODY_BYTES = 5_120;
 // Per client, per window. The client is the nearest IP plus the user agent,
 // not the IP alone: Indian mobile carriers put thousands of subscribers
 // behind one address, and on a launch day ten registrations from one such
@@ -236,6 +238,7 @@ export async function POST(request: Request) {
   let phone: string | null;
   let linkedinUrl: string | null;
   let attribution: Attribution | null;
+  let billing: BillingProfile | null;
   let source: string;
 
   try {
@@ -254,6 +257,7 @@ export async function POST(request: Request) {
       policyVersion?: unknown;
       company?: unknown;
       attribution?: unknown;
+      billing?: unknown;
     };
     try {
       body = JSON.parse(raw) as typeof body;
@@ -280,6 +284,11 @@ export async function POST(request: Request) {
     const policyVersion = String(body?.policyVersion || "").trim().slice(0, 32);
     // Validated, capped and stripped of anything personal; null for a direct visit.
     attribution = parseAttribution(body?.attribution);
+    // Personal or business use, and the invoice details a business chose to
+    // give on the pricing page; null when the question was never answered.
+    // Every field there is optional, so nothing this returns can fail the
+    // registration -- see app/lib/billing.ts.
+    billing = parseBilling(body?.billing);
 
     if (name.length < 2 || name.length > NAME_MAX) {
       return json({ ok: false, error: "Enter your full name" }, 400);
@@ -341,7 +350,7 @@ export async function POST(request: Request) {
   // kept is the only thing that cannot be recovered later -- the person.
   let registration: Awaited<ReturnType<typeof insertBetaUser>> | null = null;
   try {
-    registration = await insertBetaUser({ name, email, phone, linkedinUrl, source, attribution });
+    registration = await insertBetaUser({ name, email, phone, linkedinUrl, source, attribution, billing });
   } catch (error) {
     console.error("[ally-beta] registration insert failed", error);
 
@@ -383,6 +392,7 @@ export async function POST(request: Request) {
         phone,
         linkedinUrl,
         attribution,
+        billing,
         registeredAt: new Date(),
         source,
         baseUrl: devOrigin,
@@ -521,6 +531,7 @@ export async function POST(request: Request) {
       phone,
       linkedinUrl,
       attribution,
+      billing,
       registeredAt: registration.createdAt,
       source,
       baseUrl: devOrigin,

@@ -97,6 +97,20 @@ ALTER TABLE beta_users ADD COLUMN IF NOT EXISTS invited_at timestamptz;
 -- touch and the touch at registration, as one JSON document; NULL for a
 -- direct visit. Validated by app/lib/attribution.ts before it gets here.
 ALTER TABLE beta_users ADD COLUMN IF NOT EXISTS attribution jsonb;
+-- Who the subscription is for: "personal" or "business", and for a business
+-- the optional invoice details they chose to give on the pricing page --
+-- company name, GSTIN, billing address. One JSON document; NULL when the
+-- question was never answered. Every field is optional and validated by
+-- app/lib/billing.ts before it gets here, so a malformed GSTIN is dropped
+-- rather than stored or allowed to fail the registration.
+ALTER TABLE beta_users ADD COLUMN IF NOT EXISTS billing jsonb;
+
+-- The GST registrations we will have to invoice, which is the only question
+-- this column is ever asked. Partial: personal registrations are the majority
+-- and are never looked up this way.
+CREATE INDEX IF NOT EXISTS beta_users_business_billing
+  ON beta_users ((billing ->> 'gstin'))
+  WHERE billing ->> 'gstin' IS NOT NULL;
 
 -- Position is `ORDER BY created_at, id` over everyone still in the queue, and
 -- granting a batch reads that order under load. Rejected rows leave the line

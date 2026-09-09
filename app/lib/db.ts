@@ -1,6 +1,7 @@
 import postgres, { type Sql } from "postgres";
 
 import type { Attribution } from "./attribution";
+import type { BillingProfile } from "./billing";
 import {
   devAccessCounts,
   devFindBetaUserByEmail,
@@ -71,6 +72,8 @@ export type BetaUserInput = {
   source: string;
   /** Where they came from; null for a direct visit. See attribution.ts. */
   attribution?: Attribution | null;
+  /** Personal or business use, and the invoice details. See billing.ts. */
+  billing?: BillingProfile | null;
 };
 
 export type BetaUserInsert =
@@ -121,14 +124,15 @@ export async function insertBetaUser(input: BetaUserInput): Promise<BetaUserInse
   const sql = getSql();
 
   const rows = await sql<{ id: string; created_at: Date }[]>`
-    INSERT INTO beta_users (name, email, phone, linkedin_url, source, attribution)
+    INSERT INTO beta_users (name, email, phone, linkedin_url, source, attribution, billing)
     VALUES (
       ${input.name},
       ${input.email},
       ${input.phone},
       ${input.linkedinUrl},
       ${input.source},
-      ${input.attribution ? sql.json(input.attribution) : null}
+      ${input.attribution ? sql.json(input.attribution) : null},
+      ${input.billing ? sql.json(input.billing) : null}
     )
     ON CONFLICT (email) DO NOTHING
     RETURNING id, created_at

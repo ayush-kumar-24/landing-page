@@ -1,4 +1,5 @@
 import { describeAttribution, type Attribution } from "./attribution";
+import { describeBilling, type BillingProfile } from "./billing";
 import nodemailer, { type Transporter } from "nodemailer";
 
 import { signApprovalToken } from "./approval-token";
@@ -46,6 +47,8 @@ type InternalNotification = {
   phone: string | null;
   linkedinUrl: string | null;
   attribution?: Attribution | null;
+  /** Personal or business use, with the invoice details if they gave any. */
+  billing?: BillingProfile | null;
   registeredAt: Date;
   source: string;
   baseUrl?: string;
@@ -229,6 +232,7 @@ export async function sendInternalNotificationEmail(
     ["Phone", registration.phone || "—"],
     ["LinkedIn", registration.linkedinUrl || "—"],
     ["Came from", describeAttribution(registration.attribution)],
+    ["Billing", describeBilling(registration.billing)],
     ["Registered At", registration.registeredAt.toISOString()],
     ["Source", registration.source],
   ];
