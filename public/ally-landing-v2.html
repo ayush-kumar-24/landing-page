@@ -3468,33 +3468,40 @@ html.ea-open .hw{ display:none; }
 })();
 </script>
 <!-- ===================================================================
-     LAUNCH DAY CONFETTI — TEMPORARY. Delete this whole block afterwards.
+     LAUNCH DAY WELCOME — TEMPORARY. Delete this whole block afterwards.
 
-     One burst of confetti and sprinkles at 18:12 IST on launch day, for a
-     ten-minute window, once per visitor. Everything lives in this IIFE:
-     one <canvas> that is pointer-events:none and aria-hidden, appended on
-     fire and removed on finish. It reads nothing and writes nothing on the
-     page besides that canvas, so the rest of the site is untouched whether
-     it fires or not. Past the window the block costs one Date comparison
-     and returns.
+     For the 24 hours after launch, a visitor arriving on the landing page is
+     told Ally has launched: a burst of confetti and sprinkles, and a banner
+     saying so. Once per visitor, so a second page view is the ordinary site.
+
+     Everything lives in this IIFE and is appended to the body on fire and
+     removed on finish: one <canvas> (pointer-events:none, aria-hidden) and
+     one banner. It reads nothing and writes nothing else on the page, so the
+     site is untouched whether this runs or not, and past the window the whole
+     block costs one Date comparison and returns.
      =================================================================== -->
 <script>
 (function(){
-  // 2026-09-09 18:12:00 IST == 12:42:00 UTC. A fixed instant, not the
-  // visitor's local 18:12, so everyone celebrates the same moment.
-  var START = Date.UTC(2026, 8, 9, 12, 42, 0);
-  var END   = START + 10 * 60 * 1000;
+  // 2026-09-09 18:15 IST == 12:45 UTC, and the 24 hours after it. A fixed
+  // span, not the visitor's local clock, so it ends when launch day ends.
+  var START = Date.UTC(2026, 8, 9, 12, 45, 0);
+  var END   = START + 24 * 60 * 60 * 1000;
   var RUN   = 8000;   // visible lifetime of one burst
   var SEED  = 4000;   // new particles are emitted for this long
-  var KEY   = 'ally-launch-confetti-2026-09-09';
+  var HOLD  = 6500;   // how long the banner stays up
+  var KEY   = 'ally-launch-welcome-2026-09-09';
 
   if (Date.now() >= END) return;                       // window is over
-  if (!window.requestAnimationFrame) return;
-  try {
-    if (window.matchMedia &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  } catch (e) {}
   try { if (localStorage.getItem(KEY)) return; } catch (e) {}  // already seen
+
+  // Confetti is the decoration; the banner is the message. Someone who asked
+  // for less motion still gets told Ally launched, just without the animation.
+  var calm = false;
+  try {
+    calm = !!(window.matchMedia &&
+              window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  } catch (e) {}
+  if (!window.requestAnimationFrame) calm = true;
 
   var wait = START - Date.now();
   // Loaded well before the moment: wait it out. setTimeout drifts over long
@@ -3533,6 +3540,8 @@ html.ea-open .hw{ display:none; }
   }
 
   function fire(){
+    banner();
+    if (calm) return;
     var canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
     canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;' +
@@ -3657,6 +3666,48 @@ html.ea-open .hw{ display:none; }
     // Backstop: whatever happens above, the canvas does not outlive the burst
     // (a backgrounded tab pauses rAF, so the loop alone is not a guarantee).
     setTimeout(done, RUN + 1500);
+  }
+
+  /**
+   * The message. A pill in the page's own badge idiom, under the header,
+   * announced once to screen readers and then taken back out of the DOM.
+   * pointer-events:none so it can never sit between a visitor and the page.
+   */
+  function banner(){
+    var el = document.createElement('div');
+    el.setAttribute('role', 'status');
+    el.style.cssText = 'position:fixed;top:96px;left:50%;transform:translateX(-50%)' +
+      (calm ? '' : ' translateY(-10px)') + ';' +
+      'z-index:2147483001;pointer-events:none;max-width:calc(100vw - 32px);' +
+      'display:flex;align-items:center;gap:10px;white-space:nowrap;' +
+      'padding:11px 20px;border-radius:999px;' +
+      'background:rgba(14,42,28,.94);color:#eaf3ee;' +
+      'box-shadow:0 10px 30px rgba(6,20,13,.28);' +
+      'font:600 15px/1.2 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;' +
+      'letter-spacing:.01em;' + (calm ? '' : 'opacity:0;transition:opacity .5s ease,transform .5s ease;');
+    var dot = document.createElement('span');
+    dot.setAttribute('aria-hidden', 'true');
+    dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#34d399;' +
+      'box-shadow:0 0 0 4px rgba(52,211,153,.22);flex:none;';
+    el.appendChild(dot);
+    el.appendChild(document.createTextNode('Ally has launched.'));
+    document.body.appendChild(el);
+
+    if (!calm){
+      requestAnimationFrame(function(){
+        el.style.opacity = '1';
+        el.style.transform = 'translateX(-50%) translateY(0)';
+      });
+    }
+    setTimeout(function(){
+      if (!calm){
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(-50%) translateY(-10px)';
+      }
+      setTimeout(function(){
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, calm ? 0 : 600);
+    }, HOLD);
   }
 })();
 </script>
