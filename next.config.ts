@@ -101,11 +101,11 @@ const nextConfig: NextConfig = {
         destination: "https://app.goxlally.ai/r/:token",
         permanent: false,
       },
-      // There is no separate sign-up page: registering IS the form on the home
-      // page. The stub that used to live here only added a click before it.
+      // Registration is closed: there is no sign-up page and no form on the
+      // home page any more, so the one door left is the platform's sign-in.
       {
         source: "/signup.html",
-        destination: "/#early-access",
+        destination: "/go/login",
         permanent: false,
       },
       // Earlier builds of the landing page. A redirect beats serving them with
