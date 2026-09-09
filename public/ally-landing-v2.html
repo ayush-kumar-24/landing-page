@@ -3025,10 +3025,24 @@ html.ea-open .hw{ display:none; }
     current = { state: state, loginUrl: (extra && extra.loginUrl) || '' };
     setHeading(state);
     if(state === 'new'){
-      setCta(heroCta, 'Start your founder journey', '#early-access');
-      setCta(closeCta, 'Start your founder journey', '#early-access');
-      setCta(navCta, 'Sign up', '#early-access');
-      setCta(menuCta, 'Sign up', '#early-access');
+      /* extra.capacityOpen, not a new `state` value: setHeading('new') above
+         already gives the right first-visit heading either way, and folding
+         this into `state` would mean teaching it there too for no benefit.
+         Registration is open at the client (sendEmailOtp), so when direct
+         capacity is open there is nothing for this modal to do -- a fresh
+         visitor gets exactly the sign-in door an approved founder already
+         has, and never sees the waitlist form at all. */
+      if(extra && extra.capacityOpen){
+        setCta(heroCta, 'Log in', '/go/login');
+        setCta(closeCta, 'Log in', '/go/login');
+        setCta(navCta, 'Log in', '/go/login');
+        setCta(menuCta, 'Log in', '/go/login');
+      } else {
+        setCta(heroCta, 'Start your founder journey', '#early-access');
+        setCta(closeCta, 'Start your founder journey', '#early-access');
+        setCta(navCta, 'Sign up', '#early-access');
+        setCta(menuCta, 'Sign up', '#early-access');
+      }
       if(doneCta) doneCta.hidden = true;
       showForm();
       return;
@@ -3068,11 +3082,28 @@ html.ea-open .hw{ display:none; }
     }).catch(function(){ return { state: 'waiting' }; });
   }
 
+  /* Is Ally letting a stranger sign in right now with no queue? Read fresh on
+     every load rather than cached -- capacity changes the moment an admin
+     opens or exhausts a batch, and a visitor sitting on a stale "closed"
+     would be shown a form they don't need. Never rejects: offline or an
+     error reads as closed, which is the safe default -- the waitlist form
+     still works, it just was not the fastest door available. */
+  function fetchDirectSignupCapacity(){
+    return fetch('https://api.goxlally.ai/api/v1/waitlist/capacity', { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : { open: false }; })
+      .then(function(d){ return !!(d && d.open); })
+      .catch(function(){ return false; });
+  }
+
   function resolveAndRender(optimistic){
     var h = hint();
     if(h === 'in' || h === 'out'){ render(h); return Promise.resolve(); }
     var id = storedId();
-    if(!id){ render('new'); return Promise.resolve(); }
+    if(!id){
+      return fetchDirectSignupCapacity().then(function(open){
+        render('new', { capacityOpen: open });
+      });
+    }
     /* Never "waiting" on speculation: a founder let straight in must not
        read "you're on the waitlist" for even a moment. */
     render(optimistic || 'checking', null);
