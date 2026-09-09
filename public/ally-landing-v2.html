@@ -2953,5 +2953,249 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
   });
 })();
 </script>
+<!-- ===================================================================
+     LAUNCH DAY WELCOME — TEMPORARY. Delete this whole block afterwards.
+
+     For the 24 hours after launch, a visitor arriving on the landing page is
+     told Ally has launched: a burst of confetti and sprinkles, and a banner
+     saying so. Once per visitor, so a second page view is the ordinary site.
+
+     Everything lives in this IIFE and is appended to the body on fire and
+     removed on finish: one <canvas> (pointer-events:none, aria-hidden) and
+     one banner. It reads nothing and writes nothing else on the page, so the
+     site is untouched whether this runs or not, and past the window the whole
+     block costs one Date comparison and returns.
+     =================================================================== -->
+<script>
+(function(){
+  // 2026-09-09 18:15 IST == 12:45 UTC, and the 24 hours after it. A fixed
+  // span, not the visitor's local clock, so it ends when launch day ends.
+  var START = Date.UTC(2026, 8, 9, 12, 45, 0);
+  var END   = START + 24 * 60 * 60 * 1000;
+  var RUN   = 8000;   // visible lifetime of one burst
+  var SEED  = 4000;   // new particles are emitted for this long
+  var HOLD  = 6500;   // how long the banner stays up
+  var KEY   = 'ally-launch-welcome-2026-09-09';
+
+  if (Date.now() >= END) return;                       // window is over
+  try { if (localStorage.getItem(KEY)) return; } catch (e) {}  // already seen
+
+  // Confetti is the decoration; the banner is the message. Someone who asked
+  // for less motion still gets told Ally launched, just without the animation.
+  var calm = false;
+  try {
+    calm = !!(window.matchMedia &&
+              window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  } catch (e) {}
+  if (!window.requestAnimationFrame) calm = true;
+
+  var wait = START - Date.now();
+  // Loaded well before the moment: wait it out. setTimeout drifts over long
+  // waits, so re-check the clock when it fires rather than trusting the delay.
+  if (wait > 0) { setTimeout(arm, Math.min(wait, 2147483000)); return; }
+  arm();
+
+  function arm(){
+    var now = Date.now();
+    if (now < START) { setTimeout(arm, Math.min(START - now, 2147483000)); return; }
+    if (now >= END) return;
+    // Wait for the page to be up and actually on screen. A slow first load, or
+    // a tab opened in the background, would otherwise spend the whole burst
+    // where nobody can see it.
+    ready(function(){ visible(function(){
+      if (Date.now() >= END) return;
+      try {
+        if (localStorage.getItem(KEY)) return;
+        localStorage.setItem(KEY, '1');   // claimed only once it is really shown
+      } catch (e) {}
+      fire();
+    }); });
+  }
+
+  function ready(next){
+    if (document.readyState === 'complete') { next(); return; }
+    window.addEventListener('load', next, { once: true });
+  }
+  function visible(next){
+    if (document.visibilityState !== 'hidden') { next(); return; }
+    document.addEventListener('visibilitychange', function once(){
+      if (document.visibilityState === 'hidden') return;
+      document.removeEventListener('visibilitychange', once);
+      next();
+    });
+  }
+
+  function fire(){
+    banner();
+    if (calm) return;
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;' +
+      'pointer-events:none;z-index:2147483000;';
+    var ctx = canvas.getContext && canvas.getContext('2d');
+    if (!ctx) return;
+    document.body.appendChild(canvas);
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0;
+    function size(){
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = Math.floor(W * dpr); canvas.height = Math.floor(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    size();
+    window.addEventListener('resize', size);
+
+    // Brand palette: emerald, lime and forest from the page tokens, plus a
+    // warm gold so the pieces read against the ivory background.
+    var COLORS = ['#10B981','#34d399','#5eead4','#A8D94A','#1B4332','#f2c14e','#fbf7f2'];
+    var bits = [];
+
+    function confetto(x, y, vx, vy){
+      return { kind:0, x:x, y:y, vx:vx, vy:vy,
+        w: 6 + Math.random()*5, h: 9 + Math.random()*7,
+        spin: (Math.random()-0.5)*0.35, rot: Math.random()*Math.PI*2,
+        flip: Math.random()*Math.PI*2, flipRate: 0.08 + Math.random()*0.12,
+        color: COLORS[(Math.random()*COLORS.length)|0], life: 1 };
+    }
+    function sprinkle(x, y, vx, vy){
+      return { kind:1, x:x, y:y, vx:vx, vy:vy,
+        r: 1.5 + Math.random()*2.2, twinkle: Math.random()*Math.PI*2,
+        color: COLORS[(Math.random()*COLORS.length)|0], life: 1 };
+    }
+
+    // Two corner cannons, the way a real popper throws.
+    function cannon(fromLeft, n){
+      var x = fromLeft ? -10 : W + 10, y = H * 0.92;
+      var dir = fromLeft ? 1 : -1;
+      for (var i = 0; i < n; i++){
+        var a = (Math.random() * 0.6 + 0.32);            // upward-ish angle
+        var s = 12 + Math.random() * 14;
+        var vx = dir * Math.cos(a) * s, vy = -Math.sin(a) * s;
+        bits.push(Math.random() < 0.62 ? confetto(x, y, vx, vy)
+                                       : sprinkle(x, y, vx, vy));
+      }
+    }
+    // And a drizzle from above, so the whole viewport keeps filling.
+    function drizzle(n){
+      for (var i = 0; i < n; i++){
+        var x = Math.random() * W, y = -20 - Math.random() * 60;
+        var vx = (Math.random() - 0.5) * 3, vy = 2 + Math.random() * 3;
+        bits.push(Math.random() < 0.5 ? confetto(x, y, vx, vy)
+                                      : sprinkle(x, y, vx, vy));
+      }
+    }
+
+    var scale = Math.min(1, Math.max(0.45, W / 1280));   // lighter on phones
+    cannon(true,  Math.round(90 * scale));
+    cannon(false, Math.round(90 * scale));
+    drizzle(Math.round(60 * scale));
+
+    var POPS = [900, 2100, 3200];   // follow-up poppers, so it does not thin out
+    var t0 = performance.now(), last = t0, seedAcc = 0, pops = 0;
+
+    function frame(){
+      // Read the clock rather than trusting the rAF timestamp: the two share a
+      // time origin in a real browser, but not under every test/clock shim.
+      var now = performance.now();
+      var dt = Math.min((now - last) / 16.6667, 3); last = now;  // in 60fps ticks
+      var elapsed = now - t0;
+
+      if (elapsed < SEED){
+        seedAcc += dt;
+        while (seedAcc >= 3){ seedAcc -= 3; drizzle(Math.round(7 * scale)); }
+        while (pops < POPS.length && elapsed > POPS[pops]){
+          pops++;
+          cannon(true, Math.round(55 * scale)); cannon(false, Math.round(55 * scale));
+        }
+      }
+
+      var fade = elapsed > RUN - 1200 ? Math.max(0, (RUN - elapsed) / 1200) : 1;
+      ctx.clearRect(0, 0, W, H);
+
+      for (var i = bits.length - 1; i >= 0; i--){
+        var p = bits[i];
+        p.vy += 0.32 * dt;                    // gravity
+        p.vx *= Math.pow(0.985, dt);          // air drag
+        p.vy *= Math.pow(0.992, dt);
+        p.x += p.vx * dt; p.y += p.vy * dt;
+
+        if (p.y - 40 > H || p.x < -80 || p.x > W + 80){ bits.splice(i, 1); continue; }
+
+        if (p.kind === 0){
+          p.rot += p.spin * dt; p.flip += p.flipRate * dt;
+          var squash = Math.abs(Math.cos(p.flip));       // tumbling in 3D
+          ctx.save();
+          ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.globalAlpha = fade * (0.55 + 0.45 * squash);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h * squash / 2, p.w, Math.max(1, p.h * squash));
+          ctx.restore();
+        } else {
+          p.twinkle += 0.22 * dt;
+          ctx.globalAlpha = fade * (0.45 + 0.55 * Math.abs(Math.sin(p.twinkle)));
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      if (elapsed < RUN) { raf = requestAnimationFrame(frame); } else { done(); }
+    }
+
+    var raf = requestAnimationFrame(frame);
+
+    function done(){
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', size);
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+    }
+    // Backstop: whatever happens above, the canvas does not outlive the burst
+    // (a backgrounded tab pauses rAF, so the loop alone is not a guarantee).
+    setTimeout(done, RUN + 1500);
+  }
+
+  /**
+   * The message. A pill in the page's own badge idiom, under the header,
+   * announced once to screen readers and then taken back out of the DOM.
+   * pointer-events:none so it can never sit between a visitor and the page.
+   */
+  function banner(){
+    var el = document.createElement('div');
+    el.setAttribute('role', 'status');
+    el.style.cssText = 'position:fixed;top:96px;left:50%;transform:translateX(-50%)' +
+      (calm ? '' : ' translateY(-10px)') + ';' +
+      'z-index:2147483001;pointer-events:none;max-width:calc(100vw - 32px);' +
+      'display:flex;align-items:center;gap:10px;white-space:nowrap;' +
+      'padding:11px 20px;border-radius:999px;' +
+      'background:rgba(14,42,28,.94);color:#eaf3ee;' +
+      'box-shadow:0 10px 30px rgba(6,20,13,.28);' +
+      'font:600 15px/1.2 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;' +
+      'letter-spacing:.01em;' + (calm ? '' : 'opacity:0;transition:opacity .5s ease,transform .5s ease;');
+    var dot = document.createElement('span');
+    dot.setAttribute('aria-hidden', 'true');
+    dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#34d399;' +
+      'box-shadow:0 0 0 4px rgba(52,211,153,.22);flex:none;';
+    el.appendChild(dot);
+    el.appendChild(document.createTextNode('Ally has launched.'));
+    document.body.appendChild(el);
+
+    if (!calm){
+      requestAnimationFrame(function(){
+        el.style.opacity = '1';
+        el.style.transform = 'translateX(-50%) translateY(0)';
+      });
+    }
+    setTimeout(function(){
+      if (!calm){
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(-50%) translateY(-10px)';
+      }
+      setTimeout(function(){
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, calm ? 0 : 600);
+    }, HOLD);
+  }
+})();
+</script>
 </body>
 </html>
