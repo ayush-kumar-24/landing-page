@@ -1039,6 +1039,25 @@ a{color:inherit;text-decoration:none}
 .plan-card.popular .pc-cta:hover{background:#fffdf8;box-shadow:0 18px 34px -18px rgba(6,32,20,.8)}
 .plan-card.popular .pc-cta:disabled{background:rgba(255,255,255,.10);color:#dbeee3;border:1px solid rgba(255,255,255,.22);box-shadow:none;cursor:default}
 .pc-cta:disabled{background:#f2ece1;color:#4a5a4f;border-color:#ddd5c9;box-shadow:none;cursor:default}
+/* ---------- launch offer, and the monthly / yearly switch ---------- */
+.bill-toggle{display:flex;justify-content:center;gap:4px;margin:0 auto 22px;padding:4px;background:#fff;border:1px solid #e7e0d6;border-radius:99px;width:max-content;max-width:100%;box-shadow:0 1px 2px -1px rgba(6,20,13,.12)}
+.bt-opt{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border:0;border-radius:99px;background:transparent;color:#556458;font:inherit;font-family:var(--display-tight);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease}
+.bt-opt:hover{color:#1B4332}
+.bt-opt.is-on{background:#1B4332;color:#fff}
+.bt-opt:focus-visible{outline:2.5px solid var(--emerald-bright);outline-offset:2px}
+.bt-badge{font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#0d7a55;background:rgba(16,185,129,.14);padding:3px 7px;border-radius:99px}
+.bt-opt.is-on .bt-badge{color:#0E2A1C;background:#8fe3bd}
+.pc-was{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:12.5px;color:#8b9990}
+.pc-was s{text-decoration-thickness:1.5px}
+.pc-off{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#0d7a55;background:rgba(16,185,129,.13);padding:3px 8px;border-radius:99px}
+.plan-card.popular .pc-was{color:#93a99c}
+.plan-card.popular .pc-off{color:#bff0d8;background:rgba(255,255,255,.12)}
+.pr-launch{display:inline-block;margin-right:7px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#0d7a55;background:rgba(16,185,129,.13);padding:4px 10px;border-radius:99px;vertical-align:1px}
+@media (max-width:420px){
+  .bill-toggle{width:100%}
+  .bt-opt{flex:1;justify-content:center;padding:9px 10px;font-size:12px}
+  .bt-badge{display:none}
+}
 /* Yearly offer, kept as a quiet pill so it reads next to the price
    rather than competing with it. */
 .pc-year{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;margin:-8px 0 16px;padding:5px 10px;border-radius:99px;font-size:11.5px;font-weight:600;color:#1B4332;background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.24)}
@@ -7317,15 +7336,24 @@ body.lp-done #landing-page { display:none; }
     <div class="pr-eye"><span class="lv"></span>Transparent Pricing</div>
     <h2>Simple plans, <em>powerful</em> clarity</h2>
     <p>Every plan includes the adaptive diagnosis and your Clarity Report. Upgrade for chat, planning and Ally's own recommendations.</p>
-    <p class="pr-year">Pay yearly and the first days are on us &mdash; <b>15 days free on Plus</b>, <b>30 days free on Pro</b>.</p>
+    <p class="pr-year"><span class="pr-launch">Launch offer</span>Our early prices, while they last. Pay yearly and the first days are on us &mdash; <b>15 days free on Plus</b>, <b>30 days free on Pro</b>.</p>
+  </div>
+
+  <!-- Monthly or yearly. Every price on the page carries both figures as
+       data-m / data-y and the script at the foot swaps them, so the two
+       billing periods never drift apart in the markup. -->
+  <div class="bill-toggle reveal" role="group" aria-label="Billing period">
+    <button type="button" class="bt-opt is-on" data-cycle="monthly" aria-pressed="true">Monthly billing</button>
+    <button type="button" class="bt-opt" data-cycle="yearly" aria-pressed="false">Yearly billing<span class="bt-badge">+ free days</span></button>
   </div>
 
   <div class="plans stagger d2">
       <div class="plan-card">
         <div class="pc-name">Starter</div>
         <div class="pc-tag">One adaptive diagnosis and your Clarity Report</div>
-        <div class="pc-price"><span class="cur">₹</span><span class="amt">300</span><span class="per">once</span></div>
-        <div class="pc-sub">one-time payment</div>
+        <div class="pc-price"><span class="cur">₹</span><span class="amt">199</span><span class="per">once</span></div>
+        <div class="pc-was"><s>₹300</s><span class="pc-off">Launch offer</span></div>
+        <div class="pc-sub" data-m="one-time payment" data-y="one-time payment">one-time payment</div>
         <div class="pc-year pc-year-hold" aria-hidden="true">&nbsp;</div>
         <button class="pc-cta" type="button" data-signin="change your plan">Start Starter</button>
         <ul class="pc-feats">
@@ -7342,9 +7370,10 @@ body.lp-done #landing-page { display:none; }
       <div class="plan-card">
         <div class="pc-name">Plus</div>
         <div class="pc-tag">For founders working on the business weekly</div>
-        <div class="pc-price"><span class="cur">₹</span><span class="amt">600</span><span class="per">/mo</span></div>
-        <div class="pc-sub">billed monthly</div>
-        <div class="pc-year">Pay yearly &middot; <b>15 days free</b></div>
+        <div class="pc-price"><span class="cur">₹</span><span class="amt">499</span><span class="per">/mo</span></div>
+        <div class="pc-was"><s>₹600</s><span class="pc-off">Launch offer</span></div>
+        <div class="pc-sub" data-m="billed monthly" data-y="₹5,988 billed yearly">billed monthly</div>
+        <div class="pc-year" data-m="Pay yearly · 15 days free" data-y="15 days free included">Pay yearly · 15 days free</div>
         <button class="pc-cta" disabled>✓ Current Plan</button>
         <ul class="pc-feats">
           <li><span class="fk"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="2 6 5 9 10 3"/></svg></span>3,500 tokens per day</li>
@@ -7364,9 +7393,10 @@ body.lp-done #landing-page { display:none; }
         <div class="pc-ribbon">⭐ Most Popular</div>
         <div class="pc-name">Pro</div>
         <div class="pc-tag">Ally as your standing advisor</div>
-        <div class="pc-price"><span class="cur">₹</span><span class="amt">1,200</span><span class="per">/mo</span></div>
-        <div class="pc-sub">billed monthly</div>
-        <div class="pc-year">Pay yearly &middot; <b>30 days free</b></div>
+        <div class="pc-price"><span class="cur">₹</span><span class="amt">999</span><span class="per">/mo</span></div>
+        <div class="pc-was"><s>₹1,200</s><span class="pc-off">Launch offer</span></div>
+        <div class="pc-sub" data-m="billed monthly" data-y="₹11,988 billed yearly">billed monthly</div>
+        <div class="pc-year" data-m="Pay yearly · 30 days free" data-y="30 days free included">Pay yearly · 30 days free</div>
         <button class="pc-cta" type="button" data-signin="change your plan">Start Pro</button>
         <ul class="pc-feats">
           <li><span class="fk"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="2 6 5 9 10 3"/></svg></span>8,000 tokens per day</li>
@@ -7401,9 +7431,9 @@ body.lp-done #landing-page { display:none; }
       <thead>
         <tr>
           <th scope="col" style="text-align:left;padding:16px">Feature</th>
-          <th scope="col"><div class="cmp-pn">Starter</div><div class="cmp-pp">₹300 once</div></th>
-          <th scope="col"><div class="cmp-pn">Plus</div><div class="cmp-pp">₹600/mo</div></th>
-          <th scope="col" class="cmp-col-pop"><div class="cmp-pn">Pro</div><div class="cmp-pp">₹1,200/mo</div></th>
+          <th scope="col"><div class="cmp-pn">Starter</div><div class="cmp-pp" data-m="₹199 once" data-y="₹199 once">₹199 once</div></th>
+          <th scope="col"><div class="cmp-pn">Plus</div><div class="cmp-pp" data-m="₹499/mo" data-y="₹5,988/yr">₹499/mo</div></th>
+          <th scope="col" class="cmp-col-pop"><div class="cmp-pn">Pro</div><div class="cmp-pp" data-m="₹999/mo" data-y="₹11,988/yr">₹999/mo</div></th>
         </tr>
       </thead>
       <tbody>
@@ -7620,7 +7650,7 @@ body.lp-done #landing-page { display:none; }
             <span class="hp-faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
           </button>
           <div class="hp-faq-answer" id="faq-panel-1" role="region" aria-labelledby="faq-trigger-1" inert>
-            <div class="hp-faq-answer-inner">There are three: Starter (₹300, paid once), Plus (₹600/month) and Pro (₹1,200/month). All three include one adaptive diagnosis, your Clarity Report, voice in the diagnosis, and booking a discovery call at ₹300 per 30 minutes. Plus adds Talk to Ally (3,500 tokens a day), voice in chat, your Next Critical Steps, Goals and Plan Your Day. Pro raises chat to 8,000 tokens a day and adds Ally recommending your steps, Build your Vision Board, working a framework with Ally, email reminders and priority call booking.</div>
+            <div class="hp-faq-answer-inner">There are three: Starter (₹199, paid once), Plus (₹499/month) and Pro (₹999/month) — launch prices, regularly ₹300, ₹600 and ₹1,200. All three include one adaptive diagnosis, your Clarity Report, voice in the diagnosis, and booking a discovery call at ₹300 per 30 minutes. Plus adds Talk to Ally (3,500 tokens a day), voice in chat, your Next Critical Steps, Goals and Plan Your Day. Pro raises chat to 8,000 tokens a day and adds Ally recommending your steps, Build your Vision Board, working a framework with Ally, email reminders and priority call booking.</div>
           </div>
         </div>
         <div class="hp-faq-row" data-faq>
@@ -8071,7 +8101,7 @@ body.lp-done #landing-page { display:none; }
    wired to a model, because chat there is metered against the founder's daily
    token allowance and product questions should not spend it. */
 (function(){
-  var FAQS = [{"q":"How do I start a diagnosis?","a":"Open \"Adaptive diagnosis\" in the sidebar — or \"Start Founder Diagnosis\" on your Compass. Ally begins with Founder DNA (how you decide and work), then moves to your current problem, then the business itself.","k":"begin get started first steps new founder dna assessment"},{"q":"How do plans work?","a":"There are three: Starter (₹300, paid once), Plus (₹600/month) and Pro (₹1,200/month). All three include one adaptive diagnosis, your Clarity Report, voice in the diagnosis, and booking a discovery call at ₹300 per 30 minutes. Plus adds Talk to Ally (3,500 tokens a day), voice in chat, your Next Critical Steps, Goals and Plan Your Day. Pro raises chat to 8,000 tokens a day and adds Ally recommending your steps, Build your Vision Board, working a framework with Ally, email reminders and priority call booking.","k":"pricing price cost subscription tiers free starter pro difference compare billing"},{"q":"How many diagnoses do I get?","a":"One full diagnosis per account, on every plan including Pro — it is a deep one-time mapping, not something to re-run weekly. Upgrading raises your chat allowance and unlocks features, not the diagnosis count.","k":"again retake repeat second another limit once"},{"q":"How do reminders work?","a":"Tasks you set in Plan Your Day show up as \"Next due\", and Ally nudges you about anything overdue or due today while you are in the app. There are no push notifications or reminder emails yet.","k":"notification alert push email nudge due tasks plan day"},{"q":"How do I upgrade?","a":"Go to Profile, then the Subscription & billing card, and click \"Upgrade plan\" — or open Plans & billing from the plan pill at the top of any page.","k":"pay payment billing subscribe buy plan change"},{"q":"Can I edit my Founder Profile?","a":"Yes. Go to Profile, click \"Edit\" in the Founder Identity section, change your name, email or LinkedIn URL, and save.","k":"change name email linkedin details update identity"},{"q":"Can I export, download or share my report?","a":"Yes. The report page has a download button that gives you the report as a PDF, and a share button that creates a link anyone can open without signing in. Shared links are listed under \"Links you have shared\" on the same page, and you can revoke one there at any time. To export everything Ally holds about you — not just this report — use Profile → Privacy Center → \"Download my data\", which arrives as a JSON file immediately.","k":"pdf save print share copy export download report"},{"q":"What happens to my data, and can I delete it?","a":"Profile → Privacy Center is the single place for this. You can download everything we hold, pause AI processing, withdraw consent, or request account deletion — scheduled with a 30-day recovery window.","k":"privacy security delete account remove gdpr consent stored"},{"q":"I forgot my password — how do I get back in?","a":"On the sign-in page choose \"Email me a code\" and enter your email. Ally sends an 8-digit code; entering it lets you set a new password there and then. Your email address is your login.","k":"reset forgot password locked out cannot sign in login recover"},{"q":"The sign-in code hasn't arrived","a":"Codes usually arrive within a minute. Check spam or promotions first, and make sure you used the address you registered with. A code expires after a few minutes, so request a fresh one if it has been a while.","k":"otp code email not received spam missing expired resend wait"},{"q":"Ally stopped mid-diagnosis. Did I lose my answers?","a":"No. Every answer is saved as you go, so closing the tab or losing connection does not lose your progress. Open \"Adaptive diagnosis\" again and you will be returned to where you stopped.","k":"crash refresh closed tab lost progress resume continue interrupted stuck"},{"q":"When is my report ready?","a":"The report is written from your completed diagnosis, so it becomes available once the diagnosis is finished — not on a schedule. Generating it takes seconds, not days.","k":"how long wait ready time report generate available"},{"q":"I have run out of chat for today","a":"Chat is metered by a daily token allowance that resets each day, so waiting until tomorrow restores it — Plus gives 3,500 tokens a day and Pro 8,000. Upgrading raises the allowance; it does not change the diagnosis, which every plan includes once.","k":"limit quota tokens allowance exhausted used up daily reset chat blocked"},{"q":"How do I cancel or get a refund?","a":"There is no self-serve cancel button yet. Email info@goxl.in from the address on your account and we will handle the cancellation and any refund question directly.","k":"stop billing unsubscribe money back downgrade cancel refund"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product.","k":"confidential secure who can see shared sold safe private encryption"},{"q":"Can I talk to a person?","a":"Yes. Use \"Schedule assistance\" on the Help page to book a discovery call, or email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST).","k":"human call phone speak team contact support real person meeting"}];
+  var FAQS = [{"q":"How do I start a diagnosis?","a":"Open \"Adaptive diagnosis\" in the sidebar — or \"Start Founder Diagnosis\" on your Compass. Ally begins with Founder DNA (how you decide and work), then moves to your current problem, then the business itself.","k":"begin get started first steps new founder dna assessment"},{"q":"How do plans work?","a":"There are three: Starter (₹199, paid once), Plus (₹499/month) and Pro (₹999/month) — launch prices, regularly ₹300, ₹600 and ₹1,200. All three include one adaptive diagnosis, your Clarity Report, voice in the diagnosis, and booking a discovery call at ₹300 per 30 minutes. Plus adds Talk to Ally (3,500 tokens a day), voice in chat, your Next Critical Steps, Goals and Plan Your Day. Pro raises chat to 8,000 tokens a day and adds Ally recommending your steps, Build your Vision Board, working a framework with Ally, email reminders and priority call booking.","k":"pricing price cost subscription tiers free starter pro difference compare billing"},{"q":"How many diagnoses do I get?","a":"One full diagnosis per account, on every plan including Pro — it is a deep one-time mapping, not something to re-run weekly. Upgrading raises your chat allowance and unlocks features, not the diagnosis count.","k":"again retake repeat second another limit once"},{"q":"How do reminders work?","a":"Tasks you set in Plan Your Day show up as \"Next due\", and Ally nudges you about anything overdue or due today while you are in the app. There are no push notifications or reminder emails yet.","k":"notification alert push email nudge due tasks plan day"},{"q":"How do I upgrade?","a":"Go to Profile, then the Subscription & billing card, and click \"Upgrade plan\" — or open Plans & billing from the plan pill at the top of any page.","k":"pay payment billing subscribe buy plan change"},{"q":"Can I edit my Founder Profile?","a":"Yes. Go to Profile, click \"Edit\" in the Founder Identity section, change your name, email or LinkedIn URL, and save.","k":"change name email linkedin details update identity"},{"q":"Can I export, download or share my report?","a":"Yes. The report page has a download button that gives you the report as a PDF, and a share button that creates a link anyone can open without signing in. Shared links are listed under \"Links you have shared\" on the same page, and you can revoke one there at any time. To export everything Ally holds about you — not just this report — use Profile → Privacy Center → \"Download my data\", which arrives as a JSON file immediately.","k":"pdf save print share copy export download report"},{"q":"What happens to my data, and can I delete it?","a":"Profile → Privacy Center is the single place for this. You can download everything we hold, pause AI processing, withdraw consent, or request account deletion — scheduled with a 30-day recovery window.","k":"privacy security delete account remove gdpr consent stored"},{"q":"I forgot my password — how do I get back in?","a":"On the sign-in page choose \"Email me a code\" and enter your email. Ally sends an 8-digit code; entering it lets you set a new password there and then. Your email address is your login.","k":"reset forgot password locked out cannot sign in login recover"},{"q":"The sign-in code hasn't arrived","a":"Codes usually arrive within a minute. Check spam or promotions first, and make sure you used the address you registered with. A code expires after a few minutes, so request a fresh one if it has been a while.","k":"otp code email not received spam missing expired resend wait"},{"q":"Ally stopped mid-diagnosis. Did I lose my answers?","a":"No. Every answer is saved as you go, so closing the tab or losing connection does not lose your progress. Open \"Adaptive diagnosis\" again and you will be returned to where you stopped.","k":"crash refresh closed tab lost progress resume continue interrupted stuck"},{"q":"When is my report ready?","a":"The report is written from your completed diagnosis, so it becomes available once the diagnosis is finished — not on a schedule. Generating it takes seconds, not days.","k":"how long wait ready time report generate available"},{"q":"I have run out of chat for today","a":"Chat is metered by a daily token allowance that resets each day, so waiting until tomorrow restores it — Plus gives 3,500 tokens a day and Pro 8,000. Upgrading raises the allowance; it does not change the diagnosis, which every plan includes once.","k":"limit quota tokens allowance exhausted used up daily reset chat blocked"},{"q":"How do I cancel or get a refund?","a":"There is no self-serve cancel button yet. Email info@goxl.in from the address on your account and we will handle the cancellation and any refund question directly.","k":"stop billing unsubscribe money back downgrade cancel refund"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product.","k":"confidential secure who can see shared sold safe private encryption"},{"q":"Can I talk to a person?","a":"Yes. Use \"Schedule assistance\" on the Help page to book a discovery call, or email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST).","k":"human call phone speak team contact support real person meeting"}];
   var ROBOT = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"1em\" height=\"1em\" aria-hidden=\"true\"><path d=\"M12 2.5v2.4\"/><circle cx=\"12\" cy=\"1.9\" r=\"1.05\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"4\" y=\"5\" width=\"16\" height=\"12.5\" rx=\"4.5\"/><rect x=\"6.9\" y=\"8.2\" width=\"10.2\" height=\"5.4\" rx=\"2.4\" opacity=\".45\"/><circle cx=\"9.6\" cy=\"10.9\" r=\"1.15\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"14.4\" cy=\"10.9\" r=\"1.15\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M4 9.6H2.4M20 9.6h1.6\"/><path d=\"M7.5 17.5v1.2a2.5 2.5 0 0 0 2.5 2.5h4a2.5 2.5 0 0 0 2.5-2.5v-1.2\"/></svg>";
   var STARTERS = ['How do I start a diagnosis?','How do plans work?','I forgot my password','Can I delete my data?'];
   var GREETING = "Hi — I'm Ally's help assistant. Ask me about your account, plans, the diagnosis or your data, and I'll find the answer.";
@@ -8334,5 +8364,38 @@ body.lp-done #landing-page { display:none; }
     past.toLocaleDateString(undefined, {weekday:'long', day:'numeric', month:'long'}) + ' · 11:30 AM';
 })();
 </script>
+<script>
+/* ---------- monthly / yearly ----------
+   One switch, and every figure that differs between the two periods carries
+   both: data-m for monthly, data-y for yearly. Nothing is computed here, so a
+   price can only ever be wrong in the markup where someone can see it. */
+(function(){
+  var toggle = document.querySelector('.bill-toggle');
+  if(!toggle) return;
+  var opts = toggle.querySelectorAll('.bt-opt');
+  var fields = document.querySelectorAll('[data-m][data-y]');
+  var plans = document.querySelector('.plans');
+
+  function show(cycle){
+    var yearly = cycle === 'yearly';
+    for(var i = 0; i < opts.length; i++){
+      var on = opts[i].getAttribute('data-cycle') === cycle;
+      opts[i].classList.toggle('is-on', on);
+      opts[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    for(var j = 0; j < fields.length; j++){
+      var t = fields[j].getAttribute(yearly ? 'data-y' : 'data-m');
+      if(t !== null) fields[j].textContent = t;
+    }
+    if(plans) plans.classList.toggle('is-yearly', yearly);
+  }
+
+  toggle.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('.bt-opt') : null;
+    if(b) show(b.getAttribute('data-cycle'));
+  });
+})();
+</script>
+
 </body>
 </html>
