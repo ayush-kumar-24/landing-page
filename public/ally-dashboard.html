@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/assets/logo-123.v1.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/logo-123.v1.png">
 <title>Ally — Founder Platform (Sample)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -502,8 +504,7 @@ a{color:inherit;text-decoration:none}
 .m-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:11px;font-weight:700}
 /* The Ally avatar is the real product logo mark now, not the sparkle glyph
    inside a circular badge -- no fill/border/shadow, just the mark itself
-   (ally-logo-mark.png: the square ivory background made transparent, edges
-   colour-decontaminated so no pale halo shows on this dark background). */
+   (logo-123.v1.png, the same file every page and the favicon use). */
 .m-av.ally{background:none;border:none;color:#34d399}
 .m-av.ally img{width:100%;height:100%;object-fit:contain}
 .m-av.me{background:linear-gradient(135deg,#34d399,#A8D94A);color:#06231a}
@@ -6714,7 +6715,7 @@ body.lp-done #landing-page { display:none; }
   <div class="sb-head">
     <div class="sb-head-top">
       <div class="sb-brand">
-        <img class="goxl-logo" src="/assets/ally-logo-mark.png" alt="">
+        <img class="goxl-logo" src="/assets/logo-123.v1.png" alt="">
         <span class="sb-words">
           <span class="mark">GoXL <i>Ally</i></span>
           <span class="sub">by GoXL Entrepreneurship</span>
@@ -6918,16 +6919,7 @@ body.lp-done #landing-page { display:none; }
     <button class="ac-barnew" type="button" id="chat-new"><svg class="" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> New chat</button>
   </div>
   <div class="ac-scroll" id="chat-scroll">
-    <div class="msg ally"><div class="m-av ally"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 180" role="img" aria-label="GoXL">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#10B981"/>
-    </linearGradient>
-  </defs>
-  <rect width="600" height="180" rx="24" fill="none"/>
-  <text x="24" y="116" font-family="Inter, Arial, sans-serif" font-size="96" font-weight="800" letter-spacing="-4" fill="url(#g)">GoXL</text>
-</svg></div><div><div class="bubble">Welcome back, Priya. Yesterday we found the real leak: the proposal shows a price without ever making the case for it. Want to pick that back up, or is something else on your mind?</div><div class="m-meta">Ally · just now</div></div></div>
+    <div class="msg ally"><div class="m-av ally"><img src="/assets/logo-123.v1.png" alt="Ally"></div><div><div class="bubble">Welcome back, Priya. Yesterday we found the real leak: the proposal shows a price without ever making the case for it. Want to pick that back up, or is something else on your mind?</div><div class="m-meta">Ally · just now</div></div></div>
   </div>
   <div class="ac-input">
     <div class="ci-row" style="display:flex;gap:10px">
@@ -7950,16 +7942,7 @@ body.lp-done #landing-page { display:none; }
   });
 
   /* ---------- chat ---------- */
-  var LOGO = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 180" role="img" aria-label="GoXL">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#10B981"/>
-    </linearGradient>
-  </defs>
-  <rect width="600" height="180" rx="24" fill="none"/>
-  <text x="24" y="116" font-family="Inter, Arial, sans-serif" font-size="96" font-weight="800" letter-spacing="-4" fill="url(#g)">GoXL</text>
-</svg>`;
+  var LOGO = `<img src="/assets/logo-123.v1.png" alt="Ally">`;
   var scroll=document.getElementById('chat-scroll'), input=document.getElementById('chat-in');
   var REPLIES=[
     ["price|pricing|proposal|charge","That's the thread we pulled yesterday. Your diagnosis showed prospects only ever see a number — never the argument for it. Draft the value case first: what does a store lose per month without Loopcart? Put that above the price, then we test it on the next five demos."],
