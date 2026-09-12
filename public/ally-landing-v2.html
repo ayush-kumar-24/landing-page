@@ -2957,7 +2957,7 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
 <!-- ===================================================================
      LAUNCH DAY WELCOME — TEMPORARY. Delete this whole block afterwards.
 
-     For the 24 hours after launch, every arrival on the landing page is told
+     Through the end of 10 October, every arrival on the landing page is told
      Ally has launched: a burst of confetti and sprinkles, and a banner saying
      so. Every page load inside the window, not once per visitor.
 
@@ -2969,10 +2969,12 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
      =================================================================== -->
 <script>
 (function(){
-  // 2026-09-09 18:15 IST == 12:45 UTC, and the 24 hours after it. A fixed
-  // span, not the visitor's local clock, so it ends when launch day ends.
+  // Launch was 2026-09-09 18:15 IST == 12:45 UTC. The celebration runs from
+  // then through the end of 10 October 2026 IST (2026-10-10 23:59:59 IST ==
+  // 18:29:59 UTC). Fixed instants, not the visitor's local clock, so the
+  // window opens and closes at the same moment for everyone.
   var START = Date.UTC(2026, 8, 9, 12, 45, 0);
-  var END   = START + 24 * 60 * 60 * 1000;
+  var END   = Date.UTC(2026, 9, 10, 18, 30, 0);
   var RUN   = 8000;   // visible lifetime of one burst
   var SEED  = 4000;   // new particles are emitted for this long
   var HOLD  = 6500;   // how long the banner stays up
