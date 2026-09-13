@@ -1,5 +1,13 @@
 # Waitlist → approval → sign-in: go-live checklist
 
+> **Registration is currently closed on the site.** The home page, the pricing
+> page, the story page and the sample dashboard all lead to one door: Log in
+> (`/go/login`). There is no form and no "Sign up" button anywhere, so steps 1
+> and 2 below only describe how access worked while the waitlist form was up —
+> the API (`/api/early-access`), the approval flow and the emails are all still
+> in place, so putting the form back is a front-end change.
+
+
 How access to Ally works once everything below is plugged in:
 
 0. join.goxlally.ai is the front door for everyone and shows one of five
