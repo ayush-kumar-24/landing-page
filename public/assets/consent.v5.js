@@ -18,12 +18,34 @@
  *
  * Nothing personal is ever pushed to the dataLayer from here: only the four
  * consent signals, GTM's own start event, and one bare custom event
- * (`ally_ad_consent_granted`) carrying no properties at all. The saved choice
- * holds three booleans, a timestamp and a policy version — no identifier of
- * any kind.
+ * (`ally_ad_consent_granted`) carrying no properties at all.
+ *
+ *   6. The choice is POSTed to /api/cookie-consent, so it exists somewhere
+ *      other than this browser.
+ *
+ * WHY 6 EXISTS. Everything above it was already right -- the choice was
+ * enforced correctly and withdrawal really withdrew. What was missing is that
+ * the choice lived ONLY in localStorage: per-device, erased with site data, and
+ * impossible to produce afterwards. The DPDP Act asks a Data Fiduciary to
+ * demonstrate consent, and a record only the visitor's own browser holds does
+ * not demonstrate anything to anyone else.
+ *
+ * WHAT IS SENT, AND WHAT IS NOT. The saved choice now holds three booleans, a
+ * timestamp, a policy version and ONE random id, generated here, used for
+ * nothing but naming the row this browser's latest choice created. No IP, no
+ * user agent, no fingerprint is sent, and the server drops the request IP
+ * rather than storing it. Rows are not linked to each other: a visitor who
+ * changes their mind creates a second, unrelated row, because linking them
+ * would mean issuing every anonymous visitor a durable identifier -- the very
+ * thing the Analytics category is about.
+ *
+ * THE POST NEVER BLOCKS THE CHOICE. It is sent after the choice has already
+ * been applied, saved and the banner dismissed, and nothing branches on the
+ * answer. A visitor with no network still gets their choice honoured; it simply
+ * is not recorded, and the retry below catches the common case.
  *
  * This file lives under /assets, which is cached for a year by URL. Any edit
- * means a new filename (consent.v5.js) and updating the six pages that load it.
+ * means a new filename (consent.v6.js) and updating the six pages that load it.
  *
  * Loaded with `async`: it does not block rendering, and ordering is still
  * guaranteed because GTM is only ever loaded from inside this script. In Node
@@ -41,6 +63,7 @@
      banner asks again. */
   var POLICY_VERSION = '2026-09-06';
   var GTM_ID = 'GTM-W79JTTG5';
+  var RECORD_URL = '/api/cookie-consent';
   var PRODUCTION_HOSTS = ['www.goxlally.ai'];
   var SIGNALS = ['analytics_storage', 'ad_storage', 'ad_user_data', 'ad_personalization'];
 
@@ -81,18 +104,94 @@
     var c = o.categories;
     if (!c || typeof c !== 'object') return null;
     if (typeof c.analytics !== 'boolean' || typeof c.advertising !== 'boolean') return null;
-    return { v: 1, policy: o.policy, ts: o.ts, categories: categories(c.analytics, c.advertising) };
+    /* `id` and `action` are optional: a choice saved by consent.v4.js has
+       neither, and that is a record to keep honouring, not to throw away. It
+       simply has no server row, and `sent` being absent means the retry below
+       will not invent one for a click nobody can date. */
+    return {
+      v: 1, policy: o.policy, ts: o.ts,
+      categories: categories(c.analytics, c.advertising),
+      id: typeof o.id === 'string' ? o.id : null,
+      action: typeof o.action === 'string' ? o.action : null,
+      sent: o.sent === true
+    };
   }
 
-  function write(storage, cats, now) {
+  /* RFC 4122 v4, from crypto.getRandomValues where it exists. This id names a
+     row; it is never a fingerprint, is generated fresh for every choice, and
+     is deliberately not derived from anything about the visitor. */
+  function newId(win) {
+    var c = win && win.crypto;
+    if (c && typeof c.randomUUID === 'function') { try { return c.randomUUID(); } catch (e) { /* fall through */ } }
+    var b = new Array(16), i;
+    if (c && typeof c.getRandomValues === 'function') {
+      var arr = new Uint8Array(16);
+      c.getRandomValues(arr);
+      for (i = 0; i < 16; i++) b[i] = arr[i];
+    } else {
+      /* No crypto at all means a browser old enough that nothing else here
+         works either. Math.random is weak, but this id only has to be unique,
+         not unguessable -- there is nothing behind it to guess at. */
+      for (i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256);
+    }
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    var hex = b.map(function (n) { return (n + 0x100).toString(16).slice(1); });
+    return hex.slice(0, 4).join('') + '-' + hex.slice(4, 6).join('') + '-' +
+           hex.slice(6, 8).join('') + '-' + hex.slice(8, 10).join('') + '-' +
+           hex.slice(10, 16).join('');
+  }
+
+  function write(storage, cats, now, meta) {
     var record = {
       v: 1,
       policy: POLICY_VERSION,
       ts: (now ? new Date(now) : new Date()).toISOString(),
-      categories: categories(cats && cats.analytics, cats && cats.advertising)
+      categories: categories(cats && cats.analytics, cats && cats.advertising),
+      id: (meta && meta.id) || null,
+      action: (meta && meta.action) || null,
+      /* Whether the server has it. Kept in the record so the retry knows what
+         is outstanding without asking the server, which would be a request per
+         page load to answer a question the browser already knows. */
+      sent: !!(meta && meta.sent)
     };
     try { storage.setItem(KEY, JSON.stringify(record)); } catch (e) { /* choice still applies this visit */ }
     return record;
+  }
+
+  /* The body the endpoint accepts. Split out so the tests can assert on it
+     without a network, and so it is obvious at a glance that nothing about the
+     visitor is in it. */
+  function recordBody(record) {
+    if (!record || !record.id || !record.action) return null;
+    return {
+      id: record.id,
+      analytics: record.categories.analytics === true,
+      advertising: record.categories.advertising === true,
+      bannerAction: record.action,
+      policyVersion: record.policy,
+      chosenAt: record.ts
+    };
+  }
+
+  /* Fire and forget. keepalive so a click that also navigates still sends it;
+     a rejected promise is swallowed because there is nobody to tell and the
+     choice already applies either way. */
+  function sendRecord(win, record, onSent) {
+    var body = recordBody(record);
+    if (!body || typeof win.fetch !== 'function') return false;
+    try {
+      win.fetch(RECORD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        keepalive: true,
+        credentials: 'omit'
+      }).then(function () { if (onSent) onSent(); }, function () { /* retried next load */ });
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   function clear(storage) {
@@ -329,6 +428,20 @@
        the ordinary trigger takes over again, so it is never stored. */
     var adGrantSent = false;
 
+    /* A choice that was saved locally but never reached the server -- the
+       visitor was offline, the tab closed mid-request, or the endpoint was
+       down. Retried once per page load, silently. Only ever for a record that
+       already HAS an id and an action: a choice saved by consent.v4.js has
+       neither, and inventing a row for a click nobody can date would put a
+       fabricated consent record in the ledger, which is worse than a missing
+       one. */
+    if (plan.saved && plan.saved.id && !plan.saved.sent) {
+      sendRecord(win, plan.saved, function () {
+        write(storage, plan.saved.categories, plan.saved.ts,
+              { id: plan.saved.id, action: plan.saved.action, sent: true });
+      });
+    }
+
     /* ── banner ── */
     var el = null, prefs, actions, prefActions, analyticsBox, advertisingBox, lastFocus = null;
 
@@ -355,9 +468,9 @@
         if (!b) return;
         ev.preventDefault();
         var what = b.getAttribute('data-consent');
-        if (what === 'accept') choose(categories(true, true));
-        else if (what === 'necessary') choose(categories(false, false));
-        else if (what === 'save') choose(categories(analyticsBox.checked, advertisingBox.checked));
+        if (what === 'accept') choose(categories(true, true), 'accept_all');
+        else if (what === 'necessary') choose(categories(false, false), 'necessary_only');
+        else if (what === 'save') choose(categories(analyticsBox.checked, advertisingBox.checked), 'saved_preferences');
         else if (what === 'manage') showPrefs();
         else if (what === 'back') showChoice();
       });
@@ -396,10 +509,13 @@
       lastFocus = null;
     }
 
-    function choose(cats) {
+    function choose(cats, action) {
       var turnedOn = adConsentTurnedOn(applied, cats);
       applied = categories(cats.analytics, cats.advertising);
-      write(storage, cats);
+      /* A NEW id for every choice, never reused. Reusing one would turn this
+         into a durable per-visitor identifier, which is exactly what the
+         Analytics category is about -- see the note at the top of this file. */
+      var record = write(storage, cats, null, { id: newId(win), action: action || 'saved_preferences' });
       pushUpdate(win.dataLayer, cats);
       /* After the update, never before it: by the time GTM sees this event
          ad_storage is already granted, so a tag gated on it is free to fire
@@ -412,6 +528,12 @@
          choice made under an older policy version. */
       if (!cats.analytics) deleteGaCookies(doc, win.location.hostname, win.location.pathname);
       hide();
+      /* LAST. The choice is already applied, saved and the banner already
+         gone, so nothing the network does can hold any of that up. On success
+         the local record is marked sent so the retry leaves it alone. */
+      sendRecord(win, record, function () {
+        write(storage, cats, record.ts, { id: record.id, action: record.action, sent: true });
+      });
     }
 
     function onReady(fn) {
@@ -453,6 +575,7 @@
     AD_GRANTED_EVENT: AD_GRANTED_EVENT, adConsentTurnedOn: adConsentTurnedOn, pushAdGranted: pushAdGranted,
     categories: categories, toGoogle: toGoogle, allDenied: allDenied, isProductionHost: isProductionHost,
     read: read, write: write, clear: clear, pushDefault: pushDefault, pushUpdate: pushUpdate,
+    RECORD_URL: RECORD_URL, newId: newId, recordBody: recordBody, sendRecord: sendRecord,
     gaCookieNames: gaCookieNames, cookieDomainCandidates: cookieDomainCandidates, deleteGaCookies: deleteGaCookies,
     loadGtm: loadGtm, decide: decide, boot: boot
   };

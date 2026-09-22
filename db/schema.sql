@@ -118,3 +118,62 @@ CREATE INDEX IF NOT EXISTS beta_users_business_billing
 CREATE INDEX IF NOT EXISTS beta_users_queue_order
   ON beta_users (created_at, id)
   WHERE status <> 'REJECTED';
+
+-- ---------------------------------------------------------------------------
+-- Cookie consent ledger
+--
+-- WHY THIS EXISTS. The banner already ENFORCES the visitor's choice correctly:
+-- Google Consent Mode defaults to denied, the saved choice is applied before
+-- any tag can act, and withdrawing Analytics removes GA's own cookies. What was
+-- missing is the other half. The choice lived only in the visitor's
+-- localStorage, so it was per-device, wiped by clearing site data, and
+-- impossible to produce afterwards. Under the DPDP Act a Data Fiduciary has to
+-- be able to DEMONSTRATE consent, and "the visitor's browser knew" is not a
+-- record.
+--
+-- WHAT IS DELIBERATELY NOT HERE: no IP address, no user agent, no fingerprint,
+-- nothing joinable to a registration. A visitor who has not signed up for
+-- anything is anonymous, and building a durable profile of them in order to
+-- prove they declined tracking would be a worse outcome than the gap it closes.
+-- A row records WHAT was chosen, WHEN, and under WHICH policy version -- which
+-- is the evidence the Act asks for -- and nothing about WHO.
+--
+-- APPEND-ONLY, ONE ROW PER CHOICE. Every change of mind is a new row with its
+-- own id. Rows are not linked to each other, because linking them would mean
+-- issuing every anonymous visitor a durable identifier, which is the very thing
+-- the Analytics category is about. The visitor's browser keeps the id of its
+-- latest row, so a specific record can still be produced on request.
+CREATE TABLE IF NOT EXISTS cookie_consents (
+  id             uuid        PRIMARY KEY,
+  necessary      boolean     NOT NULL DEFAULT true,
+  analytics      boolean     NOT NULL,
+  advertising    boolean     NOT NULL,
+  -- Which button was pressed, so "accepted everything" is distinguishable from
+  -- "ticked Analytics and left Advertising off", which the booleans alone
+  -- cannot tell you.
+  banner_action  text        NOT NULL,
+  -- The cookie section's version, as consent.v5.js stamps it. A choice made
+  -- under older wording is not consent to newer wording, and the banner
+  -- re-asks; this column is what lets you show that afterwards.
+  policy_version text        NOT NULL,
+  -- When the visitor actually clicked. Sent by the client because the choice
+  -- can be made while offline or before this request lands.
+  chosen_at      timestamptz NOT NULL,
+  -- When we stored it. Kept separate so the two can be compared.
+  recorded_at    timestamptz NOT NULL DEFAULT now(),
+
+  CONSTRAINT cookie_consents_necessary_always CHECK (necessary = true),
+  CONSTRAINT cookie_consents_action_allowed
+    CHECK (banner_action IN ('accept_all', 'necessary_only', 'saved_preferences')),
+  CONSTRAINT cookie_consents_policy_not_blank CHECK (length(btrim(policy_version)) > 0)
+);
+
+-- Same reasoning as beta_users: on Supabase every public-schema table is
+-- published through PostgREST and readable by `anon` unless RLS says otherwise.
+-- Enabling RLS with no policies denies anon and authenticated outright while
+-- the owning role in DATABASE_URL still reads and writes normally.
+ALTER TABLE cookie_consents ENABLE ROW LEVEL SECURITY;
+
+-- The question this table is asked is "what was chosen around <date>".
+CREATE INDEX IF NOT EXISTS cookie_consents_chosen_at_idx
+  ON cookie_consents (chosen_at DESC);

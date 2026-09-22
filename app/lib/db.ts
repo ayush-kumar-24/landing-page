@@ -319,3 +319,46 @@ export async function queuePreview(limit: number): Promise<QueueEntry[]> {
   `;
   return rows.map((r) => ({ ...toRow(r), position: Number(r.position) }));
 }
+
+/* ── Cookie consent ledger ────────────────────────────────────────────────
+   See db/schema.sql for why this records no IP, no user agent and nothing
+   joinable to a registration. */
+
+export type CookieConsentInput = {
+  id: string;
+  analytics: boolean;
+  advertising: boolean;
+  bannerAction: string;
+  policyVersion: string;
+  chosenAt: Date;
+};
+
+/**
+ * Store one cookie choice. Returns false when the id was already present.
+ *
+ * ON CONFLICT DO NOTHING because the browser retries: a visitor who clicks
+ * Accept and then loses their connection has the id in localStorage and the
+ * next page load sends it again. A retry must not create a second row, and it
+ * must not overwrite the first -- the first is the one that carries the real
+ * `recorded_at`.
+ */
+export async function insertCookieConsent(input: CookieConsentInput): Promise<boolean> {
+  // No dev-store fallback on purpose. With no DATABASE_URL this is a no-op
+  // rather than a file write: the caller treats a false return as "not
+  // recorded", and inventing a local record of a consent nobody stored would
+  // make local testing look like it proves something it does not.
+  if (useDevStore()) return false;
+  const sql = getSql();
+
+  const rows = await sql<{ id: string }[]>`
+    INSERT INTO cookie_consents
+      (id, necessary, analytics, advertising, banner_action, policy_version, chosen_at)
+    VALUES (
+      ${input.id}, true, ${input.analytics}, ${input.advertising},
+      ${input.bannerAction}, ${input.policyVersion}, ${input.chosenAt}
+    )
+    ON CONFLICT (id) DO NOTHING
+    RETURNING id
+  `;
+  return rows.length > 0;
+}
