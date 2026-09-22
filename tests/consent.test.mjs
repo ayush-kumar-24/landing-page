@@ -1,12 +1,12 @@
 /* Consent + Google Tag Manager foundation — run with `pnpm test` (node --test).
- * Exercises the pure part of public/assets/consent.v4.js with a fake storage,
+ * Exercises the pure part of public/assets/consent.v5.js with a fake storage,
  * a fake dataLayer and a fake document; no browser needed. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const C = require('../public/assets/consent.v4.js');
+const C = require('../public/assets/consent.v5.js');
 
 const DENIED = { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' };
 const GRANTED = { analytics_storage: 'granted', ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' };
@@ -74,14 +74,19 @@ test('no gtag.js is ever requested — only the container', () => {
 test('Accept all: analytics + all three advertising signals granted; stored with ts and policy', () => {
   const st = memStorage(), dl = [];
   const cats = C.categories(true, true);
-  const rec = C.write(st, cats, '2026-09-06T10:00:00.000Z');
+  const rec = C.write(st, cats, '2026-09-06T10:00:00.000Z', { id: 'f81d4fae-7dec-41d0-9765-00a0c91e6bf6', action: 'accept_all' });
   C.pushUpdate(dl, cats);
   assert.deepEqual(cmds(dl)[0], ['consent', 'update', GRANTED]);
   const stored = JSON.parse(st.dump()[C.KEY]);
-  assert.deepEqual(stored, { v: 1, policy: C.POLICY_VERSION, ts: '2026-09-06T10:00:00.000Z', categories: { necessary: true, analytics: true, advertising: true } });
+  assert.deepEqual(stored, {
+    v: 1, policy: C.POLICY_VERSION, ts: '2026-09-06T10:00:00.000Z',
+    categories: { necessary: true, analytics: true, advertising: true },
+    id: 'f81d4fae-7dec-41d0-9765-00a0c91e6bf6', action: 'accept_all', sent: false,
+  });
   assert.deepEqual(rec, stored);
-  /* nothing but booleans, a timestamp and a version — no identifier */
-  assert.deepEqual(Object.keys(stored).sort(), ['categories', 'policy', 'ts', 'v']);
+  /* Booleans, a timestamp, a version and one random row id. Nothing about the
+     visitor -- see the exact-key test in consent-cookies.test.mjs. */
+  assert.deepEqual(Object.keys(stored).sort(), ['action', 'categories', 'id', 'policy', 'sent', 'ts', 'v']);
 });
 
 test('Necessary only: everything stays denied, and the choice is remembered', () => {

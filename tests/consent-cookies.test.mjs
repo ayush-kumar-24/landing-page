@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const C = require('../public/assets/consent.v4.js');
+const C = require('../public/assets/consent.v5.js');
 
 /* A document.cookie stand-in. `seed` is [{name, value, domain, path}]. */
 function jar(seed) {
@@ -103,14 +103,79 @@ test('Analytics granted -> Analytics denied', () => {
   assert.equal(transition([true, false], [false, false]).analytics_storage, 'denied');
 });
 
-test('the saved record holds only version, policy, timestamp and the three category booleans', () => {
+test('the saved record holds nothing about the visitor', () => {
   const m = new Map();
   const st = { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k) };
-  C.write(st, C.categories(true, false), '2026-09-06T12:00:00.000Z');
+  C.write(st, C.categories(true, false), '2026-09-06T12:00:00.000Z',
+          { id: C.newId({}), action: 'saved_preferences' });
   const rec = JSON.parse(m.get(C.KEY));
-  assert.deepEqual(Object.keys(rec).sort(), ['categories', 'policy', 'ts', 'v']);
+  /* An EXACT key list, not a subset check. This test exists to fail loudly the
+     day somebody adds a field here, because the next field somebody reaches for
+     is an IP, a referrer or a user agent -- and this record is the one thing on
+     the public site that is written for every visitor regardless of consent. */
+  assert.deepEqual(Object.keys(rec).sort(), ['action', 'categories', 'id', 'policy', 'sent', 'ts', 'v']);
   assert.deepEqual(Object.keys(rec.categories).sort(), ['advertising', 'analytics', 'necessary']);
   assert.equal(typeof rec.ts, 'string');
   assert.equal(rec.policy, C.POLICY_VERSION);
   assert.equal(rec.v, 1);
+  /* The id is a random v4 UUID and nothing derived from the visitor. */
+  assert.match(rec.id, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+});
+
+test('every choice gets its OWN id, so the ledger cannot become a visitor profile', () => {
+  const ids = new Set();
+  for (let i = 0; i < 500; i += 1) ids.add(C.newId({}));
+  assert.equal(ids.size, 500);
+});
+
+test('the body sent to the server carries the choice and nothing else', () => {
+  const id = C.newId({});
+  const body = C.recordBody({
+    id, action: 'accept_all', policy: C.POLICY_VERSION,
+    ts: '2026-09-06T12:00:00.000Z', categories: C.categories(true, true),
+  });
+  assert.deepEqual(Object.keys(body).sort(),
+    ['advertising', 'analytics', 'bannerAction', 'chosenAt', 'id', 'policyVersion']);
+  assert.equal(body.analytics, true);
+  assert.equal(body.advertising, true);
+  assert.equal(body.bannerAction, 'accept_all');
+});
+
+test('a choice saved by the previous script is honoured but never sent', () => {
+  /* consent.v4.js wrote no id and no action. Posting one would mean inventing
+     a consent record for a click nobody can date, which is worse than having
+     no record at all. */
+  const m = new Map();
+  const st = { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k) };
+  m.set(C.KEY, JSON.stringify({
+    v: 1, policy: C.POLICY_VERSION, ts: '2026-09-06T12:00:00.000Z',
+    categories: { necessary: true, analytics: true, advertising: false },
+  }));
+  const restored = C.read(st);
+  assert.deepEqual(restored.categories, { necessary: true, analytics: true, advertising: false });
+  assert.equal(restored.id, null);
+  assert.equal(C.recordBody(restored), null);
+});
+
+test('sendRecord does nothing when there is no id to send', () => {
+  let called = false;
+  const win = { fetch: () => { called = true; return Promise.resolve(); } };
+  assert.equal(C.sendRecord(win, { id: null, action: null }, null), false);
+  assert.equal(called, false);
+});
+
+test('sendRecord posts to the endpoint without credentials', () => {
+  let url = null; let init = null;
+  const win = { fetch: (u, i) => { url = u; init = i; return Promise.resolve(); } };
+  const sent = C.sendRecord(win, {
+    id: C.newId({}), action: 'necessary_only', policy: C.POLICY_VERSION,
+    ts: '2026-09-06T12:00:00.000Z', categories: C.categories(false, false),
+  }, null);
+  assert.equal(sent, true);
+  assert.equal(url, C.RECORD_URL);
+  assert.equal(init.method, 'POST');
+  /* No cookies on the request: this endpoint has nothing to authenticate and
+     must not become a way of correlating the choice with anything else. */
+  assert.equal(init.credentials, 'omit');
+  assert.equal(init.keepalive, true);
 });
