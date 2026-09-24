@@ -5,21 +5,23 @@ const siteUrl = "https://www.goxlally.ai";
 /**
  * What is kept out of every crawler's index, and why:
  *
- *   /ally-platform.html, /ally-landing.html, /ally-landing-v1-backup.html
- *       earlier builds of the site, still served so old links resolve
+ *   /ally-platform.html
+ *       an earlier platform build that should not compete with the public site
  *   /ally-dashboard.html
  *       the sample dashboard, an iframe demo with headings of its own that
  *       would otherwise compete with the page embedding it
  *   /api/, /approve, /admin/, /go/, /dev/
  *       endpoints, the approval link, the batch page, redirects, dev tooling
  *
+ * Earlier landing-page URLs are NOT disallowed here because next.config.ts
+ * permanently redirects them to /. Crawlers need to be able to fetch those
+ * URLs to see and follow the redirect.
+ *
  * The login page is deliberately NOT listed: it carries its own noindex, and
  * a robots block would stop crawlers from ever reading that.
  */
 const disallow = [
   "/ally-platform.html",
-  "/ally-landing.html",
-  "/ally-landing-v1-backup.html",
   "/ally-dashboard.html",
   "/api/",
   "/approve",
@@ -37,6 +39,7 @@ const disallow = [
 const aiCrawlers = [
   "GPTBot",
   "OAI-SearchBot",
+  "OAI-AdsBot",
   "ChatGPT-User",
   "ClaudeBot",
   "Claude-SearchBot",

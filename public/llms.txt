@@ -1,13 +1,13 @@
 # GoXL Ally
 
-> GoXL Ally is an AI "Founder's Compass" for entrepreneurs, made by GoXL Entrepreneurship (India). It runs an adaptive diagnosis of the founder, the business and the current situation, writes a Clarity Report that surfaces the constraint most worth addressing first, and then helps the founder decide and act on what to do next.
+> GoXL Ally is an AI "Founder's Compass" for entrepreneurs, made by GoXL Consulting Solutions Pvt. Ltd. It runs an adaptive diagnosis of the founder, the business and the current situation, writes a Clarity Report that surfaces the constraint most worth addressing first, and then helps the founder decide and act on what to do next.
 
 ## What it does
 
 - Adaptive diagnosis: about 20 minutes of questions on how the founder decides and works, the current problem, and the business itself.
-- Clarity Report: generated in seconds when the diagnosis finishes; surfaces the constraint most worth addressing first, rather than the symptom.
+- Clarity Report: generated when the diagnosis finishes; surfaces the constraint most worth addressing first, rather than the symptom.
 - Talk to Ally: ongoing chat, with voice, that already knows the founder's context.
-- Next Critical Steps, Set your Set your Goals, Plan Your Day: turns the diagnosis into a sequence of actions and a daily habit.
+- Next Critical Steps, Set Your Goals, Plan Your Day: turns the diagnosis into a sequence of actions and a daily habit.
 - Discovery call: 30 minutes with a GoXL advisor who has read the report, ₹300 on any plan.
 
 ## Who it is for
@@ -16,13 +16,13 @@ Founders running a real business who know something is off but not what. Most us
 
 ## Plans (INR)
 
-- Starter: ₹199 one-time payment at the launch offer, regularly ₹300. One adaptive diagnosis and your Clarity Report
-- Plus: ₹499 per month at the launch offer, regularly ₹600. For founders working on the business daily. Yearly billing is ₹5,988 and includes 15 days free
-- Pro: ₹999 per month at the launch offer, regularly ₹1,200. Ally as your standing advisor. Yearly billing is ₹11,988 and includes 30 days free
+- Starter: ₹199 one-time payment at the launch offer, regularly ₹300. One adaptive diagnosis and your Clarity Report.
+- Plus: ₹499 per month at the launch offer, regularly ₹600. For founders working on the business daily. Yearly billing is ₹5,988 and includes 15 days free.
+- Pro: ₹999 per month at the launch offer, regularly ₹1,200. Ally as your standing advisor. Yearly billing is ₹11,988 and includes 30 days free.
 
 ## How to get access
 
-Register at https://www.goxlally.ai/ (name and email). Access opens in batches: the first registrations are let in immediately, later ones join a queue and are told their place in line, and everyone gets an email with a sign-in link when their place opens. The product itself is at https://app.goxlally.ai/ and is only for founders who have been let in.
+Access to GoXL Ally is currently by invitation. Existing invited users can log in through https://www.goxlally.ai/. The product itself is at https://app.goxlally.ai/. Current access and pricing information is maintained on the public website.
 
 ## Pages
 
