@@ -85,7 +85,13 @@ const nextConfig: NextConfig = {
    */
   async rewrites() {
     return {
-      beforeFiles: [{ source: "/", destination: "/ally-landing-v2.html" }],
+      beforeFiles: [
+        { source: "/", destination: "/ally-landing-v2.html" },
+        {
+          source: "/founder-business-diagnosis",
+          destination: "/founder-business-diagnosis.html",
+        },
+      ],
       afterFiles: [],
       fallback: [],
     };
