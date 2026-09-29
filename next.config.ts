@@ -119,6 +119,10 @@ const nextConfig: NextConfig = {
           source: "/ai-business-advisor-vs-consultant",
           destination: "/ai-business-advisor-vs-consultant.html",
         },
+        {
+          source: "/ai-tools-for-founders",
+          destination: "/ai-tools-for-founders.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
