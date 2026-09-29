@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/founder-decision-making` },
     { url: `${siteUrl}/what-is-goxl-ally` },
     { url: `${siteUrl}/ally-vs-chatgpt` },
+    { url: `${siteUrl}/ai-business-advisor-vs-consultant` },
     { url: `${siteUrl}/about.html` },
     { url: `${siteUrl}/pricing.html` },
     { url: `${siteUrl}/privacy.html` },
