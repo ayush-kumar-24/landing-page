@@ -115,6 +115,10 @@ const nextConfig: NextConfig = {
           source: "/ally-vs-chatgpt",
           destination: "/ally-vs-chatgpt.html",
         },
+        {
+          source: "/ai-business-advisor-vs-consultant",
+          destination: "/ai-business-advisor-vs-consultant.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
