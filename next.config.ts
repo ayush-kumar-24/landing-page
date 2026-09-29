@@ -91,6 +91,10 @@ const nextConfig: NextConfig = {
           source: "/founder-business-diagnosis",
           destination: "/founder-business-diagnosis.html",
         },
+        {
+          source: "/ai-founder-advisor",
+          destination: "/ai-founder-advisor.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
