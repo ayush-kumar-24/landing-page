@@ -123,6 +123,10 @@ const nextConfig: NextConfig = {
           source: "/ai-tools-for-founders",
           destination: "/ai-tools-for-founders.html",
         },
+        {
+          source: "/business-health-check-for-founders",
+          destination: "/business-health-check-for-founders.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
