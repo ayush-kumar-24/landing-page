@@ -105,6 +105,11 @@
         },
         {
           "@type":"Question",
+          "name":"Which decisions should a founder keep versus delegate?",
+          "acceptedAnswer":{"@type":"Answer","text":"Founders should usually stay closest to decisions that materially affect ownership, strategic direction, major capital commitments or senior leadership. Reversible operating decisions can move to functional leaders or teams when the outcome, boundaries and escalation conditions are clear."}
+        },
+        {
+          "@type":"Question",
           "name":"How does GoXL Ally support founder decisions?",
           "acceptedAnswer":{"@type":"Answer","text":"GoXL Ally builds founder, business and current-situation context first, then uses diagnosis and prioritisation to help frame the decision, surface trade-offs and turn direction into a practical next action."}
         }
@@ -171,6 +176,15 @@ h1 em,h2 em{font-style:italic;color:var(--forest)}.lead{color:var(--muted);font-
 .steps{display:grid}.step{display:grid;grid-template-columns:54px 1fr;gap:17px;padding:24px 0;border-bottom:1px solid var(--bd)}.step:first-child{padding-top:0}
 .step>span{font:800 10px/1.5 var(--display);letter-spacing:.12em;color:var(--emerald);padding-top:5px}.step h3{font-size:24px;color:var(--forest);font-weight:500}.step p{font-size:14px;color:var(--muted);margin-top:6px}
 
+.authority{padding:clamp(78px,10vw,130px) 0;background:var(--ivory)}
+.authority-head{max-width:880px}.authority-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:43px}
+.authority-card{border:1px solid var(--bd);border-radius:18px;padding:27px;background:white}
+.authority-card small{color:var(--emerald);font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.authority-card h3{font-size:26px;color:var(--forest);font-weight:500;margin:9px 0 11px}
+.authority-card p{font-size:13.5px;color:var(--muted)}
+.authority-card ul{list-style:none;display:grid;gap:8px;margin-top:15px;font-size:12.5px;color:var(--muted)}
+.authority-card li{padding-left:14px;position:relative}.authority-card li:before{content:"";position:absolute;left:0;top:.7em;width:4px;height:4px;border-radius:50%;background:var(--emerald)}
+
 .uncertainty{padding:clamp(78px,10vw,130px) 0;background:var(--forest);color:white}.uncertainty .eyebrow{color:var(--emerald2)}.uncertainty h2{color:white}.uncertainty h2 em{color:var(--emerald2)}
 .uncertainty-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:43px}.unc-card{border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:27px;background:rgba(255,255,255,.04)}
 .unc-card small{color:var(--emerald2);font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}.unc-card h3{font-size:25px;font-weight:500;margin:9px 0 11px}.unc-card p{font-size:13.5px;color:#c8d9d1}
@@ -207,7 +221,7 @@ h1 em,h2 em{font-style:italic;color:var(--forest)}.lead{color:var(--muted);font-
 }
 @media(max-width:620px){
   :root{--shell:calc(100% - 28px)}.nav{padding:16px 0}.brand-copy small{display:none}.nav-login{padding:9px 13px;font-size:12px}.hero{padding-top:54px}
-  .classify-grid,.input-grid,.mistake-grid,.uncertainty-grid,.product-flow{grid-template-columns:1fr}.decision-signals{grid-template-columns:1fr}.faq summary{font-size:19px}.faq .faq-answer{padding-right:16px}
+  .classify-grid,.input-grid,.mistake-grid,.uncertainty-grid,.authority-grid,.product-flow{grid-template-columns:1fr}.decision-signals{grid-template-columns:1fr}.faq summary{font-size:19px}.faq .faq-answer{padding-right:16px}
 }
 </style>
 </head>
@@ -329,6 +343,21 @@ h1 em,h2 em{font-style:italic;color:var(--forest)}.lead{color:var(--muted);font-
   </div>
 </section>
 
+<section class="authority" id="ownership">
+  <div class="shell">
+    <div class="authority-head">
+      <p class="eyebrow">Decision ownership</p>
+      <h2>A founder framework also needs to answer: <em>who should make the call?</em></h2>
+      <p class="lead" style="margin-top:20px">Founder involvement should rise with strategic consequence, irreversibility and unique founder context. Reversible operating decisions can usually move closer to the people doing the work.</p>
+    </div>
+    <div class="authority-grid">
+      <article class="authority-card"><small>Founder-owned</small><h3>Keep decisions that materially change the company.</h3><p>These often need founder accountability because the consequences are difficult to delegate or undo.</p><ul><li>Ownership and major financing</li><li>Core strategic direction or a major pivot</li><li>Senior leadership choices</li><li>Large irreversible commitments</li></ul></article>
+      <article class="authority-card"><small>Leader-owned</small><h3>Give functional decisions a clear owner.</h3><p>The founder can define the outcome, boundaries and escalation conditions without becoming the approval layer for every choice.</p><ul><li>Product or growth trade-offs</li><li>Hiring inside an agreed plan</li><li>Budget allocation within limits</li><li>Functional operating choices</li></ul></article>
+      <article class="authority-card"><small>Team-owned</small><h3>Push reversible operating calls closer to execution.</h3><p>If a decision is inexpensive to reverse and the team has the required context, waiting for founder approval can become the bottleneck.</p><ul><li>Routine workflow choices</li><li>Small experiments</li><li>Day-to-day customer handling</li><li>Execution inside clear guardrails</li></ul></article>
+    </div>
+  </div>
+</section>
+
 <section class="uncertainty" id="uncertainty">
   <div class="shell">
     <p class="eyebrow">Decisions under uncertainty</p>
@@ -412,6 +441,7 @@ h1 em,h2 em{font-style:italic;color:var(--forest)}.lead{color:var(--muted);font-
       <details><summary>How do founders make decisions with incomplete information?</summary><div class="faq-answer">Founders rarely get complete information. The practical goal is to identify what is known, what is assumed, what must be learned before acting, and whether the cost of waiting for more information is greater than the value of that information.</div></details>
       <details><summary>What is the difference between reversible and irreversible decisions?</summary><div class="faq-answer">A reversible decision can usually be changed without major lasting cost, so it can often be made faster and tested. A hard-to-reverse decision can materially affect ownership, capital, people, reputation or strategic direction and deserves more evidence and explicit downside analysis.</div></details>
       <details><summary>How can founders avoid analysis paralysis?</summary><div class="faq-answer">Set a decision deadline, define the minimum evidence required, distinguish reversible from hard-to-reverse choices, and choose a review point in advance. This prevents endless research from becoming a substitute for deciding.</div></details>
+      <details><summary>Which decisions should a founder keep versus delegate?</summary><div class="faq-answer">Founders should usually stay closest to decisions that materially affect ownership, strategic direction, major capital commitments or senior leadership. Reversible operating decisions can move to functional leaders or teams when the outcome, boundaries and escalation conditions are clear.</div></details>
       <details><summary>How does GoXL Ally support founder decisions?</summary><div class="faq-answer">GoXL Ally builds founder, business and current-situation context first, then uses diagnosis and prioritisation to help frame the decision, surface trade-offs and turn direction into a practical next action.</div></details>
     </div>
   </div>
