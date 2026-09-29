@@ -107,6 +107,10 @@ const nextConfig: NextConfig = {
           source: "/founder-decision-making",
           destination: "/founder-decision-making.html",
         },
+        {
+          source: "/what-is-goxl-ally",
+          destination: "/what-is-goxl-ally.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
