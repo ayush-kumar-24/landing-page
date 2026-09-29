@@ -28,6 +28,7 @@ Access to GoXL Ally is currently by invitation. Existing invited users can log i
 
 - [Home](https://www.goxlally.ai/): what Ally is and how it thinks
 - [What Is GoXL Ally?](https://www.goxlally.ai/what-is-goxl-ally): canonical product explainer and how the diagnosis-first system works
+- [GoXL Ally vs ChatGPT](https://www.goxlally.ai/ally-vs-chatgpt): factual comparison of a general-purpose AI assistant and Ally's diagnosis-first founder workflow
 - [AI Founder Advisor](https://www.goxlally.ai/ai-founder-advisor): how context-aware AI advisory differs from a blank chat
 - [Founder Business Diagnosis](https://www.goxlally.ai/founder-business-diagnosis): how Ally examines founder, business and current situation together
 - [Startup Bottlenecks](https://www.goxlally.ai/startup-bottlenecks): symptoms, constraints and common growth bottlenecks
