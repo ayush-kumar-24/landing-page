@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/ai-founder-advisor` },
     { url: `${siteUrl}/startup-bottlenecks` },
     { url: `${siteUrl}/founder-priorities` },
+    { url: `${siteUrl}/founder-decision-making` },
     { url: `${siteUrl}/about.html` },
     { url: `${siteUrl}/pricing.html` },
     { url: `${siteUrl}/privacy.html` },
