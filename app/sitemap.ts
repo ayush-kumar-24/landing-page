@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/` },
     { url: `${siteUrl}/founder-business-diagnosis` },
     { url: `${siteUrl}/ai-founder-advisor` },
+    { url: `${siteUrl}/startup-bottlenecks` },
     { url: `${siteUrl}/about.html` },
     { url: `${siteUrl}/pricing.html` },
     { url: `${siteUrl}/privacy.html` },

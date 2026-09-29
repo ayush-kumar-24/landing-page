@@ -95,6 +95,10 @@ const nextConfig: NextConfig = {
           source: "/ai-founder-advisor",
           destination: "/ai-founder-advisor.html",
         },
+        {
+          source: "/startup-bottlenecks",
+          destination: "/startup-bottlenecks.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
