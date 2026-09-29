@@ -118,6 +118,13 @@ const nextConfig: NextConfig = {
         destination: "/go/login",
         permanent: false,
       },
+      // Preserve the extensionless legal URL Google discovered historically.
+      // The canonical public Terms page is /terms.html.
+      {
+        source: "/terms",
+        destination: "/terms.html",
+        permanent: true,
+      },
       // Earlier builds of the landing page. A redirect beats serving them with
       // noindex: robots.txt disallows them, and a crawler that obeys it never
       // fetches the page, so it never sees the noindex either. Permanent, so
