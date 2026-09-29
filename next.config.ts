@@ -111,6 +111,10 @@ const nextConfig: NextConfig = {
           source: "/what-is-goxl-ally",
           destination: "/what-is-goxl-ally.html",
         },
+        {
+          source: "/ally-vs-chatgpt",
+          destination: "/ally-vs-chatgpt.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
