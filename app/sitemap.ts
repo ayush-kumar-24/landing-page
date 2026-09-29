@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/startup-bottlenecks` },
     { url: `${siteUrl}/founder-priorities` },
     { url: `${siteUrl}/founder-decision-making` },
+    { url: `${siteUrl}/what-is-goxl-ally` },
     { url: `${siteUrl}/about.html` },
     { url: `${siteUrl}/pricing.html` },
     { url: `${siteUrl}/privacy.html` },
