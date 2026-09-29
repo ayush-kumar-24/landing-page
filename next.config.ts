@@ -99,6 +99,10 @@ const nextConfig: NextConfig = {
           source: "/startup-bottlenecks",
           destination: "/startup-bottlenecks.html",
         },
+        {
+          source: "/founder-priorities",
+          destination: "/founder-priorities.html",
+        },
       ],
       afterFiles: [],
       fallback: [],
