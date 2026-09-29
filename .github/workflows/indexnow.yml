@@ -1,0 +1,88 @@
+name: IndexNow Submit
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "public/**"
+      - "app/**"
+      - "next.config.ts"
+      - ".github/workflows/indexnow.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit-indexnow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Wait for production key file
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEY="3e3e39d355b7fa94c00b8ba928f49646"
+          KEY_URL="https://www.goxlally.ai/${KEY}.txt"
+
+          for attempt in {1..30}; do
+            body="$(curl --fail --silent --show-error --max-time 10 "$KEY_URL" 2>/dev/null || true)"
+            if [ "$body" = "$KEY" ]; then
+              echo "IndexNow key file is live."
+              exit 0
+            fi
+            echo "Waiting for production deployment (attempt $attempt/30)..."
+            sleep 10
+          done
+
+          echo "IndexNow key file did not become available in time."
+          exit 1
+
+      - name: Submit canonical URLs to IndexNow
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEY="3e3e39d355b7fa94c00b8ba928f49646"
+          cat > /tmp/indexnow.json <<'JSON'
+          {
+            "host": "www.goxlally.ai",
+            "key": "3e3e39d355b7fa94c00b8ba928f49646",
+            "keyLocation": "https://www.goxlally.ai/3e3e39d355b7fa94c00b8ba928f49646.txt",
+            "urlList": [
+              "https://www.goxlally.ai/",
+              "https://www.goxlally.ai/founder-business-diagnosis",
+              "https://www.goxlally.ai/ai-founder-advisor",
+              "https://www.goxlally.ai/startup-bottlenecks",
+              "https://www.goxlally.ai/founder-priorities",
+              "https://www.goxlally.ai/founder-decision-making",
+              "https://www.goxlally.ai/what-is-goxl-ally",
+              "https://www.goxlally.ai/ally-vs-chatgpt",
+              "https://www.goxlally.ai/about.html",
+              "https://www.goxlally.ai/pricing.html",
+              "https://www.goxlally.ai/privacy.html",
+              "https://www.goxlally.ai/terms.html"
+            ]
+          }
+          JSON
+
+          status="$(curl --silent --show-error --output /tmp/indexnow-response.txt --write-out "%{http_code}" \
+            --request POST "https://api.indexnow.org/indexnow" \
+            --header "Content-Type: application/json; charset=utf-8" \
+            --data-binary @/tmp/indexnow.json)"
+
+          echo "IndexNow HTTP status: $status"
+          cat /tmp/indexnow-response.txt || true
+
+          case "$status" in
+            200)
+              echo "IndexNow accepted the URLs."
+              ;;
+            202)
+              echo "IndexNow accepted the request pending key validation."
+              ;;
+            *)
+              echo "IndexNow submission failed."
+              exit 1
+              ;;
+          esac
