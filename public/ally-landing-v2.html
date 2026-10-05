@@ -51,21 +51,21 @@
      preload scanner and sits below 100 KB of inline styles, so on a phone its
      request started two seconds late. Asked for first, explicitly. -->
 <link rel="preload" as="image" href="/assets/founder-journey-poster.v1.webp" fetchpriority="high">
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=optional">
 <script>
 /* Fonts attach once the hero poster has arrived (it is preloaded above), so
-   the two do not share the first second of a slow connection; the poster is
-   the paint the page is judged on. Bounded: 1.2s at most, then the fonts
-   come regardless. On a fast connection the poster is here in a blink and
+   the poster keeps fetch priority, while font CSS is allowed to attach quickly
+   enough that mobile does not wait on a late face swap. Bounded: 350ms at
+   most, then the fonts come regardless. On a fast connection the poster is here in a blink and
    nothing changes. */
 (function(){
   var done = false;
-  function attach(){ if(done) return; done = true; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap"; document.head.appendChild(l); }
+  function attach(){ if(done) return; done = true; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=optional"; document.head.appendChild(l); }
   var img = new Image(); img.onload = attach; img.onerror = attach; img.src = '/assets/founder-journey-poster.v1.webp';
-  setTimeout(attach, 1200);
+  setTimeout(attach, 350);
 })();
 </script>
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=swap"></noscript>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=optional"></noscript>
 
 <style>
 /* ============================================================
@@ -419,6 +419,28 @@ em{ font-style:italic; }
 }
 @keyframes filmIn{ from{ opacity:0; } }
 @keyframes lblIn{ from{ opacity:0; } }
+
+/* Mobile performance: the approved hero composition stays identical, but the
+   entrance fades do not hold back FCP/LCP on constrained phones. */
+@media (max-width:767px) and (prefers-reduced-motion:no-preference){
+  .hero .eyebrow,
+  .hero h1,
+  .hero-sub,
+  .hero-actions,
+  .hero-note,
+  .hero-built,
+  .hero-media,
+  .hero-lbl{
+    animation:none !important;
+    opacity:1 !important;
+    translate:none !important;
+  }
+  .shift-col li{
+    opacity:1;
+    translate:none;
+    transition:none;
+  }
+}
 
 /* ---------- leaving the hero: copy lifts away, film breathes ----------
    Scrubbed off the hero's own exit. The entrance animates the copy's
@@ -2450,6 +2472,7 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
    ============================================================ */
 (function(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(matchMedia('(max-width: 767px)').matches) return;  /* decorative reveal work is desktop/tablet only */
 
   var n = 0;
   function splitInto(node){
@@ -2989,6 +3012,7 @@ html.viewer-lock, body.viewer-lock{ overflow:hidden; }
               window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   } catch (e) {}
   if (!window.requestAnimationFrame) calm = true;
+  if (window.matchMedia && window.matchMedia('(max-width: 767px)').matches) calm = true;
 
   var wait = START - Date.now();
   // Loaded well before the moment: wait it out. setTimeout drifts over long
