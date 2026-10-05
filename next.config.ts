@@ -157,6 +157,11 @@ const nextConfig: NextConfig = {
         destination: "/terms.html",
         permanent: true,
       },
+      {
+        source: "/privacy",
+        destination: "/privacy.html",
+        permanent: true,
+      },
       // Earlier builds of the landing page. A redirect beats serving them with
       // noindex: robots.txt disallows them, and a crawler that obeys it never
       // fetches the page, so it never sees the noindex either. Permanent, so
