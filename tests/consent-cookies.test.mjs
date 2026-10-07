@@ -1,5 +1,5 @@
-/* Google Analytics cookie cleanup on withdrawal, and the consent transitions
- * that trigger it. Uses a small in-memory cookie jar that behaves like
+/* Public-site analytics cookie cleanup on withdrawal, and the consent
+ * transitions that trigger it. Uses a small in-memory cookie jar that behaves like
  * document.cookie: a cookie is identified by name + domain + path, and an
  * expired write removes only the matching one. */
 import test from 'node:test';
@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const C = require('../public/assets/consent.v5.js');
+const C = require('../public/assets/consent.v6.js');
 
 /* A document.cookie stand-in. `seed` is [{name, value, domain, path}]. */
 function jar(seed) {
@@ -35,6 +35,10 @@ const GA = [
   { name: '_ga', value: 'GA1.1.1.1', domain: 'goxlally.ai', path: '/' },
   { name: '_ga_MTE6ZR0ZKT', value: 'GS1.1.1', domain: 'goxlally.ai', path: '/' },
 ];
+const CLARITY = [
+  { name: '_clck', value: 'abc', domain: 'goxlally.ai', path: '/' },
+  { name: '_clsk', value: 'def', domain: 'goxlally.ai', path: '/' },
+];
 const KEEP = [
   { name: 'ally_hint', value: 'in', domain: 'goxlally.ai', path: '/' },          /* platform presence hint */
   { name: 'sb-access-token', value: 'x', domain: '', path: '/' },                /* an auth cookie, host-only */
@@ -47,6 +51,19 @@ test('only _ga and _ga_<id> are recognised as GA cookies', () => {
   assert.deepEqual(C.gaCookieNames('_ga=1; _ga_MTE6ZR0ZKT=2; ally_hint=in; _gat=1; x_ga=2; _gaz=3; _ga_=4'), ['_ga', '_ga_MTE6ZR0ZKT']);
   assert.deepEqual(C.gaCookieNames(''), []);
   assert.deepEqual(C.gaCookieNames(undefined), []);
+});
+
+test('only _clck and _clsk are recognised as Clarity cookies', () => {
+  assert.deepEqual(C.clarityCookieNames('_clck=1; _clsk=2; ally_hint=in; _clx=3; clck=4'), ['_clck', '_clsk']);
+  assert.deepEqual(C.clarityCookieNames(''), []);
+  assert.deepEqual(C.clarityCookieNames(undefined), []);
+});
+
+test('withdrawal removes Clarity first-party cookies and nothing else', () => {
+  const doc = jar([...CLARITY, ...KEEP]);
+  const gone = C.deleteClarityCookies(doc, 'www.goxlally.ai', '/');
+  assert.deepEqual(gone.sort(), ['_clck', '_clsk']);
+  assert.deepEqual(doc.names().sort(), KEEP.map((c) => c.name).sort());
 });
 
 test('domain candidates cover host-only, the host and every parent down to two labels', () => {

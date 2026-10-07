@@ -8,7 +8,7 @@
      host. GA4 is configured inside the container; there is no gtag.js here.
      async: nothing blocks rendering, and GTM cannot run before the defaults
      because this file is the only thing that loads it. -->
-<script async src="/assets/consent.v5.js"></script>
+<script async src="/assets/consent.v6.js"></script>
 <!-- consent:end -->
 <link rel="icon" href="/assets/logo-123.v1.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/logo-123.v1.png">
@@ -211,7 +211,7 @@
     <p class="eye">Privacy Policy</p>
     <h1>How we handle your data.</h1>
     <p class="lede">This page explains what we collect when you register for the Ally beta, why we collect it, and how you can control it.</p>
-    <p class="updated">Version v1.1 · Effective 6 September 2026 · Applies to beta registrations at www.goxlally.ai</p>
+    <p class="updated">Version v1.2 · Effective 27 September 2026 · Applies to the public website at www.goxlally.ai</p>
 
     <h2>What we collect</h2>
     <p>When you register for Ally Beta, we collect:</p>
@@ -227,7 +227,7 @@
     <h2>Why we collect it</h2>
     <p><strong>Essential — to run your registration.</strong> We register your interest in Ally Beta, confirm it by email, and contact you when beta access is ready. This is the only thing we need your details for, and it's the only use that isn't optional.</p>
     <p><strong>Optional — marketing emails.</strong> If, and only if, you tick the separate marketing box on the form, we'll also send you product updates, founder insights and promotional emails. This is entirely your choice: leaving it unticked does not affect your registration in any way.</p>
-    <p>We never sell your information, and we don't use it to build advertising profiles.</p>
+    <p>We never sell your registration information. Public-site analytics and advertising measurement are controlled separately through your Cookie preferences and are described below.</p>
 
     <h2>Your consent</h2>
     <p>The registration form asks you for two separate things, and they are deliberately not bundled together:</p>
@@ -243,8 +243,8 @@
       <li>A <strong>database hosting provider</strong>, to store your registration securely.</li>
       <li>An <strong>email delivery provider</strong>, to send your confirmation email and, internally, to notify our team of a new registration.</li>
     </ul>
-    <p>Separately, Google's tag on this site sends Google a limited signal of your consent choice, and usage data about your visit only once you allow Analytics (see <a href="#cookies">Cookies</a>). Neither is linked to your registration details.</p>
-    <p>We do not share your information with any other third party, we do not sell or rent it, and we do not use it to build advertising or profiling audiences.</p>
+    <p>Separately, the public website uses <strong>Google Analytics</strong>, <strong>Microsoft Clarity</strong> and the <strong>Meta Pixel</strong> through Google Tag Manager, subject to the choices described under <a href="#cookies">Cookies</a>. Google and Microsoft can receive limited cookieless technical or interaction signals while storage consent is denied; optional analytics cookies and storage remain off until you allow Analytics. The Meta Pixel is held back until you allow Advertising. These public-site tools are not linked by us to your registration record, and the Meta Pixel is not installed in the logged-in Ally app.</p>
+    <p>We do not sell or rent your registration details. The consent layer itself does not push your name, email address, phone number, form responses or Ally content into the Google Tag Manager data layer.</p>
 
     <h2>How long we keep it</h2>
     <p>We keep your registration for <strong>up to 24 months</strong> from the day you register. After that the purpose you gave it for has been served, and we delete it.</p>
@@ -282,10 +282,10 @@
     <p>When you first visit, a banner asks what you allow. You can change or withdraw your choice at any time from the <a href="#cookie-preferences" data-consent-open>Cookie preferences</a> link in the footer.</p>
     <ul class="plain">
       <li><strong>Necessary</strong> — always active. Your browser keeps your registration status, the campaign link you arrived from (so we know how founders find Ally), and your cookie choice itself. None of this identifies you to anyone else or is used for advertising.</li>
-      <li><strong>Analytics</strong> — optional, off by default. Analytics cookies and storage stay switched off unless you allow Analytics. Before you do, Google Consent Mode may still send Google limited cookieless signals about your consent state and basic page and request context — the address of the page and the ordinary technical details any web request carries. We do not intentionally send your name, email, phone number, form responses or any Ally content through these analytics signals. If you allow Analytics, Google Analytics (loaded through Google Tag Manager) may then set its own cookies in your browser, named <code>_ga</code> and <code>_ga_</code> followed by an ID, to recognise repeat visits and show us which pages founders read and where they get stuck. If you later withdraw, we tell Google your choice has changed and remove those cookies from your browser.</li>
-      <li><strong>Advertising</strong> — optional, off by default. Advertising storage and signals stay denied unless you allow Advertising. No advertising vendor's tag is installed on this site today; if that changes, this page will say so before it does.</li>
+      <li><strong>Analytics</strong> — optional, off by default. <code>analytics_storage</code> remains denied unless you allow Analytics. Google Analytics and Microsoft Clarity are loaded through Google Tag Manager. While Analytics remains denied, Google may receive limited cookieless consent and measurement signals, and Clarity can operate in a limited cookieless mode using a fresh identifier for each page view; analytics cookies used to recognise repeat visits or connect page views are not enabled. If you allow Analytics, Google Analytics may set <code>_ga</code> and <code>_ga_</code> cookies, and Microsoft Clarity may set <code>_clck</code> and <code>_clsk</code> cookies and use behavioural metrics, heatmaps and session replay to help us improve the public website. If you later withdraw Analytics, we update the consent state and remove the first-party Google Analytics and Clarity cookies that this site can remove. Microsoft Clarity automatically interprets the same Google Consent Mode signals. See the <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener noreferrer">Microsoft Privacy Statement</a> for Microsoft's handling of data.</li>
+      <li><strong>Advertising</strong> — optional, off by default. <code>ad_storage</code>, <code>ad_user_data</code> and <code>ad_personalization</code> stay denied unless you allow Advertising. The public website contains the Meta Pixel through Google Tag Manager. It is configured to wait for advertising consent before it can load and send page-view or configured campaign-measurement signals to Meta. Meta may then use cookies or similar identifiers according to its own policies. The Meta Pixel is not installed in the logged-in Ally app. See <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">Meta's Privacy Policy</a>.</li>
     </ul>
-    <p>Whatever you choose, we do not intentionally send Google your name, email, phone number, anything you type into the registration form, or any of your Ally content. Diagnosis answers, Founder DNA answers, chat messages and business details do not exist on this website at all: they live inside the Ally app, which is covered by its own policy.</p>
+    <p>The public-site consent layer itself sends no name, email address, phone number, form response or Ally diagnosis/chat content to the Google Tag Manager data layer. Diagnosis answers, Founder DNA answers, chat messages and business details live inside the Ally app rather than on this public website.</p>
     <p>Your choice is stored in your browser together with the date and the version of this cookie section it was made under. If this section changes in substance, the banner will ask you again.</p>
     <p>We also keep a copy of the choice itself on our own server, because a record that exists only in your browser is one we cannot produce if you or a regulator ask us to show it. That copy holds four things: what you allowed, when you clicked, which version of this section you saw, and a random reference number generated in your browser at that moment. It holds <strong>no IP address, no device or browser details, and nothing that links it to a beta registration or to any other visit</strong> — we drop your IP rather than store it. Each time you change your choice a new, unconnected record is created, so these cannot be joined together into a picture of you. Your browser keeps the reference number of your latest one, so you can ask us for that exact record.</p>
 
