@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- consent:start — identical to the live home page: Consent Mode defaults,
+     the saved choice, then GTM, only on the production host. -->
+<script async src="/assets/consent.v5.js"></script>
+<!-- consent:end -->
+<title>GoXL Ally — AI Founder Advisor | The Founder’s Compass</title>
+<meta name="description" content="GoXL Ally is the Founder’s Compass — an AI that understands you, your business and your situation before helping you decide what to do next.">
+<!-- DRAFT PAGE. Kept out of search until it replaces the home page; at that
+     point this line is swapped for the seo:start…seo:end block from
+     ally-landing-v2.html (canonical, Open Graph, JSON-LD). -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="apple-touch-icon" href="/assets/logo-123.v1.png">
+<link rel="icon" href="/assets/logo-123.v1.png" type="image/png">
+<meta name="theme-color" content="#fbf7f2">
+
+<!-- Fraunces for statements, Inter for UI, Inter Tight for figures — the same
+     stylesheet the home page and the platform request. Attached by script so
+     it never blocks the first paint; the CSP forbids inline onload handlers. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=optional">
+<script>
+(function(){ var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=optional"; document.head.appendChild(l); })();
+</script>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Montserrat:wght@600;700;800&display=optional"></noscript>
+
+<style>
+/* ============================================================
+   TOKENS — the live site's own palette (ally-landing-v2.html :root).
+   Structure borrowed from calendly.com: warm page, sand panels inset
+   from the viewport, one dark ink, one accent used sparingly.
+   ============================================================ */
+:root{
+  --page:#fbf7f2;
+  --panel:#f3ebe0;          /* between the site's ivory and its sand */
+  --panel-2:#efe6d9;
+  --card:#fffdf9;
+  --ink:#16241c;
+  --muted:#556458;
+  --muted-2:#6c7a70;
+  --border:#e7e0d6;
+  --border-2:#d8cfc2;
+  --forest:#1B4332;
+  --forest-2:#143726;
+  --forest-deep:#0E2A1C;
+  --forest-night:#06140d;
+  --emerald:#10B981;
+  --emerald-bright:#34d399;
+  --glow:#5eead4;
+  --lime:#A8D94A;
+  --on-dark:#eaf3ee;
+  --on-dark-muted:#a7c0b4;
+
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --sans:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --figure:'Inter Tight', 'Inter', system-ui, sans-serif;
+
+  --r-panel:64px;   /* page-level panels, inset 24px from the viewport */
+  --r-frame:48px;   /* the showcase frame, big section panels */
+  --r-card:32px;
+  --r-tile:18px;
+
+  --ease:cubic-bezier(.4,0,.2,1);
+  --ease-move:cubic-bezier(.65,0,.35,1);
+  --shadow-float:0 1px 2px rgba(22,36,28,.06), 0 10px 28px -10px rgba(22,36,28,.16);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{ margin:0; background:var(--page); color:var(--ink); font:400 17px/1.6 var(--sans); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; }
+button{ font:inherit; color:inherit; }
+[hidden]{ display:none !important; }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+:focus-visible{ outline:2px solid var(--emerald); outline-offset:3px; border-radius:8px; }
+
+.skip{ position:absolute; left:16px; top:-60px; z-index:100; background:var(--forest); color:var(--on-dark); padding:10px 16px; border-radius:12px; text-decoration:none; font-weight:600; }
+.skip:focus{ top:12px; }
+
+.wrap{ width:100%; max-width:1200px; margin:0 auto; padding:0 24px; }
+
+/* ── type ─────────────────────────────────────────────────── */
+.eyebrow{ margin:0 0 18px; font:600 12px/1 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--forest); }
+.eyebrow.on-dark{ color:var(--emerald-bright); }
+h1,h2,h3{ margin:0; font-family:var(--serif); font-weight:500; color:var(--ink); }
+h1{ font-size:clamp(42px, 6.2vw, 80px); line-height:1.02; letter-spacing:-.028em; }
+h2{ font-size:clamp(34px, 4.4vw, 56px); line-height:1.06; letter-spacing:-.024em; }
+h3{ font-size:clamp(28px, 3vw, 40px); line-height:1.08; letter-spacing:-.02em; }
+h1 em, h2 em{ font-style:italic; color:var(--emerald); }
+.lede{ margin:24px auto 0; max-width:600px; font-size:clamp(17px, 1.6vw, 20px); line-height:1.55; color:var(--muted); }
+.sec-head{ text-align:center; max-width:760px; margin:0 auto; }
+.sec-head p:not(.eyebrow){ margin:20px auto 0; max-width:600px; color:var(--muted); font-size:18px; }
+
+/* ── buttons ──────────────────────────────────────────────── */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; border:0; border-radius:999px; text-decoration:none; font-weight:600; letter-spacing:-.005em; cursor:pointer; white-space:nowrap;
+  transition:background-color .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease), transform .15s var(--ease), box-shadow .15s var(--ease); }
+.btn svg{ width:18px; height:18px; flex:none; transition:transform .2s var(--ease); }
+.btn:hover svg.arrow-r{ transform:translateX(3px); }
+.btn:hover svg.arrow-d{ transform:translateY(3px); }
+.btn:active{ transform:translateY(1px) scale(.99); }
+.btn-sm{ height:44px; padding:0 18px; font-size:15px; }
+.btn-lg{ height:54px; padding:0 26px; font-size:16px; }
+.btn-primary{ background:var(--forest); color:var(--on-dark); box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 1px 2px rgba(6,20,13,.18); }
+.btn-primary:hover{ background:var(--forest-2); }
+.btn-ghost{ background:transparent; color:var(--forest); box-shadow:inset 0 0 0 1px var(--border-2); }
+.btn-ghost:hover{ box-shadow:inset 0 0 0 1px var(--forest); }
+.btn-light{ background:var(--on-dark); color:var(--forest-deep); }
+.btn-light:hover{ background:#fff; }
+.link-arrow{ display:inline-flex; align-items:center; gap:8px; padding-bottom:6px; border-bottom:1px solid currentColor; font-size:15px; font-weight:600; color:var(--forest); text-decoration:none; }
+.link-arrow svg{ width:16px; height:16px; transition:transform .2s var(--ease); }
+.link-arrow:hover svg{ transform:translateX(3px); }
+
+/* ── announcement ─────────────────────────────────────────── */
+.announce{ position:relative; display:flex; align-items:center; justify-content:center; min-height:40px; padding:8px 56px; background:var(--forest); color:var(--on-dark); font-size:14px; font-weight:500; text-align:center; }
+.announce p{ margin:0; display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; }
+.announce .dot{ width:7px; height:7px; border-radius:50%; background:var(--emerald-bright); box-shadow:0 0 0 4px rgba(52,211,153,.18); }
+.announce a{ display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:8px; background:rgba(234,243,238,.12); text-decoration:none; font-weight:600; }
+.announce a:hover{ background:rgba(234,243,238,.2); }
+.announce a svg{ width:14px; height:14px; }
+.ann-short{ display:none; }
+.announce-x{ position:absolute; right:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; display:grid; place-items:center; border:0; border-radius:8px; background:transparent; color:var(--on-dark-muted); cursor:pointer; }
+.announce-x:hover{ background:rgba(234,243,238,.12); color:var(--on-dark); }
+.announce-x svg{ width:16px; height:16px; }
+
+/* ── header: flat at the top, a floating pill once you scroll ── */
+.site-head{ position:sticky; top:0; z-index:50; padding:10px 24px; }
+.nav{ max-width:1392px; margin:0 auto; height:64px; display:flex; align-items:center; gap:24px; padding:0 10px 0 16px; border-radius:20px; transition:background-color .25s var(--ease), box-shadow .25s var(--ease); }
+.site-head.is-floating .nav{ background:rgba(255,253,249,.94); box-shadow:var(--shadow-float); -webkit-backdrop-filter:saturate(1.4) blur(12px); backdrop-filter:saturate(1.4) blur(12px); }
+.brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+.brand img{ width:34px; height:34px; }
+.brand-text{ display:flex; flex-direction:column; line-height:1.1; }
+.brand-name{ font:700 18px/1.1 var(--sans); letter-spacing:-.02em; color:var(--forest); }
+.brand-name span{ color:var(--emerald); font-weight:600; }
+.brand-by{ font-size:11px; color:var(--muted-2); letter-spacing:.01em; }
+.nav-links{ display:flex; gap:4px; margin:0 0 0 12px; padding:0; list-style:none; }
+.nav-links a{ display:block; padding:8px 12px; border-radius:10px; font-size:15px; font-weight:500; color:var(--ink); text-decoration:none; }
+.nav-links a:hover{ background:rgba(22,36,28,.05); }
+.nav-cta{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+.nav-toggle{ display:none; width:44px; height:44px; place-items:center; border:0; border-radius:12px; background:transparent; cursor:pointer; }
+.nav-toggle svg{ width:22px; height:22px; }
+.mobile-menu{ max-width:1392px; margin:8px auto 0; padding:12px; border-radius:20px; background:var(--card); box-shadow:var(--shadow-float); }
+.mobile-menu a{ display:block; padding:14px 12px; border-radius:12px; font-size:17px; font-weight:500; text-decoration:none; }
+.mobile-menu a:hover{ background:rgba(22,36,28,.05); }
+
+/* ── hero panel ───────────────────────────────────────────── */
+.hero-panel{ margin:0 24px; padding:104px 24px 24px; border-radius:var(--r-panel); background:var(--panel); }
+.hero-copy{ max-width:960px; margin:0 auto; text-align:center; }
+.hero-ctas{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top:36px; }
+.trio{ margin:28px 0 0; display:flex; justify-content:center; gap:14px; font:600 12px/1 var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--muted-2); }
+.trio span + span::before{ content:'·'; margin-right:14px; color:var(--border-2); }
+
+/* ── showcase: four tabs over a soft field that slides with them ── */
+.showcase{ position:relative; max-width:1200px; margin:80px auto 0; padding:56px 40px 64px; border-radius:var(--r-frame); overflow:hidden; isolation:isolate; }
+.mesh{ position:absolute; inset:0; z-index:-1; overflow:hidden; border-radius:inherit; }
+.mesh-strip{ display:flex; width:400%; height:100%; transform:translateX(0); transition:transform 1.1s var(--ease-move); will-change:transform; }
+.mesh-strip > span{ flex:1 1 0; }
+.m1{ background:
+  radial-gradient(42% 60% at 18% 24%, rgba(16,185,129,.55), transparent 70%),
+  radial-gradient(38% 55% at 82% 18%, rgba(94,234,212,.55), transparent 70%),
+  radial-gradient(55% 60% at 70% 105%, rgba(5,150,105,.32), transparent 72%),
+  radial-gradient(45% 50% at 6% 92%, rgba(251,247,242,.9), transparent 70%), #d6eade; }
+.m2{ background:
+  radial-gradient(45% 60% at 26% 18%, rgba(94,234,212,.6), transparent 70%),
+  radial-gradient(40% 55% at 88% 70%, rgba(168,217,74,.42), transparent 70%),
+  radial-gradient(45% 55% at 8% 88%, rgba(16,185,129,.45), transparent 72%), #dbeee6; }
+.m3{ background:
+  radial-gradient(45% 62% at 86% 18%, rgba(6,120,85,.38), transparent 72%),
+  radial-gradient(40% 55% at 18% 62%, rgba(52,211,153,.48), transparent 70%),
+  radial-gradient(48% 50% at 58% 104%, rgba(168,217,74,.36), transparent 70%), #d4e5da; }
+.m4{ background:
+  radial-gradient(45% 60% at 22% 22%, rgba(168,217,74,.55), transparent 70%),
+  radial-gradient(40% 55% at 82% 36%, rgba(16,185,129,.36), transparent 70%),
+  radial-gradient(55% 55% at 50% 108%, rgba(247,241,235,.95), transparent 70%), #ece6d6; }
+.showcase[data-active="1"] .mesh-strip{ transform:translateX(-25%); }
+.showcase[data-active="2"] .mesh-strip{ transform:translateX(-50%); }
+.showcase[data-active="3"] .mesh-strip{ transform:translateX(-75%); }
+
+/* drop-shadow, not box-shadow: the stem under the active tab and the card
+   are one silhouette, and the shadow has to follow both */
+.sc-inner{ max-width:1000px; margin:0 auto; filter:drop-shadow(0 4px 6px rgba(22,36,28,.05)) drop-shadow(0 14px 20px rgba(22,36,28,.06)) drop-shadow(0 40px 56px rgba(22,36,28,.12)); }
+.sc-tabs{ display:flex; justify-content:center; gap:10px; margin-bottom:14px; }
+.sc-tab{ position:relative; width:60px; height:60px; display:grid; place-items:center; border:3px solid var(--card); border-radius:var(--r-tile); background:rgba(255,253,249,.55); color:rgba(22,36,28,.5); cursor:pointer; transition:background-color .25s var(--ease), color .25s var(--ease), transform .2s var(--ease); }
+.sc-tab:hover{ color:var(--ink); transform:translateY(-1px); }
+.sc-tab svg.ico{ width:26px; height:26px; }
+.sc-tab[aria-selected="true"]{ color:var(--forest-deep); }
+.sc-tab[data-tint="1"][aria-selected="true"]{ background:#bfeed6; }
+.sc-tab[data-tint="2"][aria-selected="true"]{ background:#c6f3ec; }
+.sc-tab[data-tint="3"][aria-selected="true"]{ background:#cde7c0; }
+.sc-tab[data-tint="4"][aria-selected="true"]{ background:#e4efc6; }
+.sc-stem{ position:absolute; left:50%; top:100%; width:32px; height:14px; margin-top:3px; transform:translateX(-50%); color:var(--card); opacity:0; transition:opacity .2s var(--ease); pointer-events:none; }
+.sc-tab[aria-selected="true"] .sc-stem{ opacity:1; }
+.sc-card{ position:relative; border-radius:40px; background:var(--card); }
+.sc-panel{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.12fr); gap:48px; align-items:center; padding:48px; min-height:460px; }
+.sc-panel.is-entering .sc-copy, .sc-panel.is-entering .demo{ animation:rise .5s var(--ease) both; }
+.sc-panel.is-entering .demo{ animation-delay:.06s; }
+@keyframes rise{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+.chip{ display:inline-flex; align-items:center; gap:10px; margin-bottom:22px; font-size:15px; font-weight:600; color:var(--ink); }
+.chip-ico{ width:30px; height:30px; display:grid; place-items:center; border-radius:9px; color:var(--forest-deep); }
+.chip-ico svg{ width:17px; height:17px; }
+.chip-ico.t1{ background:#bfeed6; } .chip-ico.t2{ background:#c6f3ec; } .chip-ico.t3{ background:#cde7c0; } .chip-ico.t4{ background:#e4efc6; }
+.badge{ padding:3px 8px; border-radius:7px; background:rgba(22,36,28,.06); font-size:12px; font-weight:600; color:var(--muted); }
+.sc-copy p{ margin:18px 0 28px; color:var(--muted); font-size:17px; }
+
+/* the right-hand demo: real product moments, drawn in HTML */
+.demo{ position:relative; min-height:360px; display:grid; place-items:center; padding:36px 28px; border-radius:26px; overflow:hidden; }
+.demo.t1{ background:linear-gradient(160deg,#dff4e9,#cdebdc); }
+.demo.t2{ background:linear-gradient(160deg,#e0f7f2,#cbeee5); }
+.demo.t3{ background:linear-gradient(160deg,#e3efdc,#d2e6c9); }
+.demo.t4{ background:linear-gradient(160deg,#f0f3df,#e6ecc9); }
+.demo::before{ content:''; position:absolute; inset:auto -10% -40% -10%; height:80%; background:radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.55), transparent 70%); pointer-events:none; }
+.demo-tag{ position:absolute; top:14px; right:14px; padding:3px 9px; border-radius:7px; background:rgba(255,253,249,.7); font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+.mock{ position:relative; width:100%; max-width:420px; padding:22px; border-radius:20px; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 18px 40px -18px rgba(22,36,28,.22); font-size:14px; }
+.mock-top{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px 12px; margin-bottom:14px; }
+.mock-pill{ white-space:nowrap; padding:5px 10px; border-radius:999px; background:#dff4e9; color:var(--forest); font-size:12px; font-weight:600; }
+.mock-meta{ font-size:12px; color:var(--muted-2); }
+.mock-ally{ margin:0 0 14px; padding:14px 16px; border-radius:16px 16px 16px 6px; background:#f3f7f2; font-size:15px; line-height:1.5; }
+.mock-choices{ display:flex; gap:8px; flex-wrap:wrap; }
+.mock-choices span{ padding:8px 14px; border-radius:999px; box-shadow:inset 0 0 0 1px var(--border-2); font-weight:500; }
+.mock-choices span.is-picked{ background:var(--forest); color:var(--on-dark); box-shadow:none; }
+.mock-progress{ margin-top:18px; height:4px; border-radius:4px; background:#ebe5db; overflow:hidden; }
+.mock-progress span{ display:block; width:21%; height:100%; border-radius:4px; background:linear-gradient(90deg,var(--emerald),var(--lime)); }
+.mock-kicker{ margin:0 0 6px; font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--emerald); }
+.mock-title{ margin:0 0 8px; font:500 22px/1.2 var(--serif); letter-spacing:-.01em; }
+.mock-body{ margin:0; color:var(--muted); line-height:1.55; }
+.mock-next{ margin-top:16px; padding:14px 16px; border-radius:14px; background:#f3f7f2; }
+.mock-next p:last-child{ margin:0; font-weight:500; line-height:1.5; }
+.bubble{ margin:0 0 10px; padding:12px 14px; max-width:88%; line-height:1.5; }
+.bubble.me{ margin-left:auto; border-radius:16px 16px 6px 16px; background:var(--forest); color:var(--on-dark); }
+.bubble.ally{ border-radius:16px 16px 16px 6px; background:#f3f7f2; }
+.mock-input{ display:flex; align-items:center; justify-content:space-between; margin-top:14px; padding:10px 10px 10px 16px; border-radius:999px; box-shadow:inset 0 0 0 1px var(--border); color:var(--muted-2); }
+.mock-input span{ width:32px; height:32px; border-radius:50%; background:var(--forest); display:grid; place-items:center; color:var(--on-dark); }
+.mock-input svg{ width:15px; height:15px; }
+.mock-day ul{ margin:0; padding:0; list-style:none; }
+.mock-day li{ display:grid; grid-template-columns:52px 1fr auto; gap:12px; align-items:center; padding:11px 0; border-top:1px solid var(--border); }
+.mock-day li:first-child{ border-top:0; }
+.mock-day time{ font:600 13px/1 var(--figure); color:var(--forest); }
+.mock-day em{ font-style:normal; font-size:12px; color:var(--muted-2); }
+.mock-day li.is-now{ position:relative; }
+.mock-day li.is-now::before{ content:''; position:absolute; left:-22px; top:50%; width:4px; height:60%; transform:translateY(-50%); border-radius:4px; background:var(--emerald); }
+
+/* ── proof ────────────────────────────────────────────────── */
+.proof{ padding:112px 0 40px; }
+.proof-intro{ max-width:640px; margin:0 auto 48px; text-align:center; color:var(--muted); font-size:18px; }
+.stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:0; padding:0; list-style:none; }
+.stats li{ padding:32px; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
+.stats strong{ display:block; font:600 clamp(44px,5vw,64px)/1 var(--figure); letter-spacing:-.03em; color:var(--forest); }
+.stats strong span{ color:var(--emerald); }
+.stats p{ margin:14px 0 0; color:var(--muted); }
+
+/* ── look closer: sticky question list, sticky answer ─────── */
+.closer{ padding:120px 0; }
+.closer-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:72px; align-items:start; }
+.closer-left{ position:sticky; top:112px; }
+.closer-left h2{ font-size:clamp(32px,3.6vw,48px); }
+.closer-left > p:not(.eyebrow){ margin:20px 0 36px; color:var(--muted); font-size:18px; max-width:480px; }
+.q-list{ margin:0; padding:0; list-style:none; border-top:1px solid var(--border-2); }
+.q-item{ border-bottom:1px solid var(--border-2); }
+.q-btn{ position:relative; display:grid; grid-template-columns:44px 1fr; align-items:baseline; width:100%; padding:22px 0; border:0; background:none; text-align:left; cursor:pointer; opacity:.38; transition:opacity .2s var(--ease); }
+.q-btn:hover, .q-btn[aria-selected="true"]{ opacity:1; }
+.q-num{ font:600 13px/1 var(--figure); color:var(--muted-2); }
+.q-said{ font:500 22px/1.3 var(--sans); letter-spacing:-.01em; }
+.q-track{ position:absolute; left:44px; right:0; bottom:-1px; height:2px; background:transparent; overflow:hidden; }
+.q-btn[aria-selected="true"] .q-track{ background:rgba(22,36,28,.1); }
+.q-fill{ display:block; height:100%; width:100%; background:var(--emerald); transform:scaleX(0); transform-origin:0 50%; }
+.closer.is-playing .q-btn[aria-selected="true"] .q-fill{ animation:fill 7s linear forwards; }
+.closer.is-paused .q-btn[aria-selected="true"] .q-fill{ animation-play-state:paused; }
+.closer.is-manual .q-btn[aria-selected="true"] .q-fill{ transform:scaleX(1); }
+@keyframes fill{ to{ transform:scaleX(1); } }
+.closer-right{ position:sticky; top:112px; }
+.answer-stage{ position:relative; min-height:560px; padding:48px; border-radius:var(--r-frame); background:var(--panel); overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
+.answer-stage::after{ content:''; position:absolute; right:-80px; bottom:-120px; width:360px; height:360px; border-radius:50%; background:radial-gradient(closest-side, rgba(16,185,129,.18), transparent 70%); pointer-events:none; }
+.answer{ position:relative; z-index:1; }
+.answer.is-entering{ animation:rise .45s var(--ease) both; }
+.answer .who{ margin:0 0 12px; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); }
+.answer .who.ally{ color:var(--emerald); }
+.answer blockquote{ margin:0; font:italic 500 clamp(26px,2.6vw,34px)/1.2 var(--serif); letter-spacing:-.015em; color:var(--ink); }
+.trail{ display:block; width:2px; height:56px; margin:28px 0 28px 8px; background:repeating-linear-gradient(180deg, var(--border-2) 0 6px, transparent 6px 12px); position:relative; }
+.trail::after{ content:''; position:absolute; left:50%; bottom:-6px; width:12px; height:12px; transform:translateX(-50%); border-radius:50%; background:var(--emerald); box-shadow:0 0 0 6px rgba(16,185,129,.16); }
+.answer .looks{ margin:0; padding:24px 26px; border-radius:24px; background:var(--card); font-size:18px; line-height:1.55; box-shadow:0 1px 2px rgba(22,36,28,.05), 0 16px 36px -18px rgba(22,36,28,.2); }
+.closer-foot{ margin:56px auto 0; text-align:center; font:italic 500 clamp(22px,2.2vw,28px)/1.3 var(--serif); color:var(--forest); max-width:720px; }
+
+/* ── how it works: five connected stage cards ─────────────── */
+.how{ padding:120px 0; background:var(--panel); margin:0 24px; border-radius:var(--r-panel); }
+.steps{ display:flex; gap:24px; margin:64px 0 0; padding:0; list-style:none; }
+.step{ position:relative; flex:1 1 0; min-width:0; display:flex; flex-direction:column; min-height:440px; padding:30px 28px 28px; border-radius:var(--r-card); background:var(--card); overflow:hidden; cursor:pointer; transition:flex-grow .55s var(--ease-move), box-shadow .25s var(--ease); box-shadow:0 1px 2px rgba(22,36,28,.04); }
+.step:hover{ box-shadow:0 1px 2px rgba(22,36,28,.04), 0 18px 40px -24px rgba(22,36,28,.25); }
+.step.is-active{ flex-grow:2.5; cursor:default; }
+/* the trail between stages — the site's own path motif, not a borrowed shape */
+.step + .step::before{ content:''; position:absolute; left:-24px; top:48px; width:24px; height:10px; z-index:2;
+  background:radial-gradient(circle, var(--emerald) 3px, transparent 3.5px) center/10px 10px no-repeat, repeating-linear-gradient(90deg, var(--border-2) 0 4px, transparent 4px 7px) center/100% 2px no-repeat; }
+.step::after{ content:''; position:absolute; left:-20%; right:-20%; bottom:-38%; height:62%; border-radius:50%; background:radial-gradient(closest-side, rgba(216,207,194,.32), transparent 72%); transition:opacity .4s var(--ease); pointer-events:none; }
+.step.is-active::after{ background:radial-gradient(closest-side, rgba(16,185,129,.30), rgba(168,217,74,.18) 55%, transparent 74%); }
+.step-btn{ display:block; width:100%; padding:0; border:0; background:none; text-align:left; cursor:inherit; }
+.step-num{ display:block; font:600 13px/1 var(--figure); color:var(--muted-2); }
+.step-title{ display:block; margin-top:14px; font:600 23px/1.18 var(--sans); letter-spacing:-.02em; }
+.step-time{ display:inline-block; margin-top:14px; padding:4px 10px; border-radius:999px; background:rgba(16,185,129,.1); color:var(--forest); font-size:12px; font-weight:600; line-height:1.35; }
+.step-body{ position:relative; z-index:1; margin-top:22px; opacity:1; transition:opacity .35s var(--ease) .15s; }
+.step:not(.is-active) .step-body{ opacity:0; pointer-events:none; transition-delay:0s; }
+.step-body ul{ margin:0; padding:0; list-style:none; }
+.step-body li{ position:relative; padding:7px 0 7px 22px; color:var(--muted); font-size:15px; line-height:1.45; }
+.step-body li::before{ content:''; position:absolute; left:2px; top:15px; width:8px; height:8px; border-radius:50%; box-shadow:inset 0 0 0 2px var(--emerald); }
+.step-body h4{ margin:14px 0 2px; font:700 11px/1 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--forest); }
+.step-result{ position:relative; z-index:1; margin-top:auto; padding-top:20px; font:italic 500 18px/1.3 var(--serif); color:var(--forest); opacity:1; transition:opacity .35s var(--ease) .15s; }
+.step:not(.is-active) .step-result{ opacity:0; transition-delay:0s; }
+.how-foot{ margin:48px auto 0; max-width:640px; text-align:center; color:var(--muted); font-size:18px; }
+
+/* ── ask Ally: the live help assistant, on the page ───────── */
+.ask{ padding:120px 0; }
+.ask-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px; align-items:center; }
+.ask-copy h2{ font-size:clamp(32px,3.8vw,52px); }
+.ask-copy > p:not(.eyebrow){ margin:20px 0 32px; color:var(--muted); font-size:18px; max-width:480px; }
+.ask-form{ display:flex; gap:10px; max-width:520px; }
+.ask-field{ flex:1; display:flex; align-items:center; gap:10px; height:54px; padding:0 18px; border-radius:999px; background:var(--card); box-shadow:inset 0 0 0 1px var(--border-2); transition:box-shadow .15s var(--ease); }
+.ask-field:focus-within{ box-shadow:inset 0 0 0 2px var(--emerald); }
+.ask-field svg{ width:18px; height:18px; color:var(--muted-2); flex:none; }
+.ask-field input{ flex:1; min-width:0; height:100%; border:0; background:none; font:inherit; font-size:16px; color:var(--ink); outline:none; }
+.ask-field input::placeholder{ color:var(--muted-2); }
+.ask-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; max-width:520px; }
+.ask-chips button{ padding:8px 14px; border:0; border-radius:999px; background:rgba(22,36,28,.05); font-size:14px; font-weight:500; cursor:pointer; transition:background-color .15s var(--ease); }
+.ask-chips button:hover{ background:rgba(16,185,129,.14); }
+.ask-stage{ position:relative; padding:28px; border-radius:var(--r-frame); background:linear-gradient(160deg,#dff4e9 0%,#e6f2dc 55%,#efe6d9 100%); }
+.ask-card{ display:flex; flex-direction:column; height:440px; border-radius:28px; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 24px 48px -24px rgba(22,36,28,.28); overflow:hidden; }
+.ask-card-head{ display:flex; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid var(--border); }
+.ask-card-head img{ width:32px; height:32px; }
+.ask-card-head strong{ display:block; font-size:15px; }
+.ask-card-head span{ font-size:12px; color:var(--muted-2); }
+.ask-log{ flex:1; overflow-y:auto; padding:20px; scroll-behavior:smooth; }
+.ask-log .bubble{ font-size:15px; }
+.ask-log .bubble.ally a{ color:var(--forest); font-weight:600; }
+.typing{ display:inline-flex; gap:4px; padding:14px 16px; border-radius:16px 16px 16px 6px; background:#f3f7f2; }
+.typing i{ width:6px; height:6px; border-radius:50%; background:var(--muted-2); animation:blink 1.2s infinite ease-in-out; }
+.typing i:nth-child(2){ animation-delay:.15s; } .typing i:nth-child(3){ animation-delay:.3s; }
+@keyframes blink{ 0%,80%,100%{ opacity:.25; transform:none; } 40%{ opacity:1; transform:translateY(-2px); } }
+.ask-note{ margin:14px 4px 0; font-size:13px; color:var(--muted); }
+
+/* ── plans ────────────────────────────────────────────────── */
+.plans{ padding:40px 0 120px; }
+.plan-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:56px; }
+.plan{ display:flex; flex-direction:column; padding:32px; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
+.plan.is-pro{ position:relative; background:linear-gradient(170deg,var(--forest),var(--forest-deep)); color:var(--on-dark); box-shadow:0 30px 60px -30px rgba(6,20,13,.55); }
+.plan-flag{ position:absolute; top:-13px; left:32px; padding:5px 12px; border-radius:999px; background:var(--emerald); color:var(--forest-night); font-size:12px; font-weight:700; letter-spacing:.02em; }
+.plan h3{ font:600 20px/1.2 var(--sans); letter-spacing:-.01em; color:inherit; }
+.plan-for{ margin:8px 0 26px; color:var(--muted); font-size:15px; min-height:46px; }
+.plan.is-pro .plan-for{ color:var(--on-dark-muted); }
+.price{ display:flex; align-items:baseline; gap:6px; }
+.price strong{ font:600 52px/1 var(--figure); letter-spacing:-.035em; }
+.price span{ color:var(--muted); font-size:15px; }
+.plan.is-pro .price span{ color:var(--on-dark-muted); }
+.was{ display:flex; align-items:center; gap:10px; margin-top:10px; font-size:14px; color:var(--muted-2); }
+.was s{ text-decoration-thickness:1px; }
+.was em{ font-style:normal; padding:3px 8px; border-radius:7px; background:rgba(16,185,129,.12); color:var(--forest); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+.plan.is-pro .was{ color:var(--on-dark-muted); }
+.plan.is-pro .was em{ background:rgba(52,211,153,.18); color:var(--emerald-bright); }
+.plan .btn{ margin-top:32px; }
+.plan .btn-ghost{ color:var(--forest); }
+.trust{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px 28px; margin:40px 0 0; padding:0; list-style:none; color:var(--muted); font-size:14px; }
+.trust li{ display:flex; align-items:center; gap:8px; }
+.trust svg{ width:16px; height:16px; color:var(--emerald); }
+
+/* ── closing + footer: one dark panel ─────────────────────── */
+.foot-panel{ margin:0 24px 24px; padding:104px 80px 40px; border-radius:var(--r-panel); background:radial-gradient(60% 80% at 100% 0%, rgba(16,185,129,.16), transparent 60%), linear-gradient(180deg,var(--forest-deep),var(--forest-night)); color:var(--on-dark); overflow:hidden; }
+.foot-top{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:72px; }
+.foot-cta h2{ color:var(--on-dark); font-size:clamp(36px,4.4vw,60px); }
+.foot-cta h2 em{ color:var(--emerald-bright); }
+.foot-cta > p:not(.eyebrow){ margin:22px 0 34px; color:var(--on-dark-muted); font-size:18px; }
+.foot-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; align-content:start; padding-top:8px; }
+.foot-cols h3{ margin-bottom:16px; font:600 15px/1.2 var(--sans); color:var(--on-dark); letter-spacing:0; }
+.foot-cols ul{ margin:0; padding:0; list-style:none; }
+.foot-cols li + li{ margin-top:10px; }
+.foot-cols a{ font-size:14px; color:var(--on-dark-muted); text-decoration:none; }
+.foot-cols a:hover{ color:var(--on-dark); }
+.foot-bottom{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-top:72px; padding-top:28px; border-top:1px solid rgba(234,243,238,.12); }
+.foot-brand{ display:flex; align-items:center; gap:14px; }
+.foot-brand img{ width:44px; height:44px; }
+.foot-brand strong{ font:600 30px/1 var(--serif); letter-spacing:-.02em; }
+.foot-legal{ margin:0; font-size:13px; color:var(--on-dark-muted); text-align:right; }
+
+/* ── responsive ───────────────────────────────────────────── */
+@media (max-width:1080px){
+  .sc-panel{ grid-template-columns:1fr; gap:32px; min-height:0; }
+  .closer-grid{ gap:48px; }
+  .steps{ flex-wrap:wrap; }
+  .step{ flex:1 1 calc(50% - 12px); min-height:0; }
+  .step.is-active{ flex-grow:1; }
+  .step:not(.is-active) .step-body, .step:not(.is-active) .step-result{ opacity:1; pointer-events:auto; }
+  .step + .step::before{ display:none; }
+  .foot-top{ grid-template-columns:1fr; gap:56px; }
+}
+@media (max-width:900px){
+  .nav-links{ display:none; }
+  .nav-toggle{ display:grid; }
+  .closer-grid, .ask-grid{ grid-template-columns:1fr; }
+  .closer-left, .closer-right{ position:static; }
+  .answer-stage{ min-height:0; }
+  .plan-grid{ grid-template-columns:1fr; max-width:480px; margin-left:auto; margin-right:auto; }
+  .stats{ grid-template-columns:1fr; }
+}
+@media (max-width:720px){
+  :root{ --r-panel:32px; --r-frame:32px; --r-card:24px; }
+  .site-head{ padding:8px 12px; }
+  .hero-panel, .how{ margin:0 12px; }
+  .foot-panel{ margin:0 12px 12px; padding:72px 24px 32px; }
+  .hero-panel{ padding:64px 16px 16px; }
+  .brand-by{ display:none; }
+  .announce{ padding:8px 48px 8px 16px; justify-content:flex-start; text-align:left; font-size:13px; }
+  .announce p{ justify-content:flex-start; gap:8px; }
+  .announce .dot, .ann-long{ display:none; }
+  .ann-short{ display:inline; }
+  .announce a{ padding:2px 8px; }
+  .showcase{ margin-top:56px; padding:32px 12px 16px; }
+  .sc-tab{ width:52px; height:52px; border-radius:15px; }
+  .sc-card{ border-radius:28px; }
+  .sc-panel{ padding:28px 22px; }
+  .demo{ min-height:0; padding:52px 14px 20px; }
+  .mock{ padding:18px; }
+  .proof, .closer, .ask{ padding:80px 0; }
+  .how{ padding:80px 0; }
+  .step{ flex-basis:100%; }
+  .answer-stage{ padding:28px; }
+  .ask-stage{ padding:12px; }
+  .ask-form{ flex-direction:column; }
+  .ask-field{ flex:none; }
+  .ask-form .btn{ width:100%; }
+  .foot-cols{ grid-template-columns:1fr 1fr; }
+  .foot-bottom{ flex-direction:column; align-items:flex-start; }
+  .foot-legal{ text-align:left; }
+  .hero-ctas .btn{ width:100%; max-width:340px; }
+}
+
+/* Reduced motion: no sliding, no auto-advance, nothing that moves on its own. */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<div class="announce" id="announce" role="region" aria-label="Announcement">
+  <p><span class="dot" aria-hidden="true"></span><span class="ann-long">Launch pricing is live: Starter ₹199, Plus ₹499 a month.</span><span class="ann-short">Launch pricing: Starter ₹199, Plus ₹499/mo.</span>
+    <a href="/pricing.html">See plans <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+  <button class="announce-x" type="button" aria-label="Dismiss announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<header class="site-head" id="top">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="#top" aria-label="GoXL Ally home">
+      <img src="/assets/logo-123.v1.png" alt="" width="34" height="34">
+      <span class="brand-text"><span class="brand-name">GoXL <span>Ally</span></span><span class="brand-by">by GoXL Entrepreneurship</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#showcase">Product</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/about.html">Our story</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-primary btn-sm" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="#showcase">Product</a>
+    <a href="#how">How it works</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/about.html">Our story</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ════════════ HERO ════════════ -->
+  <section class="hero-panel" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow">The Founder’s Compass</p>
+      <h1 id="hero-title">You don’t need all the answers. <em>You need to know your next move.</em></h1>
+      <p class="lede">GoXL Ally is your Founder’s Compass — an AI that understands you, your business and your situation before helping you decide what to do next.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary btn-lg" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost btn-lg" href="#showcase">See how Ally thinks <svg class="arrow-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+      </div>
+      <p class="trio" aria-label="Clarity, confidence, consistency"><span>Clarity</span><span>Confidence</span><span>Consistency</span></p>
+    </div>
+
+    <!-- ════════════ SHOWCASE ════════════
+         Four tabs, one card. Without JavaScript every panel is visible in
+         order; the script hides the inactive three and wires the tabs. -->
+    <div class="showcase" id="showcase" data-active="0">
+      <div class="mesh" aria-hidden="true"><div class="mesh-strip"><span class="m1"></span><span class="m2"></span><span class="m3"></span><span class="m4"></span></div></div>
+      <div class="sc-inner">
+        <div class="sc-tabs" role="tablist" aria-label="What Ally does">
+          <button class="sc-tab" type="button" role="tab" id="sc-tab-0" aria-controls="sc-panel-0" aria-selected="true" aria-label="Adaptive diagnosis" data-tint="1">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+            <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
+          </button>
+          <button class="sc-tab" type="button" role="tab" id="sc-tab-1" aria-controls="sc-panel-1" aria-selected="false" tabindex="-1" aria-label="Clarity Report" data-tint="2">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>
+            <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
+          </button>
+          <button class="sc-tab" type="button" role="tab" id="sc-tab-2" aria-controls="sc-panel-2" aria-selected="false" tabindex="-1" aria-label="Talk to Ally" data-tint="3">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.2A8 8 0 1 1 20 12z"/><path d="M9 11h6M9 14h4"/></svg>
+            <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
+          </button>
+          <button class="sc-tab" type="button" role="tab" id="sc-tab-3" aria-controls="sc-panel-3" aria-selected="false" tabindex="-1" aria-label="Plan your day" data-tint="4">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg>
+            <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
+          </button>
+        </div>
+
+        <div class="sc-card">
+          <div class="sc-panel" role="tabpanel" id="sc-panel-0" aria-labelledby="sc-tab-0">
+            <div class="sc-copy">
+              <p class="chip"><span class="chip-ico t1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span>Adaptive diagnosis</p>
+              <h3>A diagnosis that adapts to how you answer.</h3>
+              <p>About 20 minutes, and you can stop and pick it up later. Ally maps your Founder DNA — how you decide under pressure — and your Business DNA — how the business actually makes money.</p>
+              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="demo t1" aria-label="Sample: a diagnosis question">
+              <span class="demo-tag">Sample</span>
+              <div class="mock">
+                <div class="mock-top"><span class="mock-pill">Core motivation</span><span class="mock-meta">3 of 14 dimensions understood</span></div>
+                <p class="mock-ally">Two futures, and without overthinking it — which one pulls you more right now?</p>
+                <div class="mock-choices"><span>The trophy</span><span class="is-picked">The bridge</span></div>
+                <div class="mock-progress"><span></span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sc-panel" role="tabpanel" id="sc-panel-1" aria-labelledby="sc-tab-1">
+            <div class="sc-copy">
+              <p class="chip"><span class="chip-ico t2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg></span>Clarity Report</p>
+              <h3>One named cause, with its reasoning.</h3>
+              <p>Ally traces symptoms to their drivers, checks your founder profile against your business, and lands on the one cause to fix first — written up as a report that’s yours to keep.</p>
+              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="demo t2" aria-label="Sample: a finding from a Clarity Report">
+              <span class="demo-tag">Sample</span>
+              <div class="mock">
+                <p class="mock-kicker">What Ally noticed</p>
+                <p class="mock-title">Getting customers consistently</p>
+                <p class="mock-body">Your offer may not be the main issue. The bigger pattern is that customer growth isn’t repeatable yet — and too many decisions still depend on you.</p>
+                <div class="mock-next"><p class="mock-kicker">What to focus on next</p><p>Build one reliable way to get customers — while reducing the decisions only you can make.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sc-panel" role="tabpanel" id="sc-panel-2" aria-labelledby="sc-tab-2">
+            <div class="sc-copy">
+              <p class="chip"><span class="chip-ico t3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.2A8 8 0 1 1 20 12z"/></svg></span>Talk to Ally <span class="badge">Plus</span></p>
+              <h3>Ask with your whole picture in the room.</h3>
+              <p>Ally holds your founder context, your business context and your current situation in one place, so every answer starts from where you actually are — not from a blank prompt.</p>
+              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="demo t3" aria-label="Sample: a conversation with Ally">
+              <span class="demo-tag">Sample</span>
+              <div class="mock">
+                <p class="bubble me">Should I hire a salesperson now?</p>
+                <p class="bubble ally">Your diagnosis shows sales still depend on you personally. A new hire would inherit that. Write down how you close first — then hire someone to run it.</p>
+                <div class="mock-input">Ask Ally…<span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sc-panel" role="tabpanel" id="sc-panel-3" aria-labelledby="sc-tab-3">
+            <div class="sc-copy">
+              <p class="chip"><span class="chip-ico t4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16"/></svg></span>Plan your day <span class="badge">Plus</span></p>
+              <h3>One clear day beats ten unfinished priorities.</h3>
+              <p>Your goals, your vision and today’s plan point the same way — so the work that moves the business forward is the work that gets the time.</p>
+              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="demo t4" aria-label="Sample: a planned day">
+              <span class="demo-tag">Sample</span>
+              <div class="mock mock-day">
+                <div class="mock-top"><span class="mock-pill">Today</span><span class="mock-meta">4 blocks</span></div>
+                <ul>
+                  <li class="is-now"><time>09:30</time><span>See where customers are getting stuck</span><em>45 min</em></li>
+                  <li><time>11:30</time><span>Investors meeting</span><em>30 min</em></li>
+                  <li><time>14:00</time><span>Talk to five customers or potential customers</span><em>45 min</em></li>
+                  <li><time>18:10</time><span>Team meeting</span><em>10 min</em></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PROOF ════════════ -->
+  <section class="proof" aria-labelledby="proof-title">
+    <div class="wrap">
+      <h2 class="sr-only" id="proof-title">What Ally is built on</h2>
+      <p class="proof-intro">Built on a structured way of understanding founders and businesses — not generic prompts or advice templates.</p>
+      <ul class="stats">
+        <li><strong>100<span>+</span></strong><p>entrepreneurial dimensions</p></li>
+        <li><strong>10,000<span>+</span></strong><p>founder case studies</p></li>
+        <li><strong>25,000<span>+</span></strong><p>founder problems mapped to their root causes</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ════════════ LOOK CLOSER ════════════ -->
+  <section class="closer" id="why" aria-labelledby="closer-title">
+    <div class="wrap">
+      <div class="closer-grid">
+        <div class="closer-left">
+          <p class="eyebrow">Look closer</p>
+          <h2 id="closer-title">The problem you see isn’t always the problem <em>you need to solve.</em></h2>
+          <p>Most people start by searching for answers. Ally starts by understanding the problem.</p>
+          <ul class="q-list" role="tablist" aria-label="What founders say" aria-orientation="vertical">
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-0" aria-controls="a-0" aria-selected="true"><span class="q-num">01</span><span class="q-said">“I need more sales.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-1" aria-controls="a-1" aria-selected="false" tabindex="-1"><span class="q-num">02</span><span class="q-said">“My team isn’t performing.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-2" aria-controls="a-2" aria-selected="false" tabindex="-1"><span class="q-num">03</span><span class="q-said">“I don’t have enough time.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-3" aria-controls="a-3" aria-selected="false" tabindex="-1"><span class="q-num">04</span><span class="q-said">“My business isn’t growing.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+          </ul>
+        </div>
+        <div class="closer-right">
+          <div class="answer-stage">
+            <div class="answer" role="tabpanel" id="a-0" aria-labelledby="q-0">
+              <p class="who">Founder thinks</p>
+              <blockquote>“I need more sales.”</blockquote>
+              <span class="trail" aria-hidden="true"></span>
+              <p class="who ally">Ally looks at</p>
+              <p class="looks">Maybe the real problem is positioning — the offer isn’t yet clear enough for the right buyer to say yes quickly.</p>
+            </div>
+            <div class="answer" role="tabpanel" id="a-1" aria-labelledby="q-1">
+              <p class="who">Founder thinks</p>
+              <blockquote>“My team isn’t performing.”</blockquote>
+              <span class="trail" aria-hidden="true"></span>
+              <p class="who ally">Ally looks at</p>
+              <p class="looks">Maybe expectations were never made clear — performance is hard to give when the target keeps shifting.</p>
+            </div>
+            <div class="answer" role="tabpanel" id="a-2" aria-labelledby="q-2">
+              <p class="who">Founder thinks</p>
+              <blockquote>“I don’t have enough time.”</blockquote>
+              <span class="trail" aria-hidden="true"></span>
+              <p class="who ally">Ally looks at</p>
+              <p class="looks">Maybe there’s enough time, but attention is going to the wrong priorities — busy isn’t the same as important.</p>
+            </div>
+            <div class="answer" role="tabpanel" id="a-3" aria-labelledby="q-3">
+              <p class="who">Founder thinks</p>
+              <blockquote>“My business isn’t growing.”</blockquote>
+              <span class="trail" aria-hidden="true"></span>
+              <p class="who ally">Ally looks at</p>
+              <p class="looks">Maybe the real problem isn’t marketing at all — it could be retention, pricing, or a product gap upstream.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ HOW IT WORKS ════════════ -->
+  <section class="how" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">How Ally works</p>
+        <h2 id="how-title">From onboarding once <em>to everyday use.</em></h2>
+      </div>
+      <ol class="steps">
+        <li class="step is-active">
+          <button class="step-btn" type="button" aria-expanded="true" aria-controls="step-b-0"><span class="step-num">01</span><span class="step-title">Onboarding</span><span class="step-time">Under 5 minutes</span></button>
+          <div class="step-body" id="step-b-0">
+            <ul><li>Who you are, and why now</li><li>A snapshot of the business: stage, size, sector</li><li>What Ally will ask, and why</li><li>Data scope and consent agreed</li></ul>
+          </div>
+          <p class="step-result">A first question that feels personal.</p>
+        </li>
+        <li class="step">
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-1"><span class="step-num">02</span><span class="step-title">Adaptive diagnosis</span><span class="step-time">About 20 min, resumable</span></button>
+          <div class="step-body" id="step-b-1">
+            <h4>Founder DNA</h4>
+            <ul><li>Motivation and risk appetite</li><li>Decision style under pressure</li><li>Strengths and blind spots</li></ul>
+            <h4>Business DNA</h4>
+            <ul><li>Model, revenue and margins</li><li>Operations and systems maturity</li><li>Team, market and traction</li></ul>
+          </div>
+          <p class="step-result">Two living profiles, kept and updated.</p>
+        </li>
+        <li class="step">
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-2"><span class="step-num">03</span><span class="step-title">Root cause</span><span class="step-time">Runs automatically</span></button>
+          <div class="step-body" id="step-b-2">
+            <ul><li>Surfaced issues ranked by impact</li><li>Symptoms traced to their drivers</li><li>Founder DNA checked against business DNA</li><li>Converges on one cause to fix first</li></ul>
+          </div>
+          <p class="step-result">One named cause, with its reasoning.</p>
+        </li>
+        <li class="step">
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-3"><span class="step-num">04</span><span class="step-title">Clarity Report</span><span class="step-time">Generated on demand</span></button>
+          <div class="step-body" id="step-b-3">
+            <ul><li>Diagnosis in plain language</li><li>Root cause stated with evidence</li><li>Prioritised actions and timelines</li><li>Baselines for the next 90 days</li></ul>
+          </div>
+          <p class="step-result">An open action list and live metrics.</p>
+        </li>
+        <li class="step">
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-4"><span class="step-num">05</span><span class="step-title">Daily use</span><span class="step-time">Ongoing</span></button>
+          <div class="step-body" id="step-b-4">
+            <ul><li>Knowledge base</li><li>Vision board</li><li>Goals</li><li>Plan your day</li><li>Next steps</li></ul>
+          </div>
+          <p class="step-result">Momentum, not a filed report.</p>
+        </li>
+      </ol>
+      <p class="how-foot">As the business changes, Ally builds on what it already knows instead of starting you over.</p>
+    </div>
+  </section>
+
+  <!-- ════════════ ASK ALLY ════════════
+       The public help assistant, given a section of its own. Same endpoint as
+       the home page widget; same nine local answers when it cannot be reached. -->
+  <section class="ask" id="ask" aria-labelledby="ask-title">
+    <div class="wrap">
+      <div class="ask-grid">
+        <div class="ask-copy">
+          <p class="eyebrow">Try it now</p>
+          <h2 id="ask-title">Got a question? <em>Ask Ally.</em></h2>
+          <p>What Ally does, what it costs, how access works, what happens to your data. Answers come from the same help content the signed-in app uses.</p>
+          <form class="ask-form" id="askForm" novalidate>
+            <label class="ask-field"><span class="sr-only">Your question</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input id="askInput" type="text" name="q" maxlength="500" autocomplete="off" placeholder="How long does the diagnosis take?">
+            </label>
+            <button class="btn btn-primary btn-lg" type="submit">Ask</button>
+          </form>
+          <div class="ask-chips" id="askChips" aria-label="Suggested questions"></div>
+        </div>
+        <div class="ask-stage">
+          <div class="ask-card">
+            <div class="ask-card-head"><img src="/assets/logo-123.v1.png" alt="" width="32" height="32"><div><strong>Ally help</strong><span>Answers about the product</span></div></div>
+            <div class="ask-log" id="askLog" aria-live="polite" aria-atomic="false">
+              <p class="bubble ally">Hi — ask me anything about Ally: what it does, what it costs, or how to get access.</p>
+            </div>
+          </div>
+          <p class="ask-note">This assistant answers questions about Ally. It doesn’t see your business — that starts after you log in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PLANS ════════════
+       Prices must match /pricing.html. They are the launch offer; when it
+       ends, change both pages together. -->
+  <section class="plans" id="plans" aria-labelledby="plans-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Plans</p>
+        <h2 id="plans-title">Simple plans, <em>powerful clarity.</em></h2>
+        <p>Every plan includes the adaptive diagnosis and your Clarity Report. Upgrade for chat, planning and Ally’s own recommendations.</p>
+      </div>
+      <div class="plan-grid">
+        <article class="plan">
+          <h3>Starter</h3>
+          <p class="plan-for">One adaptive diagnosis and your Clarity Report.</p>
+          <div class="price"><strong>₹199</strong><span>once</span></div>
+          <p class="was"><s>₹300</s><em>Launch offer</em></p>
+          <a class="btn btn-ghost btn-lg" href="/pricing.html">See the plan</a>
+        </article>
+        <article class="plan">
+          <h3>Plus</h3>
+          <p class="plan-for">Adds Talk to Ally, Next Critical Steps, Goals and Plan Your Day.</p>
+          <div class="price"><strong>₹499</strong><span>/month</span></div>
+          <p class="was"><s>₹600</s><em>Launch offer</em></p>
+          <a class="btn btn-ghost btn-lg" href="/pricing.html">See the plan</a>
+        </article>
+        <article class="plan is-pro">
+          <span class="plan-flag">Most popular</span>
+          <h3>Pro</h3>
+          <p class="plan-for">Adds Ally’s own recommendations, a Vision Board and email reminders.</p>
+          <div class="price"><strong>₹999</strong><span>/month</span></div>
+          <p class="was"><s>₹1,200</s><em>Launch offer</em></p>
+          <a class="btn btn-light btn-lg" href="/pricing.html">See the plan</a>
+        </article>
+      </div>
+      <ul class="trust">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Payments secured by Razorpay</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Your data is never sold</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Export your data anytime</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<!-- ════════════ CLOSING + FOOTER ════════════ -->
+<footer class="foot-panel">
+  <div class="foot-top">
+    <div class="foot-cta">
+      <p class="eyebrow on-dark">The Founder’s Compass</p>
+      <h2>You already have a journey. <em>Now understand where it should go next.</em></h2>
+      <p>Start by understanding where you are today.</p>
+      <a class="btn btn-light btn-lg" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <nav class="foot-cols" aria-label="Footer">
+      <div>
+        <h3>Product</h3>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="/pricing.html">Pricing</a></li>
+          <li><a href="/ally-dashboard.html">Sample dashboard</a></li>
+          <li><a href="/go/login">Log in</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Learn</h3>
+        <ul>
+          <li><a href="/what-is-goxl-ally">What is GoXL Ally</a></li>
+          <li><a href="/ally-vs-chatgpt">Ally vs ChatGPT</a></li>
+          <li><a href="/business-health-check-for-founders">Business health check</a></li>
+          <li><a href="/startup-bottlenecks">Startup bottlenecks</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Company</h3>
+        <ul>
+          <li><a href="/about.html">Our story</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+          <li><a href="#cookie-preferences" data-consent-open>Cookie preferences</a></li>
+          <li><a href="https://www.instagram.com/goxl_ally?igsh=MWgzYXZxaHU5cGw2bA%3D%3D&amp;igsi=MWgzYXZxaHU5cGw2bA%3D%3D" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.linkedin.com/showcase/goxl-ally-ai" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="foot-bottom">
+    <div class="foot-brand"><img src="/assets/logo-123.v1.png" alt="" width="44" height="44"><strong>GoXL Ally</strong></div>
+    <p class="foot-legal">© 2026 GoXL Consulting Solutions Pvt. Ltd.</p>
+  </div>
+</footer>
+
+<!-- attribution:start — copied verbatim from ally-landing-v2.html -->
+<script>
+/* Where this visitor came from, kept for the registration record: UTM tags,
+   ad click ids, and the referrer's origin and path (never its query). The
+   first visit that carried any of these is kept as the first touch; the most
+   recent as the last. Nothing personal belongs in a campaign tag, and a value
+   containing "@" is dropped here and refused again by the server. */
+(function(){
+  var FIRST = 'ally_touch_first', LAST = 'ally_touch_last', WINDOW_MS = 90 * 864e5;
+  function drop(key){ try{ localStorage.removeItem(key); }catch(_){} }
+  /* A stored touch counts only while it parses, carries a real timestamp, and
+     that timestamp is inside the window. Anything else is removed here rather
+     than left to rot: a damaged record would otherwise block a new first touch
+     for good, and a stale one would credit a campaign seen a season ago. */
+  function stored(key){
+    var raw; try{ raw = localStorage.getItem(key); }catch(_){ return null; }
+    if(!raw) return null;
+    var o; try{ o = JSON.parse(raw); }catch(_){ drop(key); return null; }
+    if(!o || typeof o !== 'object' || Object.prototype.toString.call(o) !== '[object Object]'){ drop(key); return null; }
+    var at = Date.parse(o.at);
+    /* A day of tolerance for a clock that is merely wrong; beyond that the
+       date is impossible and the record is not trusted. */
+    if(!(at > 0) || at - Date.now() > 864e5 || Date.now() - at > WINDOW_MS){ drop(key); return null; }
+    return o;
+  }
+  /* Strong: they arrived on a campaign link or an ad click. Weak: no tags at
+     all, another site simply sent them. Read from the touch itself; there is
+     no extra field, and none is stored. */
+  function strong(t){ return !!(t && (t.source || t.medium || t.campaign || t.content || t.term || t.clickIds)); }
+  /* Our own pages are not a referrer. Anchored to a label boundary on the
+     hostname, so app.goxlally.ai is ours and evilgoxlally.ai is not -- a
+     substring test would hand the second one our attribution. */
+  function internal(h){ h = String(h || '').toLowerCase(); return !h || h === String(location.hostname).toLowerCase() || /(^|\.)goxlally\.ai$/.test(h); }
+
+  /* Read first, and before anything else: expiry has to happen even on a
+     visit that carries nothing, or a dead record would outlive its window
+     simply because nobody arrived on a link. */
+  var first = stored(FIRST), last = stored(LAST);
+
+  /* If the query string cannot be read at all, the visit is abandoned rather
+     than falling back to the referrer -- the same as before this window and
+     strength work. Expiry above has already run, which is deliberate: a stale
+     record should not outlive its window because of a parser failure. */
+  var q; try{ q = new URLSearchParams(location.search); }catch(_){ return; }
+  var t = {}, utm = { source:'utm_source', medium:'utm_medium', campaign:'utm_campaign', content:'utm_content', term:'utm_term' }, k;
+  for(k in utm){ var v = (q.get(utm[k]) || '').trim().slice(0, 100); if(v && v.indexOf('@') < 0) t[k] = v; }
+  var ids = ['fbclid','gclid','li_fat_id','msclkid','ttclid'], c = {}, any = false;
+  ids.forEach(function(id){ var w = (q.get(id) || '').trim().slice(0, 200); if(w){ c[id] = w; any = true; } });
+  if(any) t.clickIds = c;
+  try{ if(document.referrer){ var r = new URL(document.referrer); if(!internal(r.hostname)) t.referrer = r.origin + r.pathname.slice(0, 200); } }catch(_){}
+  if(!Object.keys(t).length) return;   /* nothing to attribute: change nothing */
+  t.landing = location.pathname.slice(0, 200);
+  t.at = new Date().toISOString();
+
+  try{
+    if(!first) localStorage.setItem(FIRST, JSON.stringify(t));
+    /* A campaign or a click always becomes the last touch. A referrer-only
+       visit does so only when there is nothing better to lose -- it must not
+       erase the paid click that actually found this founder. */
+    if(!last || strong(t) || !strong(last)) localStorage.setItem(LAST, JSON.stringify(t));
+  }catch(_){}
+})();
+</script>
+<!-- attribution:end -->
+
+<script>
+/* ── page behaviour ──────────────────────────────────────────────────────
+   Five small pieces, none of which the page needs to be readable: without
+   this script every tab panel and every stage is simply shown in order. */
+(function(){
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e) {}
+
+  /* 1. Announcement: dismissable for this visit. */
+  var ann = document.getElementById('announce');
+  if (ann) {
+    try { if (sessionStorage.getItem('ally_v3_announce') === 'x') ann.hidden = true; } catch(e) {}
+    ann.querySelector('.announce-x').addEventListener('click', function(){
+      ann.hidden = true;
+      try { sessionStorage.setItem('ally_v3_announce', 'x'); } catch(e) {}
+    });
+  }
+
+  /* 2. Header: a floating pill once the page has moved; phone menu. */
+  var head = document.querySelector('.site-head');
+  var ticking = false;
+  function onScroll(){
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function(){ head.classList.toggle('is-floating', window.scrollY > 8); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+  var toggle = document.querySelector('.nav-toggle'), menu = document.getElementById('mobileMenu');
+  function setMenu(open){ menu.hidden = !open; toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
+  toggle.addEventListener('click', function(){ setMenu(menu.hidden); });
+  menu.addEventListener('click', function(e){ if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !menu.hidden) { setMenu(false); toggle.focus(); } });
+
+  /* Tabs, the WAI-ARIA way: arrows move between them, Home/End jump, the
+     selected tab is the only one in the tab order. Shared by two sections. */
+  function tabs(list, onSelect){
+    var btns = [].slice.call(list.querySelectorAll('[role="tab"]'));
+    var vertical = list.getAttribute('aria-orientation') === 'vertical';
+    function select(i, focus, fromUser){
+      btns.forEach(function(b, k){
+        var on = k === i;
+        b.setAttribute('aria-selected', String(on));
+        b.tabIndex = on ? 0 : -1;
+        var p = document.getElementById(b.getAttribute('aria-controls'));
+        if (p) {
+          p.hidden = !on;
+          if (on && !reduce) { p.classList.remove('is-entering'); void p.offsetWidth; p.classList.add('is-entering'); }
+        }
+      });
+      if (focus) btns[i].focus();
+      onSelect && onSelect(i, fromUser);
+    }
+    btns.forEach(function(b, i){
+      b.addEventListener('click', function(){ select(i, false, true); });
+      b.addEventListener('keydown', function(e){
+        var next = { ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1 }[e.key];
+        if (next && ((vertical && /Up|Down/.test(e.key)) || (!vertical && /Left|Right/.test(e.key)))) { e.preventDefault(); select((i + next + btns.length) % btns.length, true, true); }
+        else if (e.key === 'Home') { e.preventDefault(); select(0, true, true); }
+        else if (e.key === 'End') { e.preventDefault(); select(btns.length - 1, true, true); }
+      });
+    });
+    var start = btns.findIndex(function(b){ return b.getAttribute('aria-selected') === 'true'; });
+    select(start < 0 ? 0 : start, false, false);
+    return { select:select, count:btns.length, current:function(){ return btns.findIndex(function(b){ return b.getAttribute('aria-selected') === 'true'; }); } };
+  }
+
+  /* 3. Showcase: the field behind the card slides with the selected tab. */
+  var sc = document.getElementById('showcase');
+  if (sc) tabs(sc.querySelector('[role="tablist"]'), function(i){ sc.setAttribute('data-active', String(i)); });
+
+  /* 4. Look closer: advances on its own while it is on screen, stops for good
+     the moment someone chooses, pauses under the pointer or keyboard focus,
+     and never moves at all under reduced motion. */
+  var closer = document.querySelector('.closer');
+  if (closer) {
+    var manual = false, visible = false, hovering = false;
+    var ql = tabs(closer.querySelector('[role="tablist"]'), function(i, fromUser){
+      if (fromUser && !manual) { manual = true; closer.classList.remove('is-playing', 'is-paused'); closer.classList.add('is-manual'); }
+    });
+    function sync(){
+      if (manual || reduce) { closer.classList.add('is-manual'); return; }
+      closer.classList.toggle('is-playing', visible);
+      closer.classList.toggle('is-paused', visible && hovering);
+    }
+    closer.addEventListener('animationend', function(e){
+      if (e.animationName !== 'fill' || manual) return;
+      ql.select((ql.current() + 1) % ql.count, false, false);
+      closer.classList.remove('is-playing'); void closer.offsetWidth; sync();
+    });
+    closer.addEventListener('mouseenter', function(){ hovering = true; sync(); });
+    closer.addEventListener('mouseleave', function(){ hovering = false; sync(); });
+    closer.addEventListener('focusin', function(){ hovering = true; sync(); });
+    closer.addEventListener('focusout', function(e){ if (!closer.contains(e.relatedTarget)) { hovering = false; sync(); } });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ visible = es[0].isIntersecting; sync(); }, { threshold:.35 }).observe(closer);
+    else { visible = true; sync(); }
+  }
+
+  /* 5. How it works: one stage open at a time on wide screens; the open
+     card takes the width. On narrow screens CSS shows them all. */
+  var steps = [].slice.call(document.querySelectorAll('.step'));
+  function openStep(s){
+    steps.forEach(function(x){ var on = x === s; x.classList.toggle('is-active', on); x.querySelector('.step-btn').setAttribute('aria-expanded', String(on)); });
+  }
+  steps.forEach(function(s){
+    s.querySelector('.step-btn').addEventListener('click', function(){ openStep(s); });
+    s.addEventListener('mouseenter', function(){ if (window.matchMedia('(hover:hover) and (min-width:1081px)').matches) openStep(s); });
+    s.addEventListener('click', function(e){ if (!e.target.closest('.step-btn')) openStep(s); });
+  });
+})();
+</script>
+
+<script>
+/* ── Ask Ally ─────────────────────────────────────────────────────────────
+   The public help assistant. Asks the Ally backend; if it does not answer
+   within ten seconds, or cannot be reached, answers from the same nine local
+   entries the home page widget carries. Every answer is inserted as text,
+   never as HTML, because it comes from the network. */
+(function(){
+  var API = 'https://api.goxlally.ai';          /* also in next.config.ts connect-src */
+  var FAQS = [{"q":"What is GoXL Ally?","a":"Ally is a Founder's Compass: an AI that learns how you lead and how your business actually works before it advises you. It runs an adaptive diagnosis, writes you a Clarity Report, and tells you the one thing worth doing next.","k":"what is who explain product about ally goxl"},{"q":"How long does it take?","a":"About 20 minutes for the diagnosis. You answer questions about how you decide and work, then about your current problem, then about the business. The report is generated in seconds once you finish.","k":"time long duration minutes how quick fast"},{"q":"How do I get access?","a":"Direct signup is available while access spots are open. If the current capacity is full, you'll be added to the founder waitlist and notified when a place opens.","k":"sign up signup join access invite waitlist queue register early"},{"q":"What does it cost?","a":"Three plans, all at our launch offer: Starter ₹199 paid once (one adaptive diagnosis and your Clarity Report), Plus ₹499/month (adds Talk to Ally, your Next Critical Steps, Set your Goals and Plan Your Day), and Pro ₹999/month (adds Ally recommending your steps, Build your Vision Board and email reminders). A discovery call with a GoXL advisor is ₹300 per 30 minutes on any plan.","k":"price pricing cost plans money rupees free trial subscription how much"},{"q":"Is this a sales call in disguise?","a":"No. The diagnosis is the product. If you book a discovery call, the advisor has already read your report and the 30 minutes go on your plan, not on a pitch.","k":"sales pitch demo call trap catch"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product. You can export or delete everything from inside the app at any time.","k":"privacy private data secure safe confidential sold shared gdpr delete"},{"q":"Who is it for?","a":"Founders running a real business who know something is off but not what. It is most useful when you have customers and momentum and are deciding where to put the next month of effort.","k":"who for founders stage suitable early startup right fit"},{"q":"I already have an account","a":"Use the Log in button at the top of this page. Your email is your login — if you have forgotten your password, choose \"Email me a code\" on the sign-in page and you can set a new one.","k":"login log in sign in existing account password forgot returning"},{"q":"Can I talk to a person?","a":"Yes. Email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST). Inside the app you can also book a discovery call with an advisor.","k":"human contact support email team speak person call"}];
+  var STARTERS = ['What is GoXL Ally?', 'How long does it take?', 'What does it cost?', 'Is my business information private?'];
+
+  var form = document.getElementById('askForm'), input = document.getElementById('askInput');
+  var log = document.getElementById('askLog'), chips = document.getElementById('askChips');
+  if (!form) return;
+  var busy = false;
+
+  STARTERS.forEach(function(q){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
+    b.addEventListener('click', function(){ ask(q); });
+    chips.appendChild(b);
+  });
+
+  function search(query){
+    var words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    return FAQS.map(function(f){
+      var q = f.q.toLowerCase(), k = f.k.toLowerCase(), a = f.a.toLowerCase(), score = 0, ok = true;
+      words.forEach(function(w){ if (q.indexOf(w) >= 0) score += 3; else if (k.indexOf(w) >= 0) score += 2; else if (a.indexOf(w) >= 0) score += 1; else ok = false; });
+      return ok ? { f:f, score:score } : null;
+    }).filter(Boolean).sort(function(x, y){ return y.score - x.score; }).map(function(h){ return h.f; });
+  }
+
+  function bubble(who, text){
+    var p = document.createElement('p'); p.className = 'bubble ' + who; p.textContent = text;
+    log.appendChild(p); log.scrollTop = log.scrollHeight; return p;
+  }
+  function miss(){
+    var p = bubble('ally', 'I don’t have an answer for that one. Email ');
+    var a = document.createElement('a'); a.href = 'mailto:info@goxl.in'; a.textContent = 'info@goxl.in';
+    p.appendChild(a); p.appendChild(document.createTextNode(' and a person will reply, or log in if you already have an account.'));
+  }
+
+  function ask(text){
+    text = String(text || '').trim();
+    if (!text || busy) return;
+    busy = true; input.value = '';
+    bubble('me', text);
+    var dots = document.createElement('div'); dots.className = 'typing'; dots.setAttribute('aria-label', 'Ally is typing');
+    dots.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(dots); log.scrollTop = log.scrollHeight;
+
+    var settled = false;
+    function finish(fn){ if (settled) return; settled = true; dots.remove(); fn(); busy = false; }
+    function offline(){ var hits = search(text); if (hits.length) bubble('ally', hits[0].a); else miss(); }
+    var giveUp = setTimeout(function(){ finish(offline); }, 10000);
+
+    fetch(API + '/api/v1/support/public/ask', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ question:text.slice(0, 500) }) })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        clearTimeout(giveUp);
+        if (!data || !data.answer) { finish(offline); return; }
+        finish(function(){ bubble('ally', data.answer); });
+      })
+      .catch(function(){ clearTimeout(giveUp); finish(offline); });
+  }
+
+  form.addEventListener('submit', function(e){ e.preventDefault(); ask(input.value); });
+})();
+</script>
+</body>
+</html>
