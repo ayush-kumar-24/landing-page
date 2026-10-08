@@ -190,7 +190,9 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .sc-runway.is-pinned{ height:380vh; }
 /* the open frame is wider than the sand panel; ending flush hides the panel's
    own bottom corners behind it instead of showing them under a full-width block */
-.hero-panel.has-pinned{ padding-bottom:0; border-radius:var(--r-panel) var(--r-panel) 0 0; }
+/* the sand stops short of the bottom, where the frame always covers it, so its
+   square foot can't show through the frame's rounded corners as it leaves */
+.hero-panel.has-pinned{ padding-bottom:0; border-radius:var(--r-panel) var(--r-panel) 0 0; background:linear-gradient(var(--panel), var(--panel)) top / 100% calc(100% - 120px) no-repeat; }
 .hero-panel.has-pinned .sc-runway{ margin-bottom:-1px; }   /* no sub-pixel sliver of panel under the frame */
 .sc-runway.is-pinned .showcase{ position:sticky; top:0; max-width:none; display:flex; flex-direction:column; justify-content:center; }
 .sc-prog{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:2px; background:rgba(22,36,28,.1); overflow:hidden; opacity:0; transition:opacity .2s var(--ease); pointer-events:none; }
@@ -267,8 +269,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .proof-intro{ max-width:640px; margin:0 auto 48px; text-align:center; color:var(--muted); font-size:18px; }
 .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:0; padding:0; list-style:none; }
 .stats li{ padding:32px; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
-.stats strong{ display:block; font:600 clamp(44px,5vw,64px)/1 var(--figure); letter-spacing:-.03em; color:var(--forest); }
-.stats strong span{ color:var(--emerald); }
+.stats strong{ display:block; font:600 clamp(44px,5vw,64px)/1 var(--figure); letter-spacing:-.03em; color:var(--forest); font-variant-numeric:tabular-nums; }
+.stats strong span:not(.count){ color:var(--emerald); }   /* only the "+" is green; the counting figure keeps the forest ink */
 .stats p{ margin:14px 0 0; color:var(--muted); }
 
 /* ── look closer: sticky question list, sticky answer ─────── */
@@ -291,6 +293,21 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .closer.is-manual .q-btn[aria-selected="true"] .q-fill{ transform:scaleX(1); }
 @keyframes fill{ to{ transform:scaleX(1); } }
 .closer-right{ position:sticky; top:112px; }
+
+/* Pinned mode, wide and tall screens (the script adds .is-pinned): the section
+   holds still while the scroll walks the four sayings, the line under the
+   current one filling as you go; then the page carries on. Tightened a little
+   so the whole of it fits one screen under the header. */
+.closer.is-pinned{ height:400vh; padding:0; }
+.closer.is-pinned .closer-pin{ position:sticky; top:0; height:100vh; display:flex; align-items:center; padding:84px 0 16px; }
+.closer.is-pinned .closer-pin > .wrap{ flex:1; }
+.closer.is-pinned .closer-grid{ align-items:center; }
+.closer.is-pinned .closer-left, .closer.is-pinned .closer-right{ position:static; }
+.closer.is-pinned .closer-left h2{ font-size:clamp(30px,3.1vw,44px); }
+.closer.is-pinned .closer-left > p:not(.eyebrow){ margin:16px 0 26px; }
+.closer.is-pinned .q-btn{ padding:17px 0; }
+.closer.is-pinned .answer-stage{ min-height:min(560px, calc(100vh - 140px)); }
+.closer.is-pinned .q-btn[aria-selected="true"] .q-fill{ transform:scaleX(var(--fill, 0)); animation:none; }
 .answer-stage{ position:relative; min-height:560px; padding:48px; border-radius:var(--r-frame); background:var(--panel); overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
 .answer-stage::after{ content:''; position:absolute; right:-80px; bottom:-120px; width:360px; height:360px; border-radius:50%; background:radial-gradient(closest-side, rgba(16,185,129,.18), transparent 70%); pointer-events:none; }
 .answer{ position:relative; z-index:1; }
@@ -649,15 +666,16 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       <h2 class="sr-only" id="proof-title">What Ally is built on</h2>
       <p class="proof-intro">Built on a structured way of understanding founders and businesses — not generic prompts or advice templates.</p>
       <ul class="stats">
-        <li><strong>100<span>+</span></strong><p>entrepreneurial dimensions</p></li>
-        <li><strong>10,000<span>+</span></strong><p>founder case studies</p></li>
-        <li><strong>25,000<span>+</span></strong><p>founder problems mapped to their root causes</p></li>
+        <li><strong><span class="count" data-to="100">100</span><span>+</span></strong><p>entrepreneurial dimensions</p></li>
+        <li><strong><span class="count" data-to="10000">10,000</span><span>+</span></strong><p>founder case studies</p></li>
+        <li><strong><span class="count" data-to="25000">25,000</span><span>+</span></strong><p>founder problems mapped to their root causes</p></li>
       </ul>
     </div>
   </section>
 
   <!-- ════════════ LOOK CLOSER ════════════ -->
   <section class="closer" id="why" aria-labelledby="closer-title">
+    <div class="closer-pin">
     <div class="wrap">
       <div class="closer-grid">
         <div class="closer-left">
@@ -704,6 +722,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
           </div>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
@@ -1081,19 +1100,56 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   /* 4. Look closer: advances on its own while it is on screen, stops for good
      the moment someone chooses, pauses under the pointer or keyboard focus,
      and never moves at all under reduced motion. */
+  /* On wide, tall screens it is pinned instead: the scroll through the
+     section walks the four sayings in turn (same shape as the showcase), a
+     click scrolls to that saying, and the timer above is not used at all. */
   var closer = document.querySelector('.closer');
   if (closer) {
     var manual = false, visible = false, hovering = false;
+    var cPinned = false, cFrame = 0, cAim = null, cAimUntil = 0;
+    var cWide = window.matchMedia('(min-width:901px) and (min-height:700px)');
     var ql = tabs(closer.querySelector('[role="tablist"]'), function(i, fromUser){
+      if (fromUser && cPinned) {
+        var seg = (closer.offsetHeight - window.innerHeight) / 4;
+        var top = window.scrollY + closer.getBoundingClientRect().top;
+        cAim = i; cAimUntil = Date.now() + 1500;
+        window.scrollTo({ top: top + i * seg + 2, behavior: 'smooth' });
+        return;
+      }
       if (fromUser && !manual) { manual = true; closer.classList.remove('is-playing', 'is-paused'); closer.classList.add('is-manual'); }
     });
+    var qFills = [].slice.call(closer.querySelectorAll('.q-fill'));
+    function cLayout(){
+      cFrame = 0;
+      if (!cPinned) return;
+      var vh = window.innerHeight, r = closer.getBoundingClientRect();
+      var seg = (closer.offsetHeight - vh) / 4, d = Math.max(0, -r.top);
+      var i = Math.min(3, Math.floor(d / seg));
+      if (cAim !== null) { if (i === cAim || Date.now() > cAimUntil) cAim = null; else i = cAim; }
+      if (ql.current() !== i) ql.select(i, false, false);
+      qFills.forEach(function(f, k){ f.style.setProperty('--fill', k === i ? Math.min(1, (d - i * seg) / seg).toFixed(3) : 0); });
+    }
+    function cQueue(){ if (!cFrame) cFrame = requestAnimationFrame(cLayout); }
+    function cMode(){
+      var on = cWide.matches && !reduce;
+      if (on !== cPinned) {
+        cPinned = on;
+        closer.classList.toggle('is-pinned', on);
+        if (on) closer.classList.remove('is-playing', 'is-paused', 'is-manual');
+        else sync();
+      }
+      cQueue();
+    }
+    window.addEventListener('scroll', cQueue, { passive:true });
+    window.addEventListener('resize', cMode);
     function sync(){
+      if (cPinned) return;
       if (manual || reduce) { closer.classList.add('is-manual'); return; }
       closer.classList.toggle('is-playing', visible);
       closer.classList.toggle('is-paused', visible && hovering);
     }
     closer.addEventListener('animationend', function(e){
-      if (e.animationName !== 'fill' || manual) return;
+      if (e.animationName !== 'fill' || manual || cPinned) return;
       ql.select((ql.current() + 1) % ql.count, false, false);
       closer.classList.remove('is-playing'); void closer.offsetWidth; sync();
     });
@@ -1103,6 +1159,28 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     closer.addEventListener('focusout', function(e){ if (!closer.contains(e.relatedTarget)) { hovering = false; sync(); } });
     if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ visible = es[0].isIntersecting; sync(); }, { threshold:.35 }).observe(closer);
     else { visible = true; sync(); }
+    if (cWide.addEventListener) cWide.addEventListener('change', cMode);
+    cMode();
+  }
+
+  /* 6. Stats: count up from zero the first time they come into view. The
+     final figures are already in the markup, so without this script (or
+     under reduced motion) they simply sit there. */
+  var counts = [].slice.call(document.querySelectorAll('.count[data-to]'));
+  if (counts.length && !reduce && 'IntersectionObserver' in window) {
+    var fmt = function(n){ return Math.round(n).toLocaleString('en-US'); };
+    counts.forEach(function(c){ c.textContent = '0'; });
+    var countIO = new IntersectionObserver(function(es){
+      if (!es.some(function(e){ return e.isIntersecting; })) return;
+      countIO.disconnect();
+      var t0 = performance.now(), DUR = 3200;
+      (function tick(now){
+        var t = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - t, 3);   /* ease-out: fast, then settles */
+        counts.forEach(function(c){ c.textContent = fmt(+c.getAttribute('data-to') * e); });
+        if (t < 1) requestAnimationFrame(tick);
+      })(t0);
+    }, { threshold:.5 });
+    countIO.observe(document.querySelector('.stats'));
   }
 
   /* 5. How it works: one stage open at a time on wide screens; the open
