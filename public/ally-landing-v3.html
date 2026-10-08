@@ -77,7 +77,8 @@ a{ color:inherit; }
 button{ font:inherit; color:inherit; }
 [hidden]{ display:none !important; }
 .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-:focus-visible{ outline:2px solid var(--emerald); outline-offset:3px; border-radius:8px; }
+/* the outline follows each element's own radius; setting one here would square off every pill on focus */
+:focus-visible{ outline:2px solid var(--emerald); outline-offset:3px; }
 
 .skip{ position:absolute; left:16px; top:-60px; z-index:100; background:var(--forest); color:var(--on-dark); padding:10px 16px; border-radius:12px; text-decoration:none; font-weight:600; }
 .skip:focus{ top:12px; }
@@ -180,13 +181,31 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .showcase[data-active="2"] .mesh-strip{ transform:translateX(-50%); }
 .showcase[data-active="3"] .mesh-strip{ transform:translateX(-75%); }
 
+/* Pinned mode, wide screens only (the script adds .is-pinned): scrolling in
+   opens the frame out to the whole screen, holds it there while the four tabs
+   play in turn, then lets the page carry on. Width, height, radius and inset
+   are set per frame by the script; everything else lives here. */
+.sc-runway{ margin-top:80px; }
+.sc-runway > .showcase{ margin-top:0; }
+.sc-runway.is-pinned{ height:380vh; }
+/* the open frame is wider than the sand panel; ending flush hides the panel's
+   own bottom corners behind it instead of showing them under a full-width block */
+.hero-panel.has-pinned{ padding-bottom:0; border-radius:var(--r-panel) var(--r-panel) 0 0; }
+.hero-panel.has-pinned .sc-runway{ margin-bottom:-1px; }   /* no sub-pixel sliver of panel under the frame */
+.sc-runway.is-pinned .showcase{ position:sticky; top:0; max-width:none; display:flex; flex-direction:column; justify-content:center; }
+.sc-prog{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:2px; background:rgba(22,36,28,.1); overflow:hidden; opacity:0; transition:opacity .2s var(--ease); pointer-events:none; }
+.sc-prog span{ display:block; height:100%; background:var(--forest); transform:scaleX(var(--fill, 0)); transform-origin:0 50%; }
+.sc-runway.is-pinned .sc-tab[aria-selected="true"] .sc-prog{ opacity:1; }
+
 /* drop-shadow, not box-shadow: the stem under the active tab and the card
    are one silhouette, and the shadow has to follow both */
 .sc-inner{ max-width:1000px; margin:0 auto; filter:drop-shadow(0 4px 6px rgba(22,36,28,.05)) drop-shadow(0 14px 20px rgba(22,36,28,.06)) drop-shadow(0 40px 56px rgba(22,36,28,.12)); }
 .sc-tabs{ display:flex; justify-content:center; gap:10px; margin-bottom:14px; }
-.sc-tab{ position:relative; width:60px; height:60px; display:grid; place-items:center; border:3px solid var(--card); border-radius:var(--r-tile); background:rgba(255,253,249,.55); color:rgba(22,36,28,.5); cursor:pointer; transition:background-color .25s var(--ease), color .25s var(--ease), transform .2s var(--ease); }
+/* icon + name: an icon alone made people guess what the four tabs were */
+.sc-short{ display:none; }
+.sc-tab{ position:relative; flex:none; height:60px; display:flex; align-items:center; gap:10px; padding:0 20px 0 15px; border:3px solid var(--card); border-radius:var(--r-tile); background:rgba(255,253,249,.55); color:rgba(22,36,28,.55); font-size:15px; font-weight:600; white-space:nowrap; cursor:pointer; transition:background-color .25s var(--ease), color .25s var(--ease), transform .2s var(--ease); }
 .sc-tab:hover{ color:var(--ink); transform:translateY(-1px); }
-.sc-tab svg.ico{ width:26px; height:26px; }
+.sc-tab svg.ico{ width:24px; height:24px; flex:none; }
 .sc-tab[aria-selected="true"]{ color:var(--forest-deep); }
 .sc-tab[data-tint="1"][aria-selected="true"]{ background:#bfeed6; }
 .sc-tab[data-tint="2"][aria-selected="true"]{ background:#c6f3ec; }
@@ -287,26 +306,33 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 /* ── how it works: five connected stage cards ─────────────── */
 .how{ padding:120px 0; background:var(--panel); margin:0 24px; border-radius:var(--r-panel); }
 .steps{ display:flex; gap:24px; margin:64px 0 0; padding:0; list-style:none; }
-.step{ position:relative; flex:1 1 0; min-width:0; display:flex; flex-direction:column; min-height:440px; padding:30px 28px 28px; border-radius:var(--r-card); background:var(--card); overflow:hidden; cursor:pointer; transition:flex-grow .55s var(--ease-move), box-shadow .25s var(--ease); box-shadow:0 1px 2px rgba(22,36,28,.04); }
+.step{ position:relative; flex:1 1 0; min-width:0; display:flex; flex-direction:column; min-height:400px; padding:30px 28px 28px; border-radius:var(--r-card); background:var(--card); overflow:hidden; cursor:pointer; transition:flex-grow .55s var(--ease-move), box-shadow .25s var(--ease); box-shadow:0 1px 2px rgba(22,36,28,.04); }
 .step:hover{ box-shadow:0 1px 2px rgba(22,36,28,.04), 0 18px 40px -24px rgba(22,36,28,.25); }
 .step.is-active{ flex-grow:2.5; cursor:default; }
 /* the trail between stages — the site's own path motif, not a borrowed shape */
 .step + .step::before{ content:''; position:absolute; left:-24px; top:48px; width:24px; height:10px; z-index:2;
   background:radial-gradient(circle, var(--emerald) 3px, transparent 3.5px) center/10px 10px no-repeat, repeating-linear-gradient(90deg, var(--border-2) 0 4px, transparent 4px 7px) center/100% 2px no-repeat; }
-.step::after{ content:''; position:absolute; left:-20%; right:-20%; bottom:-38%; height:62%; border-radius:50%; background:radial-gradient(closest-side, rgba(216,207,194,.32), transparent 72%); transition:opacity .4s var(--ease); pointer-events:none; }
+.step::after{ content:''; position:absolute; left:-20%; right:-20%; bottom:-38%; height:62%; border-radius:50%; background:radial-gradient(closest-side, rgba(16,185,129,.10), transparent 72%); transition:opacity .4s var(--ease); pointer-events:none; }
 .step.is-active::after{ background:radial-gradient(closest-side, rgba(16,185,129,.30), rgba(168,217,74,.18) 55%, transparent 74%); }
 .step-btn{ display:block; width:100%; padding:0; border:0; background:none; text-align:left; cursor:inherit; }
+.step-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .step-num{ display:block; font:600 13px/1 var(--figure); color:var(--muted-2); }
+.step-ico{ width:40px; height:40px; display:grid; place-items:center; border-radius:12px; background:rgba(16,185,129,.1); color:var(--forest); transition:background-color .3s var(--ease), color .3s var(--ease); }
+.step-ico svg{ width:20px; height:20px; }
+.step.is-active .step-ico{ background:var(--forest); color:var(--on-dark); }
 .step-title{ display:block; margin-top:14px; font:600 23px/1.18 var(--sans); letter-spacing:-.02em; }
 .step-time{ display:inline-block; margin-top:14px; padding:4px 10px; border-radius:999px; background:rgba(16,185,129,.1); color:var(--forest); font-size:12px; font-weight:600; line-height:1.35; }
 .step-body{ position:relative; z-index:1; margin-top:22px; opacity:1; transition:opacity .35s var(--ease) .15s; }
-.step:not(.is-active) .step-body{ opacity:0; pointer-events:none; transition-delay:0s; }
+/* out of the flow while closed: squeezed into a narrow card, the hidden list
+   used to set the height of the whole row and left every card half empty */
+.step:not(.is-active) .step-body{ position:absolute; left:28px; right:28px; visibility:hidden; opacity:0; pointer-events:none; transition-delay:0s; }
 .step-body ul{ margin:0; padding:0; list-style:none; }
 .step-body li{ position:relative; padding:7px 0 7px 22px; color:var(--muted); font-size:15px; line-height:1.45; }
 .step-body li::before{ content:''; position:absolute; left:2px; top:15px; width:8px; height:8px; border-radius:50%; box-shadow:inset 0 0 0 2px var(--emerald); }
 .step-body h4{ margin:14px 0 2px; font:700 11px/1 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--forest); }
 .step-result{ position:relative; z-index:1; margin-top:auto; padding-top:20px; font:italic 500 18px/1.3 var(--serif); color:var(--forest); opacity:1; transition:opacity .35s var(--ease) .15s; }
-.step:not(.is-active) .step-result{ opacity:0; transition-delay:0s; }
+/* a closed card still says what the stage gives you, so it is never an empty column */
+.step:not(.is-active) .step-result{ font-size:16px; color:var(--muted); transition-delay:0s; }
 .how-foot{ margin:48px auto 0; max-width:640px; text-align:center; color:var(--muted); font-size:18px; }
 
 /* ── ask Ally: the live help assistant, on the page ───────── */
@@ -376,8 +402,9 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .foot-cols a:hover{ color:var(--on-dark); }
 .foot-bottom{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-top:72px; padding-top:28px; border-top:1px solid rgba(234,243,238,.12); }
 .foot-brand{ display:flex; align-items:center; gap:14px; }
-.foot-brand img{ width:44px; height:44px; }
-.foot-brand strong{ font:600 30px/1 var(--serif); letter-spacing:-.02em; }
+.foot-brand img{ width:40px; height:40px; }
+.foot-brand strong{ font:700 24px/1 var(--sans); letter-spacing:-.02em; color:var(--on-dark); }
+.foot-brand strong span{ color:var(--emerald-bright); font-weight:600; }
 .foot-legal{ margin:0; font-size:13px; color:var(--on-dark-muted); text-align:right; }
 
 /* ── responsive ───────────────────────────────────────────── */
@@ -387,7 +414,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   .steps{ flex-wrap:wrap; }
   .step{ flex:1 1 calc(50% - 12px); min-height:0; }
   .step.is-active{ flex-grow:1; }
-  .step:not(.is-active) .step-body, .step:not(.is-active) .step-result{ opacity:1; pointer-events:auto; }
+  .step:not(.is-active) .step-body, .step:not(.is-active) .step-result{ position:relative; left:auto; right:auto; visibility:visible; opacity:1; pointer-events:auto; }
   .step + .step::before{ display:none; }
   .foot-top{ grid-template-columns:1fr; gap:56px; }
 }
@@ -412,8 +439,14 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   .announce .dot, .ann-long{ display:none; }
   .ann-short{ display:inline; }
   .announce a{ padding:2px 8px; }
-  .showcase{ margin-top:56px; padding:32px 12px 16px; }
-  .sc-tab{ width:52px; height:52px; border-radius:15px; }
+  .sc-runway{ margin-top:56px; }
+  .showcase{ padding:32px 12px 16px; }
+  /* four names don't fit a phone: only the open tab says what it is */
+  .sc-tabs{ gap:6px; }
+  .sc-tab{ height:52px; min-width:52px; justify-content:center; padding:0 11px; border-radius:15px; font-size:14px; }
+  .sc-tab:not([aria-selected="true"]) .sc-name{ display:none; }
+  .sc-long{ display:none; }
+  .sc-short{ display:inline; }
   .sc-card{ border-radius:28px; }
   .sc-panel{ padding:28px 22px; }
   .demo{ min-height:0; padding:52px 14px 20px; }
@@ -423,6 +456,12 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   .step{ flex-basis:100%; }
   .answer-stage{ padding:28px; }
   .ask-stage{ padding:12px; }
+  .ask-card{ height:380px; }
+  /* three compact rows instead of three tall cards */
+  .stats{ gap:12px; }
+  .stats li{ display:flex; align-items:center; gap:18px; padding:20px 22px; }
+  .stats strong{ flex:none; min-width:150px; font-size:38px; }
+  .stats p{ margin:0; font-size:15px; line-height:1.4; }
   .ask-form{ flex-direction:column; }
   .ask-field{ flex:none; }
   .ask-form .btn{ width:100%; }
@@ -455,7 +494,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       <span class="brand-text"><span class="brand-name">GoXL <span>Ally</span></span><span class="brand-by">by GoXL Entrepreneurship</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="#showcase">Product</a></li>
+      <li><a href="#product">Product</a></li>
       <li><a href="#how">How it works</a></li>
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/about.html">Our story</a></li>
@@ -466,7 +505,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     </div>
   </nav>
   <div class="mobile-menu" id="mobileMenu" hidden>
-    <a href="#showcase">Product</a>
+    <a href="#product">Product</a>
     <a href="#how">How it works</a>
     <a href="/pricing.html">Pricing</a>
     <a href="/about.html">Our story</a>
@@ -483,7 +522,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       <p class="lede">GoXL Ally is your Founder’s Compass — an AI that understands you, your business and your situation before helping you decide what to do next.</p>
       <div class="hero-ctas">
         <a class="btn btn-primary btn-lg" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="btn btn-ghost btn-lg" href="#showcase">See how Ally thinks <svg class="arrow-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+        <a class="btn btn-ghost btn-lg" href="#product">See how Ally thinks <svg class="arrow-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       </div>
       <p class="trio" aria-label="Clarity, confidence, consistency"><span>Clarity</span><span>Confidence</span><span>Consistency</span></p>
     </div>
@@ -491,24 +530,35 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     <!-- ════════════ SHOWCASE ════════════
          Four tabs, one card. Without JavaScript every panel is visible in
          order; the script hides the inactive three and wires the tabs. -->
+    <!-- The runway is what you scroll through while the showcase stays pinned;
+         it only gets its height on wide screens (see .sc-runway.is-pinned). -->
+    <div class="sc-runway" id="product">
     <div class="showcase" id="showcase" data-active="0">
       <div class="mesh" aria-hidden="true"><div class="mesh-strip"><span class="m1"></span><span class="m2"></span><span class="m3"></span><span class="m4"></span></div></div>
       <div class="sc-inner">
         <div class="sc-tabs" role="tablist" aria-label="What Ally does">
           <button class="sc-tab" type="button" role="tab" id="sc-tab-0" aria-controls="sc-panel-0" aria-selected="true" aria-label="Adaptive diagnosis" data-tint="1">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+            <span class="sc-name"><span class="sc-long">Adaptive diagnosis</span><span class="sc-short">Diagnosis</span></span>
+            <span class="sc-prog" aria-hidden="true"><span></span></span>
             <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
           </button>
           <button class="sc-tab" type="button" role="tab" id="sc-tab-1" aria-controls="sc-panel-1" aria-selected="false" tabindex="-1" aria-label="Clarity Report" data-tint="2">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>
+            <span class="sc-name"><span class="sc-long">Clarity Report</span><span class="sc-short">Report</span></span>
+            <span class="sc-prog" aria-hidden="true"><span></span></span>
             <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
           </button>
           <button class="sc-tab" type="button" role="tab" id="sc-tab-2" aria-controls="sc-panel-2" aria-selected="false" tabindex="-1" aria-label="Talk to Ally" data-tint="3">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.2A8 8 0 1 1 20 12z"/><path d="M9 11h6M9 14h4"/></svg>
+            <span class="sc-name">Talk to Ally</span>
+            <span class="sc-prog" aria-hidden="true"><span></span></span>
             <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
           </button>
           <button class="sc-tab" type="button" role="tab" id="sc-tab-3" aria-controls="sc-panel-3" aria-selected="false" tabindex="-1" aria-label="Plan your day" data-tint="4">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg>
+            <span class="sc-name">Plan your day</span>
+            <span class="sc-prog" aria-hidden="true"><span></span></span>
             <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
           </button>
         </div>
@@ -537,7 +587,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
               <p class="chip"><span class="chip-ico t2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg></span>Clarity Report</p>
               <h3>One named cause, with its reasoning.</h3>
               <p>Ally traces symptoms to their drivers, checks your founder profile against your business, and lands on the one cause to fix first — written up as a report that’s yours to keep.</p>
-              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="link-arrow" href="/ally-dashboard.html">See a sample dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
             <div class="demo t2" aria-label="Sample: a finding from a Clarity Report">
               <span class="demo-tag">Sample</span>
@@ -555,7 +605,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
               <p class="chip"><span class="chip-ico t3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.2A8 8 0 1 1 20 12z"/></svg></span>Talk to Ally <span class="badge">Plus</span></p>
               <h3>Ask with your whole picture in the room.</h3>
               <p>Ally holds your founder context, your business context and your current situation in one place, so every answer starts from where you actually are — not from a blank prompt.</p>
-              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="link-arrow" href="#plans">Included from Plus <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
             <div class="demo t3" aria-label="Sample: a conversation with Ally">
               <span class="demo-tag">Sample</span>
@@ -572,7 +622,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
               <p class="chip"><span class="chip-ico t4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16"/></svg></span>Plan your day <span class="badge">Plus</span></p>
               <h3>One clear day beats ten unfinished priorities.</h3>
               <p>Your goals, your vision and today’s plan point the same way — so the work that moves the business forward is the work that gets the time.</p>
-              <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="link-arrow" href="#plans">Included from Plus <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
             <div class="demo t4" aria-label="Sample: a planned day">
               <span class="demo-tag">Sample</span>
@@ -589,6 +639,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
           </div>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
@@ -665,14 +716,14 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       </div>
       <ol class="steps">
         <li class="step is-active">
-          <button class="step-btn" type="button" aria-expanded="true" aria-controls="step-b-0"><span class="step-num">01</span><span class="step-title">Onboarding</span><span class="step-time">Under 5 minutes</span></button>
+          <button class="step-btn" type="button" aria-expanded="true" aria-controls="step-b-0"><span class="step-top"><span class="step-num">01</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span></span><span class="step-title">Onboarding</span><span class="step-time">Under 5 minutes</span></button>
           <div class="step-body" id="step-b-0">
             <ul><li>Who you are, and why now</li><li>A snapshot of the business: stage, size, sector</li><li>What Ally will ask, and why</li><li>Data scope and consent agreed</li></ul>
           </div>
           <p class="step-result">A first question that feels personal.</p>
         </li>
         <li class="step">
-          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-1"><span class="step-num">02</span><span class="step-title">Adaptive diagnosis</span><span class="step-time">About 20 min, resumable</span></button>
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-1"><span class="step-top"><span class="step-num">02</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span></span><span class="step-title">Adaptive diagnosis</span><span class="step-time">About 20 min, resumable</span></button>
           <div class="step-body" id="step-b-1">
             <h4>Founder DNA</h4>
             <ul><li>Motivation and risk appetite</li><li>Decision style under pressure</li><li>Strengths and blind spots</li></ul>
@@ -682,21 +733,21 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
           <p class="step-result">Two living profiles, kept and updated.</p>
         </li>
         <li class="step">
-          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-2"><span class="step-num">03</span><span class="step-title">Root cause</span><span class="step-time">Runs automatically</span></button>
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-2"><span class="step-top"><span class="step-num">03</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/></svg></span></span><span class="step-title">Root cause</span><span class="step-time">Runs automatically</span></button>
           <div class="step-body" id="step-b-2">
             <ul><li>Surfaced issues ranked by impact</li><li>Symptoms traced to their drivers</li><li>Founder DNA checked against business DNA</li><li>Converges on one cause to fix first</li></ul>
           </div>
           <p class="step-result">One named cause, with its reasoning.</p>
         </li>
         <li class="step">
-          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-3"><span class="step-num">04</span><span class="step-title">Clarity Report</span><span class="step-time">Generated on demand</span></button>
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-3"><span class="step-top"><span class="step-num">04</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span></span><span class="step-title">Clarity Report</span><span class="step-time">Generated on demand</span></button>
           <div class="step-body" id="step-b-3">
             <ul><li>Diagnosis in plain language</li><li>Root cause stated with evidence</li><li>Prioritised actions and timelines</li><li>Baselines for the next 90 days</li></ul>
           </div>
           <p class="step-result">An open action list and live metrics.</p>
         </li>
         <li class="step">
-          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-4"><span class="step-num">05</span><span class="step-title">Daily use</span><span class="step-time">Ongoing</span></button>
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-4"><span class="step-top"><span class="step-num">05</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg></span></span><span class="step-title">Daily use</span><span class="step-time">Ongoing</span></button>
           <div class="step-body" id="step-b-4">
             <ul><li>Knowledge base</li><li>Vision board</li><li>Goals</li><li>Plan your day</li><li>Next steps</li></ul>
           </div>
@@ -824,7 +875,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     </nav>
   </div>
   <div class="foot-bottom">
-    <div class="foot-brand"><img src="/assets/logo-123.v1.png" alt="" width="44" height="44"><strong>GoXL Ally</strong></div>
+    <div class="foot-brand"><img src="/assets/logo-123.v1.png" alt="" width="40" height="40"><strong>GoXL <span>Ally</span></strong></div>
     <p class="foot-legal">© 2026 GoXL Consulting Solutions Pvt. Ltd.</p>
   </div>
 </footer>
@@ -959,9 +1010,73 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     return { select:select, count:btns.length, current:function(){ return btns.findIndex(function(b){ return b.getAttribute('aria-selected') === 'true'; }); } };
   }
 
-  /* 3. Showcase: the field behind the card slides with the selected tab. */
-  var sc = document.getElementById('showcase');
-  if (sc) tabs(sc.querySelector('[role="tablist"]'), function(i){ sc.setAttribute('data-active', String(i)); });
+  /* 3. Showcase: the field behind the card slides with the selected tab.
+     On wide screens it is also pinned: while its runway scrolls past, the
+     frame opens from its resting size to the full screen, then each quarter
+     of the remaining scroll shows the next tab. A tab click scrolls to that
+     tab's stretch, so clicking and scrolling never disagree. Phones, short
+     windows and reduced motion keep plain tabs. */
+  var sc = document.getElementById('showcase'), runway = document.getElementById('product');
+  if (sc && runway) {
+    var pinned = false, scTabs, frame = 0, aim = null, aimUntil = 0;
+    var fills = [].slice.call(sc.querySelectorAll('.sc-prog span'));
+    var wide = window.matchMedia('(min-width:901px) and (min-height:640px)');
+    var REST_W = 1200, REST_H = 660;
+    function lerp(a, b, t){ return a + (b - a) * t; }
+    function clamp(x){ return x < 0 ? 0 : x > 1 ? 1 : x; }
+    function layout(){
+      frame = 0;
+      if (!pinned) return;
+      var vh = window.innerHeight, vw = document.documentElement.clientWidth;
+      var r = runway.getBoundingClientRect();
+      /* open: from three-quarters of a screen away until it reaches the top */
+      var p = clamp(1 - r.top / (vh * .75));
+      var e = p * p * (3 - 2 * p);                       /* smoothstep */
+      var w0 = Math.min(REST_W, r.width);
+      sc.style.width = lerp(w0, vw, e) + 'px';
+      sc.style.marginLeft = lerp((r.width - w0) / 2, -r.left, e) + 'px';
+      sc.style.height = lerp(Math.min(REST_H, vh), vh, e) + 'px';
+      /* the bottom corners round off again over the last half-stretch, so the
+         frame leaves as a card rather than a hard-edged block */
+      var seg0 = (runway.offsetHeight - vh) / 4;
+      var q = clamp((-r.top - seg0 * 3.5) / (seg0 * .5));
+      var top = lerp(48, 0, e), bottom = lerp(top, 48, q);
+      sc.style.borderRadius = top + 'px ' + top + 'px ' + bottom + 'px ' + bottom + 'px';
+      sc.style.paddingTop = lerp(56, 92, e) + 'px';      /* clears the floating header once full */
+      sc.style.paddingBottom = lerp(64, 28, e) + 'px';
+      /* play: the scroll left after opening, in four equal stretches */
+      var seg = (runway.offsetHeight - vh) / 4, d = Math.max(0, -r.top);
+      var i = Math.min(3, Math.floor(d / seg));
+      /* while a click is still scrolling to its tab, the stretches passed on
+         the way don't get to reselect -- that read as a flicker back */
+      if (aim !== null) { if (i === aim || Date.now() > aimUntil) aim = null; else i = aim; }
+      if (scTabs.current() !== i) scTabs.select(i, false, false);
+      fills.forEach(function(f, k){ f.style.setProperty('--fill', k === i ? clamp((d - i * seg) / seg).toFixed(3) : 0); });
+    }
+    function queue(){ if (!frame) frame = requestAnimationFrame(layout); }
+    function setMode(){
+      var on = wide.matches && !reduce;
+      if (on === pinned) { queue(); return; }
+      pinned = on;
+      runway.classList.toggle('is-pinned', on);
+      runway.parentElement.classList.toggle('has-pinned', on);
+      if (!on) ['width', 'marginLeft', 'height', 'borderRadius', 'paddingTop', 'paddingBottom'].forEach(function(k){ sc.style[k] = ''; });
+      queue();
+    }
+    scTabs = tabs(sc.querySelector('[role="tablist"]'), function(i, fromUser){
+      sc.setAttribute('data-active', String(i));
+      if (fromUser && pinned) {
+        var seg = (runway.offsetHeight - window.innerHeight) / 4;
+        var top = window.scrollY + runway.getBoundingClientRect().top;
+        aim = i; aimUntil = Date.now() + 1500;
+        window.scrollTo({ top: top + i * seg + 2, behavior: 'smooth' });
+      }
+    });
+    window.addEventListener('scroll', queue, { passive:true });
+    window.addEventListener('resize', setMode);
+    if (wide.addEventListener) wide.addEventListener('change', setMode);
+    setMode();
+  }
 
   /* 4. Look closer: advances on its own while it is on screen, stops for good
      the moment someone chooses, pauses under the pointer or keyboard focus,
@@ -1013,6 +1128,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 (function(){
   var API = 'https://api.goxlally.ai';          /* also in next.config.ts connect-src */
   var FAQS = [{"q":"What is GoXL Ally?","a":"Ally is a Founder's Compass: an AI that learns how you lead and how your business actually works before it advises you. It runs an adaptive diagnosis, writes you a Clarity Report, and tells you the one thing worth doing next.","k":"what is who explain product about ally goxl"},{"q":"How long does it take?","a":"About 20 minutes for the diagnosis. You answer questions about how you decide and work, then about your current problem, then about the business. The report is generated in seconds once you finish.","k":"time long duration minutes how quick fast"},{"q":"How do I get access?","a":"Direct signup is available while access spots are open. If the current capacity is full, you'll be added to the founder waitlist and notified when a place opens.","k":"sign up signup join access invite waitlist queue register early"},{"q":"What does it cost?","a":"Three plans, all at our launch offer: Starter ₹199 paid once (one adaptive diagnosis and your Clarity Report), Plus ₹499/month (adds Talk to Ally, your Next Critical Steps, Set your Goals and Plan Your Day), and Pro ₹999/month (adds Ally recommending your steps, Build your Vision Board and email reminders). A discovery call with a GoXL advisor is ₹300 per 30 minutes on any plan.","k":"price pricing cost plans money rupees free trial subscription how much"},{"q":"Is this a sales call in disguise?","a":"No. The diagnosis is the product. If you book a discovery call, the advisor has already read your report and the 30 minutes go on your plan, not on a pitch.","k":"sales pitch demo call trap catch"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product. You can export or delete everything from inside the app at any time.","k":"privacy private data secure safe confidential sold shared gdpr delete"},{"q":"Who is it for?","a":"Founders running a real business who know something is off but not what. It is most useful when you have customers and momentum and are deciding where to put the next month of effort.","k":"who for founders stage suitable early startup right fit"},{"q":"I already have an account","a":"Use the Log in button at the top of this page. Your email is your login — if you have forgotten your password, choose \"Email me a code\" on the sign-in page and you can set a new one.","k":"login log in sign in existing account password forgot returning"},{"q":"Can I talk to a person?","a":"Yes. Email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST). Inside the app you can also book a discovery call with an advisor.","k":"human contact support email team speak person call"}];
+  var PRICE_Q = /\b(price|prices|pricing|cost|costs|plans|how much|fee|fees|charge|charges|subscription|rupees?|rs|inr|kitna|kitne|paisa|paise)\b|₹/i;
   var STARTERS = ['What is GoXL Ally?', 'How long does it take?', 'What does it cost?', 'Is my business information private?'];
 
   var form = document.getElementById('askForm'), input = document.getElementById('askInput');
@@ -1057,6 +1173,10 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     var settled = false;
     function finish(fn){ if (settled) return; settled = true; dots.remove(); fn(); busy = false; }
     function offline(){ var hits = search(text); if (hits.length) bubble('ally', hits[0].a); else miss(); }
+
+    /* Prices are answered here, from the same figures as the plans below:
+       the help API has quoted prices this page doesn't show, or none at all. */
+    if (PRICE_Q.test(text)) { setTimeout(function(){ finish(function(){ bubble('ally', FAQS[3].a); }); }, 600); return; }
     var giveUp = setTimeout(function(){ finish(offline); }, 10000);
 
     fetch(API + '/api/v1/support/public/ask', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ question:text.slice(0, 500) }) })
