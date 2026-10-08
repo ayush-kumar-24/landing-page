@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/founder-priorities` },
     { url: `${siteUrl}/founder-decision-making` },
     { url: `${siteUrl}/what-is-goxl-ally` },
-    { url: `${siteUrl}/ally-vs-chatgpt` },
+    { url: `${siteUrl}/ally-vs-general-ai` },
     { url: `${siteUrl}/ai-business-advisor-vs-consultant` },
     { url: `${siteUrl}/ai-tools-for-founders` },
     { url: `${siteUrl}/business-health-check-for-founders` },
