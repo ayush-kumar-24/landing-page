@@ -161,7 +161,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .mesh{ position:absolute; inset:0; z-index:-1; overflow:hidden; border-radius:inherit; }
 /* four fields stacked; the active one fades in over the last */
 .mesh-strip{ position:relative; width:100%; height:100%; }
-.mesh-strip > span{ position:absolute; inset:0; opacity:0; transition:opacity .9s var(--ease); will-change:opacity; }
+/* no will-change: with six fields it made six full-screen layers up front; a hidden field is simply not painted until its turn */
+.mesh-strip > span{ position:absolute; inset:0; opacity:0; transition:opacity .9s var(--ease); }
 .showcase:not([data-active]) .m1, .showcase[data-active="0"] .m1{ opacity:1; }
 .m1{ background:
   radial-gradient(42% 60% at 18% 24%, rgba(16,185,129,.55), transparent 70%),
@@ -181,6 +182,15 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   radial-gradient(40% 55% at 82% 36%, rgba(16,185,129,.36), transparent 70%),
   radial-gradient(55% 55% at 50% 108%, rgba(247,241,235,.95), transparent 70%), #ece6d6; }
 .showcase[data-active="1"] .m2, .showcase[data-active="2"] .m3, .showcase[data-active="3"] .m4{ opacity:1; }
+.m5{ background:
+  radial-gradient(45% 60% at 80% 20%, rgba(94,234,212,.5), transparent 70%),
+  radial-gradient(42% 55% at 16% 40%, rgba(16,185,129,.34), transparent 70%),
+  radial-gradient(55% 55% at 50% 108%, rgba(251,247,242,.95), transparent 70%), #d9ece5; }
+.m6{ background:
+  radial-gradient(45% 60% at 20% 18%, rgba(52,211,153,.42), transparent 70%),
+  radial-gradient(40% 55% at 84% 60%, rgba(168,217,74,.4), transparent 70%),
+  radial-gradient(48% 50% at 50% 106%, rgba(6,120,85,.3), transparent 70%), #dbe9d6; }
+.showcase[data-active="4"] .m5, .showcase[data-active="5"] .m6{ opacity:1; }
 
 /* Pinned mode, wide screens only (the script adds .is-pinned): scrolling in
    opens the frame out to the whole screen, holds it there while the four tabs
@@ -188,7 +198,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
    are set per frame by the script; everything else lives here. */
 .sc-runway{ margin-top:80px; }
 .sc-runway > .showcase{ margin-top:0; }
-.sc-runway.is-pinned{ height:430vh; }   /* a screen to open in, half a screen held, then four stretches */
+.sc-runway.is-pinned{ height:570vh; }   /* a screen to open in, half a screen held, then one stretch per tab (six) */
 /* the open frame is wider than the sand panel; ending flush hides the panel's
    own bottom corners behind it instead of showing them under a full-width block */
 /* the sand stops short of the bottom, where the frame always covers it, so its
@@ -217,6 +227,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .sc-tab[data-tint="2"][aria-selected="true"]{ background:#c6f3ec; }
 .sc-tab[data-tint="3"][aria-selected="true"]{ background:#cde7c0; }
 .sc-tab[data-tint="4"][aria-selected="true"]{ background:#e4efc6; }
+.sc-tab[data-tint="5"][aria-selected="true"]{ background:#cdeee6; }
+.sc-tab[data-tint="6"][aria-selected="true"]{ background:#d6ecc8; }
 .sc-stem{ position:absolute; left:50%; top:100%; width:32px; height:14px; margin-top:3px; transform:translateX(-50%); color:var(--card); opacity:0; transition:opacity .2s var(--ease); pointer-events:none; }
 .sc-tab[aria-selected="true"] .sc-stem{ opacity:1; }
 .sc-card{ position:relative; border-radius:40px; background:var(--card); }
@@ -228,7 +240,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .chip{ display:inline-flex; align-items:center; gap:10px; margin-bottom:22px; font-size:15px; font-weight:600; color:var(--ink); }
 .chip-ico{ width:30px; height:30px; display:grid; place-items:center; border-radius:9px; color:var(--forest-deep); }
 .chip-ico svg{ width:17px; height:17px; }
-.chip-ico.t1{ background:#bfeed6; } .chip-ico.t2{ background:#c6f3ec; } .chip-ico.t3{ background:#cde7c0; } .chip-ico.t4{ background:#e4efc6; }
+.chip-ico.t1{ background:#bfeed6; } .chip-ico.t2{ background:#c6f3ec; } .chip-ico.t3{ background:#cde7c0; } .chip-ico.t4{ background:#e4efc6; } .chip-ico.t5{ background:#cdeee6; } .chip-ico.t6{ background:#d6ecc8; }
 .badge{ padding:3px 8px; border-radius:7px; background:rgba(22,36,28,.06); font-size:12px; font-weight:600; color:var(--muted); }
 .sc-copy p{ margin:18px 0 28px; color:var(--muted); font-size:17px; }
 
@@ -238,6 +250,21 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .demo.t2{ background:linear-gradient(160deg,#e0f7f2,#cbeee5); }
 .demo.t3{ background:linear-gradient(160deg,#e3efdc,#d2e6c9); }
 .demo.t4{ background:linear-gradient(160deg,#f0f3df,#e6ecc9); }
+.demo.t5{ background:linear-gradient(160deg,#e2f5ef,#cfeae1); }
+.demo.t6{ background:linear-gradient(160deg,#e6f3df,#d3e8c9); }
+.know-tabs{ display:inline-flex; gap:4px; padding:4px; border-radius:999px; background:#f1ede6; }
+.know-tabs span{ padding:5px 12px; border-radius:999px; font-size:12px; font-weight:600; color:var(--muted); }
+.know-tabs span.is-on{ background:var(--forest); color:var(--on-dark); }
+.know-search{ margin:0 0 12px; padding:10px 14px; border-radius:12px; box-shadow:inset 0 0 0 1px var(--border); color:var(--muted-2); font-size:13px; }
+.know-term{ padding:12px 0; border-top:1px solid var(--border); }
+.know-term b{ display:block; margin-bottom:3px; font-size:15px; color:var(--ink); }
+.know-term span{ display:block; color:var(--muted); font-size:13.5px; line-height:1.5; }
+.mock-vision{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.vis-tile{ min-height:74px; padding:11px 12px; border-radius:14px; background:#f6f3ee; box-shadow:inset 0 0 0 1px var(--border); }
+.vis-tile small{ display:block; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); }
+.vis-tile span{ display:block; margin-top:6px; font:italic 500 14px/1.35 var(--serif); color:var(--forest); }
+.vis-tile.is-filled{ background:#eef7f1; box-shadow:inset 0 0 0 1px rgba(16,185,129,.28); }
+.vis-tile.is-filled small{ color:var(--emerald); }
 .demo::before{ content:''; position:absolute; inset:auto -10% -40% -10%; height:80%; background:radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.55), transparent 70%); pointer-events:none; }
 .demo-tag{ position:absolute; top:14px; right:14px; padding:3px 9px; border-radius:7px; background:rgba(255,253,249,.7); font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
 .mock{ position:relative; width:100%; max-width:420px; padding:22px; border-radius:20px; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 18px 40px -18px rgba(22,36,28,.22); font-size:14px; }
@@ -272,9 +299,9 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 /* ── proof ────────────────────────────────────────────────── */
 .proof{ padding:112px 0 40px; }
 .proof-intro{ max-width:640px; margin:0 auto 48px; text-align:center; color:var(--muted); font-size:18px; }
-.stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:0; padding:0; list-style:none; }
-.stats li{ padding:32px; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
-.stats strong{ display:block; font:600 clamp(44px,5vw,64px)/1 var(--figure); letter-spacing:-.03em; color:var(--forest); font-variant-numeric:tabular-nums; }
+.stats{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; margin:0; padding:0; list-style:none; }
+.stats li{ padding:28px; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
+.stats strong{ display:block; font:600 clamp(38px,3.6vw,52px)/1 var(--figure); letter-spacing:-.03em; color:var(--forest); font-variant-numeric:tabular-nums; }
 .stats strong span:not(.count){ color:var(--emerald); }   /* only the "+" is green; the counting figure keeps the forest ink */
 .stats p{ margin:14px 0 0; color:var(--muted); }
 
@@ -419,6 +446,15 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .meet-fs:hover{ background:rgba(16,185,129,.16); }
 .meet-fs svg{ width:15px; height:15px; }
 .meet-body{ flex:1; min-height:0; background:#f7f1eb; }
+/* the hint under Full screen */
+.meet-card .ask-card-head{ position:relative; z-index:2; }
+.meet-tip{ position:absolute; top:calc(100% + 10px); right:16px; padding:8px 12px; border-radius:10px; background:var(--forest); color:var(--on-dark); font-size:13px; font-weight:600; white-space:nowrap; pointer-events:none;
+  box-shadow:0 10px 24px -10px rgba(6,20,13,.55); opacity:0; transform:translateY(-6px); transition:opacity .3s var(--ease), transform .3s var(--ease); }
+.meet-tip::before{ content:''; position:absolute; top:-5px; right:calc(50% - 5px); width:10px; height:10px; background:inherit; border-radius:2px; transform:rotate(45deg); }
+/* it sits inside the card header, whose spans are small grey captions: undo that */
+.meet-card .ask-card-head .meet-tip{ display:block; color:var(--on-dark); font-size:13px; line-height:1.3; }
+.meet-tip.is-on{ opacity:1; transform:none; animation:tipBob 2.6s ease-in-out .6s infinite; }
+@keyframes tipBob{ 0%,100%{ transform:none; } 50%{ transform:translateY(4px); } }
 .meet-body{ position:relative; }
 .meet-body iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; opacity:0; transition:opacity .4s var(--ease); }
 .meet-body iframe.is-ready{ opacity:1; }
@@ -562,7 +598,13 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 .foot-legal{ margin:0; font-size:13px; color:var(--on-dark-muted); text-align:right; }
 
 /* ── responsive ───────────────────────────────────────────── */
+/* six named tabs need ~1090px: below that, only the open tab says its name */
+@media (min-width:721px) and (max-width:1279px){
+  .sc-tab:not([aria-selected="true"]){ padding:0 15px; }
+  .sc-tab:not([aria-selected="true"]) .sc-name{ display:none; }
+}
 @media (max-width:1080px){
+  .stats{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .sc-panel{ grid-template-columns:1fr; gap:32px; min-height:0; }
   .closer-grid{ gap:48px; }
   .steps{ flex-wrap:wrap; }
@@ -605,7 +647,12 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   /* four names don't fit a phone: only the open tab says what it is */
   .sc-tabs{ gap:6px; }
   .sc-tab{ height:52px; min-width:52px; justify-content:center; padding:0 11px; border-radius:15px; font-size:14px; }
-  .sc-tab:not([aria-selected="true"]) .sc-name{ display:none; }
+  .sc-tab .sc-name{ display:none; }
+  .sc-panel .chip-ico{ display:none; }   /* the tab above already shows the icon; the panel keeps just the name */
+  .sc-panel .chip{ margin-bottom:14px; }
+  .vis-tile{ min-height:64px; padding:10px; }
+  .vis-tile span{ font-size:13px; }   /* six tabs: icons only; the panel's own heading names it */
+  .sc-tab{ min-width:0; width:48px; height:48px; padding:0; }
   .sc-long{ display:none; }
   .sc-short{ display:inline; }
   .sc-card{ border-radius:28px; }
@@ -646,6 +693,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
 /* Reduced motion: no sliding, no auto-advance, nothing that moves on its own. */
 @media (prefers-reduced-motion: reduce){
+  .meet-tip.is-on{ animation:none; }
   .ask-fab-pulse{ animation:none; opacity:0; }
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -674,7 +722,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       <li><a href="/about.html">Our story</a></li>
     </ul>
     <div class="nav-cta">
-      <a class="btn btn-primary btn-sm" id="navCta" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-primary btn-sm" id="navCta" href="/go/login">Sign up <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </nav>
@@ -695,7 +743,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       <h1 id="hero-title">You don’t need all the answers. <em>You need to know your next move.</em></h1>
       <p class="lede">GoXL Ally is your Founder’s Compass — an AI that understands you, your business and your situation before helping you decide what to do next.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary btn-lg" id="heroCta" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-primary btn-lg" id="heroCta" href="/go/login">Sign up <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn btn-ghost btn-lg" href="#product">See how Ally thinks <svg class="arrow-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       </div>
       <p class="trio" aria-label="Clarity, confidence, consistency"><span>Clarity</span><span>Confidence</span><span>Consistency</span></p>
@@ -708,7 +756,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
          it only gets its height on wide screens (see .sc-runway.is-pinned). -->
     <div class="sc-runway" id="product">
     <div class="showcase" id="showcase" data-active="0">
-      <div class="mesh" aria-hidden="true"><div class="mesh-strip"><span class="m1"></span><span class="m2"></span><span class="m3"></span><span class="m4"></span></div></div>
+      <div class="mesh" aria-hidden="true"><div class="mesh-strip"><span class="m1"></span><span class="m2"></span><span class="m3"></span><span class="m4"></span><span class="m5"></span><span class="m6"></span></div></div>
       <div class="sc-inner">
         <div class="sc-tabs" role="tablist" aria-label="What Ally does">
           <button class="sc-tab" type="button" role="tab" id="sc-tab-0" aria-controls="sc-panel-0" aria-selected="true" aria-label="Adaptive diagnosis" data-tint="1">
@@ -732,6 +780,18 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
           <button class="sc-tab" type="button" role="tab" id="sc-tab-3" aria-controls="sc-panel-3" aria-selected="false" tabindex="-1" aria-label="Plan your day" data-tint="4">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg>
             <span class="sc-name">Plan your day</span>
+            <span class="sc-prog" aria-hidden="true"><span></span></span>
+            <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
+          </button>
+          <button class="sc-tab" type="button" role="tab" id="sc-tab-4" aria-controls="sc-panel-4" aria-selected="false" tabindex="-1" aria-label="Knowledge base" data-tint="5">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7"/></svg>
+            <span class="sc-name">Knowledge base</span>
+            <span class="sc-prog" aria-hidden="true"><span></span></span>
+            <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
+          </button>
+          <button class="sc-tab" type="button" role="tab" id="sc-tab-5" aria-controls="sc-panel-5" aria-selected="false" tabindex="-1" aria-label="Vision board" data-tint="6">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M10 10v10"/><circle cx="16" cy="15" r="1.6"/></svg>
+            <span class="sc-name">Vision board</span>
             <span class="sc-prog" aria-hidden="true"><span></span></span>
             <svg class="sc-stem" viewBox="0 0 32 14" aria-hidden="true"><path d="M10 0H22C22 8 26 14 32 14H0C6 14 10 8 10 0Z" fill="currentColor"/></svg>
           </button>
@@ -811,6 +871,44 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
               </div>
             </div>
           </div>
+
+          <div class="sc-panel" role="tabpanel" id="sc-panel-4" aria-labelledby="sc-tab-4">
+            <div class="sc-copy">
+              <p class="chip"><span class="chip-ico t5" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7"/></svg></span>Knowledge base</p>
+              <h3>What to read, watch and know — chosen, not scraped.</h3>
+              <p>Books worth the hours, talks worth the time, and a founder glossary you can search: the terms you’re expected to know and are rarely told. Open to every founder, on every plan.</p>
+              <a class="link-arrow" href="#plans">Included in every plan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="demo t5" aria-label="Sample: the founder glossary">
+              <span class="demo-tag">Sample</span>
+              <div class="mock mock-know">
+                <div class="mock-top"><span class="know-tabs"><span>Read</span><span>Watch</span><span class="is-on">Learn</span></span></div>
+                <div class="know-search">Search the glossary…</div>
+                <div class="know-term"><b>Contribution margin</b><span>What each sale leaves after the costs that grow with it — the money that pays for everything else.</span></div>
+                <div class="know-term"><b>Payback period</b><span>How long a customer takes to earn back what it cost to win them.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sc-panel" role="tabpanel" id="sc-panel-5" aria-labelledby="sc-tab-5">
+            <div class="sc-copy">
+              <p class="chip"><span class="chip-ico t6" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M10 10v10"/><circle cx="16" cy="15" r="1.6"/></svg></span>Vision board <span class="badge">Pro</span></p>
+              <h3>Write down where you’re going. Plan toward it.</h3>
+              <p>Six parts of the picture — your life, your business, your impact, your financial future, your ideal day and your legacy — so the goals and the daily plan keep pointing the same way.</p>
+              <a class="link-arrow" href="#plans">Included in Pro <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+            <div class="demo t6" aria-label="Sample: a vision board">
+              <span class="demo-tag">Sample</span>
+              <div class="mock mock-vision">
+                <div class="vis-tile is-filled"><small>My Business</small><span>A brand customers recommend without being asked.</span></div>
+                <div class="vis-tile is-filled"><small>My Ideal Day</small><span>Mornings on product, afternoons with customers, home by seven.</span></div>
+                <div class="vis-tile"><small>My Life</small></div>
+                <div class="vis-tile"><small>My Impact</small></div>
+                <div class="vis-tile"><small>My Financial Future</small></div>
+                <div class="vis-tile"><small>My Legacy</small></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -823,6 +921,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       <h2 class="sr-only" id="proof-title">What Ally is built on</h2>
       <p class="proof-intro">Built on a structured way of understanding founders and businesses — not generic prompts or advice templates.</p>
       <ul class="stats">
+        <li><strong><span class="count" data-to="30">30</span><span>+</span></strong><p>industries whose parameters Ally is trained on</p></li>
         <li><strong><span class="count" data-to="100">100</span><span>+</span></strong><p>entrepreneurial dimensions</p></li>
         <li><strong><span class="count" data-to="10000">10,000</span><span>+</span></strong><p>founder case studies</p></li>
         <li><strong><span class="count" data-to="25000">25,000</span><span>+</span></strong><p>founder problems mapped to their root causes</p></li>
@@ -960,7 +1059,8 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
         <div class="meet-stage">
           <div class="meet-card">
             <div class="ask-card-head"><img src="/assets/logo-123.v1.png" alt="" width="32" height="32"><div><strong>Ally dashboard</strong><span>Sample founder, sample data</span></div>
-              <button class="meet-fs" type="button" id="meetOpen" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg> Full screen</button></div>
+              <button class="meet-fs" type="button" id="meetOpen" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg> Full screen</button>
+              <span class="meet-tip" id="meetTip" aria-hidden="true">Try it full screen</span></div>
             <div class="meet-body"><img class="meet-still" src="/assets/ally-dashboard-still.v1.jpg" alt="" width="976" height="704" loading="lazy" decoding="async"><iframe data-src="/ally-dashboard.html" title="The Ally dashboard, sample data" loading="lazy"></iframe></div>
           </div>
           <p class="ask-note">The real interface, running here. Click around — nothing is saved.</p>
@@ -1101,7 +1201,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       <p class="eyebrow on-dark">The Founder’s Compass</p>
       <h2>You already have a journey. <em>Now understand where it should go next.</em></h2>
       <p>Start by understanding where you are today.</p>
-      <a class="btn btn-light btn-lg" id="closeCta" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-light btn-lg" id="closeCta" href="/go/login">Sign up <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <nav class="foot-cols" aria-label="Footer">
       <div>
@@ -1291,6 +1391,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   var sc = document.getElementById('showcase'), runway = document.getElementById('product');
   if (sc && runway) {
     var pinned = false, scTabs, frame = 0, aim = null, aimUntil = 0, settle = 0, lastY = window.scrollY, lastT = performance.now(), speed = 0;
+    var N = sc.querySelectorAll('[role="tab"]').length;   /* tabs, and so stretches */
     var HOLD = .5;                                       /* of a screen: the first tab, at rest, once the frame is full */
     var fills = [].slice.call(sc.querySelectorAll('.sc-prog span'));
     var wide = window.matchMedia('(min-width:901px) and (min-height:640px)');
@@ -1311,15 +1412,15 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       sc.style.height = lerp(Math.min(REST_H, vh), vh, e) + 'px';
       /* the bottom corners round off again over the last half-stretch, so the
          frame leaves as a card rather than a hard-edged block */
-      var lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / 4;
-      var q = clamp((-r.top - lead - seg * 3.5) / (seg * .5));
+      var lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / N;
+      var q = clamp((-r.top - lead - seg * (N - .5)) / (seg * .5));
       var top = lerp(48, 0, e), bottom = lerp(top, 48, q);
       sc.style.borderRadius = top + 'px ' + top + 'px ' + bottom + 'px ' + bottom + 'px';
       sc.style.paddingTop = lerp(56, 92, e) + 'px';      /* clears the floating header once full */
       sc.style.paddingBottom = lerp(64, 28, e) + 'px';
       /* play: after the hold, the rest of the scroll in four equal stretches */
       var d = Math.max(0, -r.top - lead);
-      var i = Math.min(3, Math.floor(d / seg));
+      var i = Math.min(N - 1, Math.floor(d / seg));
       /* while a click is still scrolling to its tab, the stretches passed on
          the way don't get to reselect -- that read as a flicker back */
       if (aim !== null) { if (i === aim || Date.now() > aimUntil) aim = null; else i = aim; }
@@ -1352,7 +1453,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     scTabs = tabs(sc.querySelector('[role="tablist"]'), function(i, fromUser){
       sc.setAttribute('data-active', String(i));
       if (fromUser && pinned) {
-        var vh = window.innerHeight, lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / 4;
+        var vh = window.innerHeight, lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / N;
         var top = window.scrollY + runway.getBoundingClientRect().top;
         aim = i; aimUntil = Date.now() + 1500;
         window.scrollTo({ top: top + lead + i * seg + 2, behavior: 'smooth' });
@@ -1654,6 +1755,25 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       document.documentElement.classList.remove('viewer-lock');
       if (opener) opener.focus();
     }
+
+    /* the hint: on when the card is in view, off for the visit once used */
+    var tip = document.getElementById('meetTip'), tipDone = false;
+    try { tipDone = sessionStorage.getItem('ally_v3_meet_tip') === 'x'; } catch(e) {}
+    if (tip && !tipDone && 'IntersectionObserver' in window) {
+      var tipTimer = 0;
+      new IntersectionObserver(function(es){
+        clearTimeout(tipTimer);
+        if (tipDone) return;
+        /* as the card comes into view while scrolling -- not after the visitor stops */
+        if (es[0].isIntersecting) tip.classList.add('is-on');
+        else tip.classList.remove('is-on');
+      }, { threshold:.25 }).observe(pf.parentNode.parentNode);
+    }
+    meetCard.addEventListener('click', function(){
+      tipDone = true;
+      if (tip) tip.classList.remove('is-on');
+      try { sessionStorage.setItem('ally_v3_meet_tip', 'x'); } catch(e) {}
+    });
     meetCard.addEventListener('click', openViewer);
     vClose.addEventListener('click', closeViewer);
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !viewer.hidden) closeViewer(); });
@@ -1738,7 +1858,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
    never as HTML, because it comes from the network. */
 (function(){
   var API = 'https://api.goxlally.ai';          /* also in next.config.ts connect-src */
-  var FAQS = [{"q":"What is GoXL Ally?","a":"Ally is a Founder's Compass: an AI that learns how you lead and how your business actually works before it advises you. It runs an adaptive diagnosis, writes you a Clarity Report, and tells you the one thing worth doing next.","k":"what is who explain product about ally goxl"},{"q":"How long does it take?","a":"About 20 minutes for the diagnosis. You answer questions about how you decide and work, then about your current problem, then about the business. The report is generated in seconds once you finish.","k":"time long duration minutes how quick fast"},{"q":"How do I get access?","a":"Direct signup is available while access spots are open. If the current capacity is full, you'll be added to the founder waitlist and notified when a place opens.","k":"sign up signup join access invite waitlist queue register early"},{"q":"What does it cost?","a":"Three plans, all at our launch offer: Starter ₹199 paid once (one adaptive diagnosis and your Clarity Report), Plus ₹499/month (adds Talk to Ally, your Next Critical Steps, Set your Goals and Plan Your Day), and Pro ₹999/month (adds Ally recommending your steps, Build your Vision Board and email reminders). A discovery call with a GoXL advisor is ₹300 per 30 minutes on any plan.","k":"price pricing cost plans money rupees free trial subscription how much"},{"q":"Is this a sales call in disguise?","a":"No. The diagnosis is the product. If you book a discovery call, the advisor has already read your report and the 30 minutes go on your plan, not on a pitch.","k":"sales pitch demo call trap catch"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product. You can export or delete everything from inside the app at any time.","k":"privacy private data secure safe confidential sold shared gdpr delete"},{"q":"Who is it for?","a":"Founders running a real business who know something is off but not what. It is most useful when you have customers and momentum and are deciding where to put the next month of effort.","k":"who for founders stage suitable early startup right fit"},{"q":"I already have an account","a":"Use the Log in button at the top of this page. Your email is your login — if you have forgotten your password, choose \"Email me a code\" on the sign-in page and you can set a new one.","k":"login log in sign in existing account password forgot returning"},{"q":"Can I talk to a person?","a":"Yes. Email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST). Inside the app you can also book a discovery call with an advisor.","k":"human contact support email team speak person call"}];
+  var FAQS = [{"q":"What is GoXL Ally?","a":"Ally is a Founder's Compass: an AI that learns how you lead and how your business actually works before it advises you. It runs an adaptive diagnosis, writes you a Clarity Report, and tells you the one thing worth doing next.","k":"what is who explain product about ally goxl"},{"q":"How long does it take?","a":"About 20 minutes for the diagnosis. You answer questions about how you decide and work, then about your current problem, then about the business. The report is generated in seconds once you finish.","k":"time long duration minutes how quick fast"},{"q":"How do I get access?","a":"Direct signup is available while access spots are open. If the current capacity is full, you'll be added to the founder waitlist and notified when a place opens.","k":"sign up signup join access invite waitlist queue register early"},{"q":"What does it cost?","a":"Three plans, all at our launch offer: Starter ₹199 paid once (one adaptive diagnosis and your Clarity Report), Plus ₹499/month (adds Talk to Ally, your Next Critical Steps, Set your Goals and Plan Your Day), and Pro ₹999/month (adds Ally recommending your steps, Build your Vision Board and email reminders). A discovery call with a GoXL advisor is ₹300 per 30 minutes on any plan.","k":"price pricing cost plans money rupees free trial subscription how much"},{"q":"Is this a sales call in disguise?","a":"No. The diagnosis is the product. If you book a discovery call, the advisor has already read your report and the 30 minutes go on your plan, not on a pitch.","k":"sales pitch demo call trap catch"},{"q":"Is my business information private?","a":"Yes. What you tell Ally is yours: it is used to give you your diagnosis, report and recommendations, and is never sold or shared as a product. You can export or delete everything from inside the app at any time.","k":"privacy private data secure safe confidential sold shared gdpr delete"},{"q":"Who is it for?","a":"Founders running a real business who know something is off but not what. It is most useful when you have customers and momentum and are deciding where to put the next month of effort.","k":"who for founders stage suitable early startup right fit"},{"q":"I already have an account","a":"Use Sign up at the top of this page, then choose \"Sign in here\" on the next screen. Your email is your login — if you have forgotten your password, choose \"Email me a code\" on the sign-in page and you can set a new one.","k":"login log in sign in existing account password forgot returning"},{"q":"Can I talk to a person?","a":"Yes. Email info@goxl.in and we will reply within one working day (Mon–Fri, 9 AM – 6 PM IST). Inside the app you can also book a discovery call with an advisor.","k":"human contact support email team speak person call"}];
   var PRICE_Q = /\b(price|prices|pricing|cost|costs|plans|how much|fee|fees|charge|charges|subscription|rupees?|rs|inr|kitna|kitne|paisa|paise)\b|₹/i;
   var STARTERS = ['What is GoXL Ally?', 'How long does it take?', 'What does it cost?', 'Is my business information private?'];
 
