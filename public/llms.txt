@@ -22,13 +22,13 @@ Founders running a real business who know something is off but not what. Most us
 
 ## How to get access
 
-Access to GoXL Ally is currently by invitation. Existing invited users can log in through https://www.goxlally.ai/. The product itself is at https://app.goxlally.ai/. Current access and pricing information is maintained on the public website.
+Access to GoXL Ally opens in limited batches: founders can sign up with an email code while spots are open, and when a batch is full new founders join the waitlist until the next batch opens. Existing users log in through https://www.goxlally.ai/. The product itself is at https://app.goxlally.ai/. Current access and pricing information is maintained on the public website.
 
 ## Pages
 
 - [Home](https://www.goxlally.ai/): what Ally is and how it thinks
 - [What Is GoXL Ally?](https://www.goxlally.ai/what-is-goxl-ally): canonical product explainer and how the diagnosis-first system works
-- [GoXL Ally vs ChatGPT](https://www.goxlally.ai/ally-vs-chatgpt): factual comparison of a general-purpose AI assistant and Ally's diagnosis-first founder workflow
+- [GoXL Ally vs General AI Assistants](https://www.goxlally.ai/ally-vs-general-ai): factual comparison of general-purpose AI assistants as a category and Ally's diagnosis-first founder workflow
 - [AI Business Advisor vs Consultant](https://www.goxlally.ai/ai-business-advisor-vs-consultant): founder-focused comparison of AI advisory, consultants, coaches and mentors
 - [AI Tools for Founders](https://www.goxlally.ai/ai-tools-for-founders): practical 2026 founder AI stack organized by thinking, research, building, design, automation and decision workflows
 - [Business Health Check for Founders](https://www.goxlally.ai/business-health-check-for-founders): eight-area current-state review across strategy, market, sales, finance, operations, team, systems and founder dependence

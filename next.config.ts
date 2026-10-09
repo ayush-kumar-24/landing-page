@@ -112,8 +112,8 @@ const nextConfig: NextConfig = {
           destination: "/what-is-goxl-ally.html",
         },
         {
-          source: "/ally-vs-chatgpt",
-          destination: "/ally-vs-chatgpt.html",
+          source: "/ally-vs-general-ai",
+          destination: "/ally-vs-general-ai.html",
         },
         {
           source: "/ai-business-advisor-vs-consultant",
@@ -155,6 +155,14 @@ const nextConfig: NextConfig = {
       {
         source: "/terms",
         destination: "/terms.html",
+        permanent: true,
+      },
+      // The comparison page compares Ally with general AI assistants as a
+      // category and no longer names any one product, so its address doesn't
+      // either. Permanent, so search engines move the page to the new URL.
+      {
+        source: "/:old(ally-vs-chatgpt|ally-vs-chatgpt.html)",
+        destination: "/ally-vs-general-ai",
         permanent: true,
       },
       // Earlier builds of the landing page. A redirect beats serving them with

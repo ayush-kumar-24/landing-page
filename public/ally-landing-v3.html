@@ -31,8 +31,8 @@
 <style>
 /* ============================================================
    TOKENS — the live site's own palette (ally-landing-v2.html :root).
-   Structure borrowed from calendly.com: warm page, sand panels inset
-   from the viewport, one dark ink, one accent used sparingly.
+   Structure: a warm page, sand panels inset from the viewport, one
+   dark ink, one accent used sparingly.
    ============================================================ */
 :root{
   --page:#fbf7f2;
@@ -131,7 +131,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 /* ── header: flat at the top, a floating pill once you scroll ── */
 .site-head{ position:sticky; top:0; z-index:50; padding:10px 24px; }
 .nav{ max-width:1392px; margin:0 auto; height:64px; display:flex; align-items:center; gap:24px; padding:0 10px 0 16px; border-radius:20px; transition:background-color .25s var(--ease), box-shadow .25s var(--ease); }
-.site-head.is-floating .nav{ background:rgba(255,253,249,.94); box-shadow:var(--shadow-float); -webkit-backdrop-filter:saturate(1.4) blur(12px); backdrop-filter:saturate(1.4) blur(12px); }
+/* no backdrop blur: at this opacity it barely shows, and it was re-rendered behind the header on every scrolled frame */
+.site-head.is-floating .nav{ background:rgba(255,253,249,.97); box-shadow:var(--shadow-float); }
 .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
 .brand img{ width:34px; height:34px; }
 .brand-text{ display:flex; flex-direction:column; line-height:1.1; }
@@ -158,8 +159,10 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 /* ── showcase: four tabs over a soft field that slides with them ── */
 .showcase{ position:relative; max-width:1200px; margin:80px auto 0; padding:56px 40px 64px; border-radius:var(--r-frame); overflow:hidden; isolation:isolate; }
 .mesh{ position:absolute; inset:0; z-index:-1; overflow:hidden; border-radius:inherit; }
-.mesh-strip{ display:flex; width:400%; height:100%; transform:translateX(0); transition:transform 1.1s var(--ease-move); will-change:transform; }
-.mesh-strip > span{ flex:1 1 0; }
+/* four fields stacked; the active one fades in over the last */
+.mesh-strip{ position:relative; width:100%; height:100%; }
+.mesh-strip > span{ position:absolute; inset:0; opacity:0; transition:opacity .9s var(--ease); will-change:opacity; }
+.showcase:not([data-active]) .m1, .showcase[data-active="0"] .m1{ opacity:1; }
 .m1{ background:
   radial-gradient(42% 60% at 18% 24%, rgba(16,185,129,.55), transparent 70%),
   radial-gradient(38% 55% at 82% 18%, rgba(94,234,212,.55), transparent 70%),
@@ -177,9 +180,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   radial-gradient(45% 60% at 22% 22%, rgba(168,217,74,.55), transparent 70%),
   radial-gradient(40% 55% at 82% 36%, rgba(16,185,129,.36), transparent 70%),
   radial-gradient(55% 55% at 50% 108%, rgba(247,241,235,.95), transparent 70%), #ece6d6; }
-.showcase[data-active="1"] .mesh-strip{ transform:translateX(-25%); }
-.showcase[data-active="2"] .mesh-strip{ transform:translateX(-50%); }
-.showcase[data-active="3"] .mesh-strip{ transform:translateX(-75%); }
+.showcase[data-active="1"] .m2, .showcase[data-active="2"] .m3, .showcase[data-active="3"] .m4{ opacity:1; }
 
 /* Pinned mode, wide screens only (the script adds .is-pinned): scrolling in
    opens the frame out to the whole screen, holds it there while the four tabs
@@ -187,7 +188,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
    are set per frame by the script; everything else lives here. */
 .sc-runway{ margin-top:80px; }
 .sc-runway > .showcase{ margin-top:0; }
-.sc-runway.is-pinned{ height:380vh; }
+.sc-runway.is-pinned{ height:430vh; }   /* a screen to open in, half a screen held, then four stretches */
 /* the open frame is wider than the sand panel; ending flush hides the panel's
    own bottom corners behind it instead of showing them under a full-width block */
 /* the sand stops short of the bottom, where the frame always covers it, so its
@@ -198,6 +199,9 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .sc-prog{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:2px; background:rgba(22,36,28,.1); overflow:hidden; opacity:0; transition:opacity .2s var(--ease); pointer-events:none; }
 .sc-prog span{ display:block; height:100%; background:var(--forest); transform:scaleX(var(--fill, 0)); transform-origin:0 50%; }
 .sc-runway.is-pinned .sc-tab[aria-selected="true"] .sc-prog{ opacity:1; }
+/* sized to the window once, centred, and only moved: a background that
+   resized with the frame was re-painted, all four panels of it, every frame */
+.sc-runway.is-pinned .mesh{ inset:auto; left:50%; top:50%; width:var(--vw, 100vw); height:100vh; border-radius:0; transform:translate(-50%,-50%); will-change:transform; }
 
 /* drop-shadow, not box-shadow: the stem under the active tab and the card
    are one silhouette, and the shadow has to follow both */
@@ -217,8 +221,9 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .sc-tab[aria-selected="true"] .sc-stem{ opacity:1; }
 .sc-card{ position:relative; border-radius:40px; background:var(--card); }
 .sc-panel{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.12fr); gap:48px; align-items:center; padding:48px; min-height:460px; }
-.sc-panel.is-entering .sc-copy, .sc-panel.is-entering .demo{ animation:rise .5s var(--ease) both; }
-.sc-panel.is-entering .demo{ animation-delay:.06s; }
+.sc-panel.is-entering .sc-copy, .sc-panel.is-entering .demo{ animation:scIn .38s var(--ease) both; }
+@keyframes scIn{ from{ opacity:.3; transform:translateY(8px); } }   /* never a blank card between panels */
+.sc-panel.is-entering .demo{ animation-delay:.04s; }
 @keyframes rise{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
 .chip{ display:inline-flex; align-items:center; gap:10px; margin-bottom:22px; font-size:15px; font-weight:600; color:var(--ink); }
 .chip-ico{ width:30px; height:30px; display:grid; place-items:center; border-radius:9px; color:var(--forest-deep); }
@@ -298,7 +303,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
    holds still while the scroll walks the four sayings, the line under the
    current one filling as you go; then the page carries on. Tightened a little
    so the whole of it fits one screen under the header. */
-.closer.is-pinned{ height:400vh; padding:0; }
+.closer.is-pinned{ height:450vh; padding:0; }   /* a screen to arrive, half a screen held on the first saying, then four stretches */
 .closer.is-pinned .closer-pin{ position:sticky; top:0; height:100vh; display:flex; align-items:center; padding:84px 0 16px; }
 .closer.is-pinned .closer-pin > .wrap{ flex:1; }
 .closer.is-pinned .closer-grid{ align-items:center; }
@@ -308,7 +313,30 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .closer.is-pinned .q-btn{ padding:17px 0; }
 .closer.is-pinned .answer-stage{ min-height:min(560px, calc(100vh - 140px)); }
 .closer.is-pinned .q-btn[aria-selected="true"] .q-fill{ transform:scaleX(var(--fill, 0)); animation:none; }
+/* the reel: every answer shown, stacked a stage-height apart, slid by the script */
+.closer.is-pinned .answer-stage{ padding:0; }
+/* the reel follows the chosen saying, not the raw scroll: list and card always
+   change together, and a fast flick is one glide to where it lands */
+.closer.is-pinned .answer-reel{ position:absolute; inset:0; z-index:1; will-change:transform; transition:transform .6s var(--ease-move); }
+.closer.is-pinned .answer, .closer.is-pinned .answer[hidden]{ display:flex !important; flex-direction:column; justify-content:center; height:100%; padding:44px 48px; }
+.closer.is-pinned .answer.is-entering{ animation:none; }
+.closer.is-pinned .trail{ height:36px; margin:20px 0 20px 8px; }
 .answer-stage{ position:relative; min-height:560px; padding:48px; border-radius:var(--r-frame); background:var(--panel); overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
+/* phones: saying, then its card, four times over (the script adds .is-stacked) */
+.closer.is-stacked .closer-right{ display:none; }
+.closer.is-stacked .q-list{ border-top:0; }
+.closer.is-stacked .q-item{ padding-bottom:6px; opacity:.3; transition:opacity .45s var(--ease); }
+.closer.is-stacked .q-item.is-near{ opacity:1; }
+.closer.is-stacked .q-btn{ opacity:1; cursor:default; padding:24px 0 0; }
+.closer.is-stacked .q-track{ display:none; }
+.closer.is-stacked .q-desc{ display:block; }
+.closer.is-stacked .q-desc > span{ opacity:1; transform:none; padding-top:8px; min-height:0; animation:none; }
+.closer.is-stacked .answer, .closer.is-stacked .answer[hidden]{ display:block !important; position:relative; margin:18px 0 22px; padding:26px 22px 24px; border-radius:28px; background:var(--panel); overflow:hidden; animation:none; }
+.closer.is-stacked .answer::after{ content:''; position:absolute; right:-90px; bottom:-110px; width:260px; height:260px; border-radius:50%; background:radial-gradient(closest-side, rgba(16,185,129,.18), transparent 70%); pointer-events:none; }
+.closer.is-stacked .answer > *{ position:relative; z-index:1; }
+.closer.is-stacked .answer blockquote{ font-size:clamp(24px,6.6vw,30px); }
+.closer.is-stacked .trail{ height:34px; margin:18px 0 18px 8px; }
+.closer.is-stacked .answer .looks{ font-size:16px; padding:18px 20px; border-radius:20px; }
 .answer-stage::after{ content:''; position:absolute; right:-80px; bottom:-120px; width:360px; height:360px; border-radius:50%; background:radial-gradient(closest-side, rgba(16,185,129,.18), transparent 70%); pointer-events:none; }
 .answer{ position:relative; z-index:1; }
 .answer.is-entering{ animation:rise .45s var(--ease) both; }
@@ -317,6 +345,23 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .answer blockquote{ margin:0; font:italic 500 clamp(26px,2.6vw,34px)/1.2 var(--serif); letter-spacing:-.015em; color:var(--ink); }
 .trail{ display:block; width:2px; height:56px; margin:28px 0 28px 8px; background:repeating-linear-gradient(180deg, var(--border-2) 0 6px, transparent 6px 12px); position:relative; }
 .trail::after{ content:''; position:absolute; left:50%; bottom:-6px; width:12px; height:12px; transform:translateX(-50%); border-radius:50%; background:var(--emerald); box-shadow:0 0 0 6px rgba(16,185,129,.16); }
+/* a saying's one-line description: opens under the current one, rising into view */
+.q-desc{ grid-column:2; display:none; }
+.q-desc > span{ overflow:hidden; font-size:15px; line-height:1.5; color:var(--muted); opacity:0; transform:translateY(10px); transition:opacity .35s var(--ease), transform .45s var(--ease); }
+.q-btn[aria-selected="true"] .q-desc{ display:block; }
+.q-desc > span{ display:block; }
+.q-item.is-gliding{ transition:transform .45s var(--ease); }
+.q-btn[aria-selected="true"] .q-desc > span{ opacity:1; transform:none; padding-top:8px; min-height:calc(3em + 8px); transition-delay:.08s; animation:descIn .45s var(--ease) both; }
+@keyframes descIn{ from{ opacity:0; transform:translateY(10px); } }   /* two lines held open whatever the length, so nothing shifts between sayings */
+/* where it could be: the guess is picked first, then the pick moves on */
+.lens{ display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0; }
+.lens span{ padding:7px 13px; border-radius:999px; background:rgba(255,253,249,.7); box-shadow:inset 0 0 0 1px var(--border-2); font-size:13px; font-weight:600; color:var(--muted); }
+.answer.is-current .lens .guess{ animation:lensGuess 1.6s var(--ease) both; }
+.answer.is-current .lens .hit{ animation:lensHit 1.6s var(--ease) both; }
+@keyframes lensGuess{ 0%,35%{ background:var(--ink); color:var(--card); box-shadow:none; text-decoration:none; } 55%,100%{ background:rgba(255,253,249,.7); color:var(--muted-2); text-decoration:line-through; } }
+@keyframes lensHit{ 0%,45%{ background:rgba(255,253,249,.7); color:var(--muted); } 65%,100%{ background:var(--emerald); color:var(--forest-night); box-shadow:none; } }
+.answer:not(.is-current) .lens .hit{ background:var(--emerald); color:var(--forest-night); box-shadow:none; }
+.answer:not(.is-current) .lens .guess{ text-decoration:line-through; color:var(--muted-2); }
 .answer .looks{ margin:0; padding:24px 26px; border-radius:24px; background:var(--card); font-size:18px; line-height:1.55; box-shadow:0 1px 2px rgba(22,36,28,.05), 0 16px 36px -18px rgba(22,36,28,.2); }
 .closer-foot{ margin:56px auto 0; text-align:center; font:italic 500 clamp(22px,2.2vw,28px)/1.3 var(--serif); color:var(--forest); max-width:720px; }
 
@@ -331,6 +376,12 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   background:radial-gradient(circle, var(--emerald) 3px, transparent 3.5px) center/10px 10px no-repeat, repeating-linear-gradient(90deg, var(--border-2) 0 4px, transparent 4px 7px) center/100% 2px no-repeat; }
 .step::after{ content:''; position:absolute; left:-20%; right:-20%; bottom:-38%; height:62%; border-radius:50%; background:radial-gradient(closest-side, rgba(16,185,129,.10), transparent 72%); transition:opacity .4s var(--ease); pointer-events:none; }
 .step.is-active::after{ background:radial-gradient(closest-side, rgba(16,185,129,.30), rgba(168,217,74,.18) 55%, transparent 74%); }
+/* while the stages play on their own, the open card shows how long it has left */
+.step-timer{ position:absolute; left:28px; right:28px; bottom:14px; z-index:2; height:3px; border-radius:3px; background:rgba(22,36,28,.08); overflow:hidden; opacity:0; transition:opacity .25s var(--ease); pointer-events:none; }
+.step-timer i{ display:block; height:100%; background:var(--emerald); transform:scaleX(0); transform-origin:0 50%; }
+.how.is-playing .step.is-active .step-timer{ opacity:1; }
+.how.is-playing .step.is-active .step-timer i{ animation:fill 4s linear forwards; }
+.how.is-paused .step.is-active .step-timer i{ animation-play-state:paused; }
 .step-btn{ display:block; width:100%; padding:0; border:0; background:none; text-align:left; cursor:inherit; }
 .step-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .step-num{ display:block; font:600 13px/1 var(--figure); color:var(--muted-2); }
@@ -351,6 +402,60 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 /* a closed card still says what the stage gives you, so it is never an empty column */
 .step:not(.is-active) .step-result{ font-size:16px; color:var(--muted); transition-delay:0s; }
 .how-foot{ margin:48px auto 0; max-width:640px; text-align:center; color:var(--muted); font-size:18px; }
+
+/* ── meet Ally: the sample dashboard, running in a card ──────
+   Ask Ally mirrored: the same frame and card, the dashboard inside it at
+   the card's own width, and a Full screen button in the card's header. */
+.meet{ padding:120px 0 0; }
+.meet-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px; align-items:center; }
+.meet-copy h2{ font-size:clamp(32px,3.8vw,52px); }
+.meet-copy > p:not(.eyebrow){ margin:20px 0 32px; color:var(--muted); font-size:18px; max-width:480px; }
+.meet-stage{ position:relative; padding:28px; border-radius:var(--r-frame); background:linear-gradient(160deg,#efe6d9 0%,#e6f2dc 45%,#dff4e9 100%); }
+.meet-card{ display:flex; flex-direction:column; height:440px; border-radius:28px; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 24px 48px -24px rgba(22,36,28,.28); overflow:hidden; }
+.meet-card .ask-card-head{ flex:none; }
+.meet-card .ask-card-head > div{ min-width:0; }
+.meet-card .ask-card-head span{ display:block; line-height:1.35; }
+.meet-fs{ flex:none; white-space:nowrap; margin-left:auto; display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 14px; border:0; border-radius:999px; background:rgba(22,36,28,.06); color:var(--forest); font-size:13px; font-weight:600; cursor:pointer; transition:background-color .15s var(--ease); }
+.meet-fs:hover{ background:rgba(16,185,129,.16); }
+.meet-fs svg{ width:15px; height:15px; }
+.meet-body{ flex:1; min-height:0; background:#f7f1eb; }
+.meet-body{ position:relative; }
+.meet-body iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; opacity:0; transition:opacity .4s var(--ease); }
+.meet-body iframe.is-ready{ opacity:1; }
+.meet-still{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top left; }
+
+/* ── floating "Ask Ally": a shortcut to the Ask section ─────
+   The button is the live home's chat button, unchanged in look; the popup
+   beside it says what it is. */
+.ask-fab{ position:fixed; right:20px; bottom:20px; z-index:60; display:flex; align-items:center; gap:12px; text-decoration:none;
+  opacity:0; visibility:hidden; transform:translateY(12px); transition:opacity .25s var(--ease), transform .25s var(--ease), visibility 0s linear .25s; }
+.ask-fab.is-shown{ opacity:1; visibility:visible; transform:none; transition:opacity .25s var(--ease), transform .25s var(--ease), visibility 0s; }
+.ask-fab-btn{ position:relative; flex:none; width:56px; height:56px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(52,211,153,.32); background:radial-gradient(circle at 30% 25%,#14392a 0%,#06140d 100%); color:#34d399;
+  box-shadow:0 6px 22px -6px rgba(6,20,13,.55); transition:transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s, border-color .2s; }
+.ask-fab-btn svg{ width:27px; height:27px; }
+.ask-fab:hover .ask-fab-btn{ transform:translateY(-2px); border-color:rgba(52,211,153,.6); box-shadow:0 12px 28px -8px rgba(6,20,13,.65), 0 0 0 6px rgba(52,211,153,.1); }
+.ask-fab-pulse{ position:absolute; inset:-1px; border-radius:50%; border:1px solid rgba(52,211,153,.5); animation:askPulse 3.6s cubic-bezier(.16,1,.3,1) infinite; pointer-events:none; }
+@keyframes askPulse{ 0%{ opacity:.55; transform:scale(1); } 45%,100%{ opacity:0; transform:scale(1.45); } }
+/* the popup: pops in a moment after the button, tail pointing at it */
+.ask-fab-tip{ position:relative; padding:9px 14px; border-radius:12px; background:var(--card); color:var(--ink); font-size:14px; font-weight:500; white-space:nowrap;
+  box-shadow:0 1px 2px rgba(22,36,28,.08), 0 12px 28px -12px rgba(22,36,28,.38); transform-origin:100% 50%; opacity:0; transform:translateX(6px) scale(.94); transition:opacity .3s var(--ease), transform .35s cubic-bezier(.16,1,.3,1); }
+.ask-fab-tip b{ font-weight:700; color:var(--forest); }
+.ask-fab-tip::after{ content:''; position:absolute; right:-5px; top:50%; width:10px; height:10px; margin-top:-5px; background:inherit; border-radius:2px; transform:rotate(45deg); }
+.ask-fab.is-shown .ask-fab-tip{ opacity:1; transform:none; transition-delay:.35s; }
+.ask-fab:focus-visible{ outline:none; }
+.ask-fab:focus-visible .ask-fab-btn{ outline:2px solid #34d399; outline-offset:3px; }
+
+/* full-screen viewer */
+.viewer{ position:fixed; inset:0; z-index:200; display:none; grid-template-rows:auto minmax(0,1fr); gap:12px; padding:clamp(10px,2vh,24px); background:rgba(6,20,13,.88); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+.viewer.is-open{ display:grid; }
+.viewer-top{ display:flex; align-items:center; justify-content:space-between; gap:16px; color:var(--on-dark-muted); font-size:13px; }
+.viewer-top p{ margin:0; }
+.viewer-x{ display:inline-flex; align-items:center; gap:8px; height:44px; padding:0 16px; border:1px solid rgba(234,243,238,.2); border-radius:999px; background:rgba(234,243,238,.06); color:var(--on-dark); font-size:14px; font-weight:600; cursor:pointer; }
+.viewer-x:hover{ background:rgba(234,243,238,.14); }
+.viewer-x svg{ width:16px; height:16px; }
+.viewer-frame{ min-height:0; border-radius:20px; overflow:hidden; background:var(--card); }
+.viewer-frame iframe{ width:100%; height:100%; border:0; display:block; }
+html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
 /* ── ask Ally: the live help assistant, on the page ───────── */
 .ask{ padding:120px 0; }
@@ -380,6 +485,38 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .typing i:nth-child(2){ animation-delay:.15s; } .typing i:nth-child(3){ animation-delay:.3s; }
 @keyframes blink{ 0%,80%,100%{ opacity:.25; transform:none; } 40%{ opacity:1; transform:translateY(-2px); } }
 .ask-note{ margin:14px 4px 0; font-size:13px; color:var(--muted); }
+
+/* ── your starting point: four stages in a card ────────────── */
+.start{ padding:0 0 120px; }
+.start-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px; align-items:center; }
+.start-copy h2{ font-size:clamp(32px,3.8vw,52px); }
+.start-copy > p:not(.eyebrow){ margin:20px 0 0; color:var(--muted); font-size:18px; max-width:460px; }
+.start-stage{ padding:28px; border-radius:var(--r-frame); background:linear-gradient(160deg,#dff4e9 0%,#e6f2dc 55%,#efe6d9 100%); }
+.start-card{ display:flex; flex-direction:column; min-height:440px; padding:22px; border-radius:28px; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 24px 48px -24px rgba(22,36,28,.28); }
+.st-tabs{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; padding:6px; border-radius:18px; background:#f3efe8; }
+.st-tab{ position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:0; padding:10px 12px 12px; border:0; border-radius:13px; background:transparent; text-align:left; cursor:pointer; overflow:hidden; transition:background-color .25s var(--ease), color .25s var(--ease); }
+.st-tab:hover{ background:rgba(255,253,249,.7); }
+.st-fig{ font:600 13px/1 var(--figure); color:var(--muted-2); white-space:nowrap; }
+.st-name{ font-size:14px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+.st-tab[aria-selected="true"]{ background:var(--forest); }
+.st-tab[aria-selected="true"] .st-fig{ color:var(--emerald-bright); }
+.st-tab[aria-selected="true"] .st-name{ color:var(--on-dark); }
+/* the time left on this stage, while they play on their own */
+.st-timer{ position:absolute; left:12px; right:12px; bottom:5px; height:2px; border-radius:2px; background:rgba(234,243,238,.18); overflow:hidden; opacity:0; }
+.st-timer i{ display:block; height:100%; background:var(--emerald-bright); transform:scaleX(0); transform-origin:0 50%; }
+.start.is-playing .st-tab[aria-selected="true"] .st-timer{ opacity:1; }
+.start.is-playing .st-tab[aria-selected="true"] .st-timer i{ animation:fill 5s linear forwards; }
+.start.is-paused .st-tab[aria-selected="true"] .st-timer i{ animation-play-state:paused; }
+.st-panel{ flex:1; display:flex; flex-direction:column; padding:30px 10px 6px; }
+.st-panel.is-entering > *{ animation:rise .5s var(--ease) both; }
+.st-panel.is-entering > *:nth-child(2){ animation-delay:.05s; }
+.st-panel.is-entering > *:nth-child(3){ animation-delay:.1s; }
+.st-panel.is-entering > *:nth-child(4){ animation-delay:.15s; }
+.st-who{ margin:0 0 10px; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); }
+.st-who.ally{ margin-top:auto; color:var(--emerald); }
+.st-panel blockquote{ margin:0 0 28px; font:italic 500 clamp(24px,2.3vw,30px)/1.22 var(--serif); letter-spacing:-.015em; color:var(--ink); }
+.st-help{ margin:0; padding:18px 20px; border-radius:18px; background:#f3f7f2; font-size:16px; line-height:1.55; color:var(--ink); }
+.st-count{ margin:16px 10px 0; font:600 12px/1 var(--figure); color:var(--muted-2); letter-spacing:.04em; }
 
 /* ── plans ────────────────────────────────────────────────── */
 .plans{ padding:40px 0 120px; }
@@ -436,6 +573,11 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   .foot-top{ grid-template-columns:1fr; gap:56px; }
 }
 @media (max-width:900px){
+  .meet-grid{ grid-template-columns:1fr; gap:40px; }
+  .meet-copy{ order:-1; }
+  .ask-copy{ order:-1; }
+  .start-grid{ grid-template-columns:1fr; gap:40px; }   /* phones: the words come first, as in every section */
+  .meet-card{ height:480px; }
   .nav-links{ display:none; }
   .nav-toggle{ display:grid; }
   .closer-grid, .ask-grid{ grid-template-columns:1fr; }
@@ -445,6 +587,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   .stats{ grid-template-columns:1fr; }
 }
 @media (max-width:720px){
+  .meet{ padding-top:80px; }
+  .meet-stage{ padding:12px; }
   :root{ --r-panel:32px; --r-frame:32px; --r-card:24px; }
   .site-head{ padding:8px 12px; }
   .hero-panel, .how{ margin:0 12px; }
@@ -474,6 +618,18 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   .answer-stage{ padding:28px; }
   .ask-stage{ padding:12px; }
   .ask-card{ height:380px; }
+  .ask-fab{ right:14px; bottom:max(14px, env(safe-area-inset-bottom)); gap:10px; }
+  .ask-fab-btn{ width:50px; height:50px; }
+  .ask-fab-btn svg{ width:24px; height:24px; }
+  .ask-fab-tip{ padding:8px 12px; font-size:13px; }
+  .ask-fab-tip .tip-q{ display:none; }
+  .start{ padding-bottom:80px; }
+  .start-stage{ padding:12px; }
+  .start-card{ min-height:0; padding:14px; }
+  .st-tabs{ grid-template-columns:repeat(2,minmax(0,1fr)); }   /* four across leaves no room for the names on a phone */
+  .st-tab{ padding:9px 10px 11px; }
+  .st-panel{ padding:24px 6px 4px; }
+  .st-help{ font-size:15px; }
   /* three compact rows instead of three tall cards */
   .stats{ gap:12px; }
   .stats li{ display:flex; align-items:center; gap:18px; padding:20px 22px; }
@@ -490,6 +646,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 
 /* Reduced motion: no sliding, no auto-advance, nothing that moves on its own. */
 @media (prefers-reduced-motion: reduce){
+  .ask-fab-pulse{ animation:none; opacity:0; }
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
 }
@@ -517,7 +674,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       <li><a href="/about.html">Our story</a></li>
     </ul>
     <div class="nav-cta">
-      <a class="btn btn-primary btn-sm" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-primary btn-sm" id="navCta" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </nav>
@@ -538,7 +695,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       <h1 id="hero-title">You don’t need all the answers. <em>You need to know your next move.</em></h1>
       <p class="lede">GoXL Ally is your Founder’s Compass — an AI that understands you, your business and your situation before helping you decide what to do next.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary btn-lg" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-primary btn-lg" id="heroCta" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn btn-ghost btn-lg" href="#product">See how Ally thinks <svg class="arrow-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       </div>
       <p class="trio" aria-label="Clarity, confidence, consistency"><span>Clarity</span><span>Confidence</span><span>Consistency</span></p>
@@ -683,20 +840,22 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
           <h2 id="closer-title">The problem you see isn’t always the problem <em>you need to solve.</em></h2>
           <p>Most people start by searching for answers. Ally starts by understanding the problem.</p>
           <ul class="q-list" role="tablist" aria-label="What founders say" aria-orientation="vertical">
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-0" aria-controls="a-0" aria-selected="true"><span class="q-num">01</span><span class="q-said">“I need more sales.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-1" aria-controls="a-1" aria-selected="false" tabindex="-1"><span class="q-num">02</span><span class="q-said">“My team isn’t performing.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-2" aria-controls="a-2" aria-selected="false" tabindex="-1"><span class="q-num">03</span><span class="q-said">“I don’t have enough time.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-3" aria-controls="a-3" aria-selected="false" tabindex="-1"><span class="q-num">04</span><span class="q-said">“My business isn’t growing.”</span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-0" aria-controls="a-0" aria-selected="true"><span class="q-num">01</span><span class="q-said">“I need more sales.”</span><span class="q-desc"><span>Before more leads, Ally checks whether the offer is landing with the right buyer.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-1" aria-controls="a-1" aria-selected="false" tabindex="-1"><span class="q-num">02</span><span class="q-said">“My team isn’t performing.”</span><span class="q-desc"><span>Ally looks at how goals are set and shared before it looks at the people.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-2" aria-controls="a-2" aria-selected="false" tabindex="-1"><span class="q-num">03</span><span class="q-said">“I don’t have enough time.”</span><span class="q-desc"><span>Ally maps where the hours go against what actually moves the business.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-3" aria-controls="a-3" aria-selected="false" tabindex="-1"><span class="q-num">04</span><span class="q-said">“My business isn’t growing.”</span><span class="q-desc"><span>Ally traces growth back through retention, pricing and product before marketing.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
           </ul>
         </div>
         <div class="closer-right">
           <div class="answer-stage">
+            <div class="answer-reel">
             <div class="answer" role="tabpanel" id="a-0" aria-labelledby="q-0">
               <p class="who">Founder thinks</p>
               <blockquote>“I need more sales.”</blockquote>
               <span class="trail" aria-hidden="true"></span>
               <p class="who ally">Ally looks at</p>
               <p class="looks">Maybe the real problem is positioning — the offer isn’t yet clear enough for the right buyer to say yes quickly.</p>
+              <p class="lens" aria-label="Where Ally looks: Positioning"><span class="guess" aria-hidden="true">More leads</span><span class="hit">Positioning</span><span aria-hidden="true">Pricing</span></p>
             </div>
             <div class="answer" role="tabpanel" id="a-1" aria-labelledby="q-1">
               <p class="who">Founder thinks</p>
@@ -704,6 +863,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
               <span class="trail" aria-hidden="true"></span>
               <p class="who ally">Ally looks at</p>
               <p class="looks">Maybe expectations were never made clear — performance is hard to give when the target keeps shifting.</p>
+              <p class="lens" aria-label="Where Ally looks: Clear targets"><span class="guess" aria-hidden="true">The people</span><span class="hit">Clear targets</span><span aria-hidden="true">Hiring</span></p>
             </div>
             <div class="answer" role="tabpanel" id="a-2" aria-labelledby="q-2">
               <p class="who">Founder thinks</p>
@@ -711,6 +871,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
               <span class="trail" aria-hidden="true"></span>
               <p class="who ally">Ally looks at</p>
               <p class="looks">Maybe there’s enough time, but attention is going to the wrong priorities — busy isn’t the same as important.</p>
+              <p class="lens" aria-label="Where Ally looks: Priorities"><span class="guess" aria-hidden="true">More hours</span><span class="hit">Priorities</span><span aria-hidden="true">Delegation</span></p>
             </div>
             <div class="answer" role="tabpanel" id="a-3" aria-labelledby="q-3">
               <p class="who">Founder thinks</p>
@@ -718,6 +879,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
               <span class="trail" aria-hidden="true"></span>
               <p class="who ally">Ally looks at</p>
               <p class="looks">Maybe the real problem isn’t marketing at all — it could be retention, pricing, or a product gap upstream.</p>
+              <p class="lens" aria-label="Where Ally looks: Retention"><span class="guess" aria-hidden="true">Marketing</span><span class="hit">Retention</span><span aria-hidden="true">Product gap</span></p>
+            </div>
             </div>
           </div>
         </div>
@@ -740,6 +903,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
             <ul><li>Who you are, and why now</li><li>A snapshot of the business: stage, size, sector</li><li>What Ally will ask, and why</li><li>Data scope and consent agreed</li></ul>
           </div>
           <p class="step-result">A first question that feels personal.</p>
+          <span class="step-timer" aria-hidden="true"><i></i></span>
         </li>
         <li class="step">
           <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-1"><span class="step-top"><span class="step-num">02</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span></span><span class="step-title">Adaptive diagnosis</span><span class="step-time">About 20 min, resumable</span></button>
@@ -750,6 +914,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
             <ul><li>Model, revenue and margins</li><li>Operations and systems maturity</li><li>Team, market and traction</li></ul>
           </div>
           <p class="step-result">Two living profiles, kept and updated.</p>
+          <span class="step-timer" aria-hidden="true"><i></i></span>
         </li>
         <li class="step">
           <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-2"><span class="step-top"><span class="step-num">03</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/></svg></span></span><span class="step-title">Root cause</span><span class="step-time">Runs automatically</span></button>
@@ -757,6 +922,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
             <ul><li>Surfaced issues ranked by impact</li><li>Symptoms traced to their drivers</li><li>Founder DNA checked against business DNA</li><li>Converges on one cause to fix first</li></ul>
           </div>
           <p class="step-result">One named cause, with its reasoning.</p>
+          <span class="step-timer" aria-hidden="true"><i></i></span>
         </li>
         <li class="step">
           <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-3"><span class="step-top"><span class="step-num">04</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span></span><span class="step-title">Clarity Report</span><span class="step-time">Generated on demand</span></button>
@@ -764,6 +930,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
             <ul><li>Diagnosis in plain language</li><li>Root cause stated with evidence</li><li>Prioritised actions and timelines</li><li>Baselines for the next 90 days</li></ul>
           </div>
           <p class="step-result">An open action list and live metrics.</p>
+          <span class="step-timer" aria-hidden="true"><i></i></span>
         </li>
         <li class="step">
           <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-4"><span class="step-top"><span class="step-num">05</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg></span></span><span class="step-title">Daily use</span><span class="step-time">Ongoing</span></button>
@@ -771,9 +938,34 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
             <ul><li>Knowledge base</li><li>Vision board</li><li>Goals</li><li>Plan your day</li><li>Next steps</li></ul>
           </div>
           <p class="step-result">Momentum, not a filed report.</p>
+          <span class="step-timer" aria-hidden="true"><i></i></span>
         </li>
       </ol>
       <p class="how-foot">As the business changes, Ally builds on what it already knows instead of starting you over.</p>
+    </div>
+  </section>
+
+  <!-- ════════════ MEET ALLY ════════════
+       Step 05 of How it works, live: the same sample dashboard the home page
+       shows (/ally-dashboard.html, a sample founder and sample data), running
+       inside the card. It loads only when the section is near. -->
+  <section class="meet" id="meet" aria-labelledby="meet-title">
+    <div class="wrap">
+      <div class="meet-grid">
+        <div class="meet-copy">
+          <p class="eyebrow">Step 05, live</p>
+          <h2 id="meet-title">This is what it looks like <em>from inside.</em></h2>
+          <p>Not a chat window. A working compass that holds your founder context, your business context and your current situation in one place — and keeps them pointing the same way.</p>
+        </div>
+        <div class="meet-stage">
+          <div class="meet-card">
+            <div class="ask-card-head"><img src="/assets/logo-123.v1.png" alt="" width="32" height="32"><div><strong>Ally dashboard</strong><span>Sample founder, sample data</span></div>
+              <button class="meet-fs" type="button" id="meetOpen" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg> Full screen</button></div>
+            <div class="meet-body"><img class="meet-still" src="/assets/ally-dashboard-still.v1.jpg" alt="" width="976" height="704" loading="lazy" decoding="async"><iframe data-src="/ally-dashboard.html" title="The Ally dashboard, sample data" loading="lazy"></iframe></div>
+          </div>
+          <p class="ask-note">The real interface, running here. Click around — nothing is saved.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -783,6 +975,15 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   <section class="ask" id="ask" aria-labelledby="ask-title">
     <div class="wrap">
       <div class="ask-grid">
+        <div class="ask-stage">
+          <div class="ask-card">
+            <div class="ask-card-head"><img src="/assets/logo-123.v1.png" alt="" width="32" height="32"><div><strong>Ally help</strong><span>Answers about the product</span></div></div>
+            <div class="ask-log" id="askLog" aria-live="polite" aria-atomic="false">
+              <p class="bubble ally">Hi — ask me anything about Ally: what it does, what it costs, or how to get access.</p>
+            </div>
+          </div>
+          <p class="ask-note">This assistant answers questions about Ally. It doesn’t see your business — that starts after you log in.</p>
+        </div>
         <div class="ask-copy">
           <p class="eyebrow">Try it now</p>
           <h2 id="ask-title">Got a question? <em>Ask Ally.</em></h2>
@@ -796,14 +997,55 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
           </form>
           <div class="ask-chips" id="askChips" aria-label="Suggested questions"></div>
         </div>
-        <div class="ask-stage">
-          <div class="ask-card">
-            <div class="ask-card-head"><img src="/assets/logo-123.v1.png" alt="" width="32" height="32"><div><strong>Ally help</strong><span>Answers about the product</span></div></div>
-            <div class="ask-log" id="askLog" aria-live="polite" aria-atomic="false">
-              <p class="bubble ally">Hi — ask me anything about Ally: what it does, what it costs, or how to get access.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ YOUR STARTING POINT ════════════
+       The four founder stages from the live home page, word for word.
+       Without the script every stage is shown in order. -->
+  <section class="start" id="start" aria-labelledby="start-title">
+    <div class="wrap">
+      <div class="start-grid">
+        <div class="start-copy">
+          <p class="eyebrow">Your starting point</p>
+          <h2 id="start-title">Wherever you are, <em>start from where you are.</em></h2>
+          <p>Your stage is different. Your context is different. Your next step should be different too.</p>
+        </div>
+        <div class="start-stage">
+          <div class="start-card">
+            <div class="st-tabs" role="tablist" aria-label="Founder stages">
+              <button class="st-tab" type="button" role="tab" id="st-tab-0" aria-controls="st-panel-0" aria-selected="true"><span class="st-fig">−1 → 0</span><span class="st-name">Aspiring</span><span class="st-timer" aria-hidden="true"><i></i></span></button>
+              <button class="st-tab" type="button" role="tab" id="st-tab-1" aria-controls="st-panel-1" aria-selected="false" tabindex="-1"><span class="st-fig">0 → 1</span><span class="st-name">First idea</span><span class="st-timer" aria-hidden="true"><i></i></span></button>
+              <button class="st-tab" type="button" role="tab" id="st-tab-2" aria-controls="st-panel-2" aria-selected="false" tabindex="-1"><span class="st-fig">1 → 10</span><span class="st-name">Growing</span><span class="st-timer" aria-hidden="true"><i></i></span></button>
+              <button class="st-tab" type="button" role="tab" id="st-tab-3" aria-controls="st-panel-3" aria-selected="false" tabindex="-1"><span class="st-fig">10 → ∞</span><span class="st-name">Experienced</span><span class="st-timer" aria-hidden="true"><i></i></span></button>
             </div>
+            <div class="st-panel" role="tabpanel" id="st-panel-0" aria-labelledby="st-tab-0">
+              <p class="st-who">Aspiring · −1 → 0</p>
+              <blockquote>“I want to start, but I don’t know where to begin.”</blockquote>
+              <p class="st-who ally">How Ally helps</p>
+              <p class="st-help">Every idea feels unproven and every path feels like a guess. Ally helps you find solid ground before you commit to a direction.</p>
+            </div>
+            <div class="st-panel" role="tabpanel" id="st-panel-1" aria-labelledby="st-tab-1">
+              <p class="st-who">First idea · 0 → 1</p>
+              <blockquote>“I have an idea. Now I want to make it real.”</blockquote>
+              <p class="st-who ally">How Ally helps</p>
+              <p class="st-help">The distance between an idea and a first customer is where most founders stall. Ally helps you take the few steps that actually close it.</p>
+            </div>
+            <div class="st-panel" role="tabpanel" id="st-panel-2" aria-labelledby="st-tab-2">
+              <p class="st-who">Growing · 1 → 10</p>
+              <blockquote>“My business is growing, but everything feels important.”</blockquote>
+              <p class="st-who ally">How Ally helps</p>
+              <p class="st-help">More customers, more work, more noise. Ally helps you see which part of it deserves your attention this week — and which can wait.</p>
+            </div>
+            <div class="st-panel" role="tabpanel" id="st-panel-3" aria-labelledby="st-tab-3">
+              <p class="st-who">Experienced · 10 → ∞</p>
+              <blockquote>“Growth is no longer the only challenge. Better decisions are.”</blockquote>
+              <p class="st-who ally">How Ally helps</p>
+              <p class="st-help">You’ve built something real, so every choice now carries more weight. Ally helps you think each one through with your full picture in view.</p>
+            </div>
+            <p class="st-count" aria-hidden="true"><span id="stNow">01</span> / 04</p>
           </div>
-          <p class="ask-note">This assistant answers questions about Ally. It doesn’t see your business — that starts after you log in.</p>
         </div>
       </div>
     </div>
@@ -845,7 +1087,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       </div>
       <ul class="trust">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Payments secured by Razorpay</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Your data is never sold</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Encrypted &amp; never sold</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Export your data anytime</li>
       </ul>
     </div>
@@ -859,7 +1101,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       <p class="eyebrow on-dark">The Founder’s Compass</p>
       <h2>You already have a journey. <em>Now understand where it should go next.</em></h2>
       <p>Start by understanding where you are today.</p>
-      <a class="btn btn-light btn-lg" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-light btn-lg" id="closeCta" href="/go/login">Log in <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <nav class="foot-cols" aria-label="Footer">
       <div>
@@ -868,14 +1110,14 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
           <li><a href="#how">How it works</a></li>
           <li><a href="/pricing.html">Pricing</a></li>
           <li><a href="/ally-dashboard.html">Sample dashboard</a></li>
-          <li><a href="/go/login">Log in</a></li>
+          <li><a id="footLoginLink" href="/go/login">Log in</a></li>
         </ul>
       </div>
       <div>
         <h3>Learn</h3>
         <ul>
           <li><a href="/what-is-goxl-ally">What is GoXL Ally</a></li>
-          <li><a href="/ally-vs-chatgpt">Ally vs ChatGPT</a></li>
+          <li><a href="/ally-vs-general-ai">Ally vs general AI</a></li>
           <li><a href="/business-health-check-for-founders">Business health check</a></li>
           <li><a href="/startup-bottlenecks">Startup bottlenecks</a></li>
         </ul>
@@ -898,6 +1140,16 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     <p class="foot-legal">© 2026 GoXL Consulting Solutions Pvt. Ltd.</p>
   </div>
 </footer>
+
+<a class="ask-fab" id="askFab" href="#ask" aria-label="Ask Ally a question"><span class="ask-fab-tip" aria-hidden="true"><span class="tip-q">Got a question? </span><b>Ask Ally</b></span><span class="ask-fab-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5v2.4"/><circle cx="12" cy="1.9" r="1.05" fill="currentColor" stroke="none"/><rect x="4" y="5" width="16" height="12.5" rx="4.5"/><rect x="6.9" y="8.2" width="10.2" height="5.4" rx="2.4" opacity=".45"/><circle cx="9.6" cy="10.9" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.4" cy="10.9" r="1.15" fill="currentColor" stroke="none"/><path d="M4 9.6H2.4M20 9.6h1.6"/><path d="M7.5 17.5v1.2a2.5 2.5 0 0 0 2.5 2.5h4a2.5 2.5 0 0 0 2.5-2.5v-1.2"/></svg><span class="ask-fab-pulse" aria-hidden="true"></span></span></a>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-title" hidden>
+  <div class="viewer-top">
+    <p id="viewer-title">Ally dashboard — sample data</p>
+    <button class="viewer-x" type="button" id="viewerClose">Close <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="viewer-frame"><iframe title="The Ally dashboard, sample data" allow="fullscreen"></iframe></div>
+</div>
 
 <!-- attribution:start — copied verbatim from ally-landing-v2.html -->
 <script>
@@ -998,10 +1250,11 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 
   /* Tabs, the WAI-ARIA way: arrows move between them, Home/End jump, the
      selected tab is the only one in the tab order. Shared by two sections. */
-  function tabs(list, onSelect){
+  function tabs(list, onSelect, beforeSelect){
     var btns = [].slice.call(list.querySelectorAll('[role="tab"]'));
     var vertical = list.getAttribute('aria-orientation') === 'vertical';
     function select(i, focus, fromUser){
+      if (beforeSelect) beforeSelect(i);
       btns.forEach(function(b, k){
         var on = k === i;
         b.setAttribute('aria-selected', String(on));
@@ -1037,7 +1290,8 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
      windows and reduced motion keep plain tabs. */
   var sc = document.getElementById('showcase'), runway = document.getElementById('product');
   if (sc && runway) {
-    var pinned = false, scTabs, frame = 0, aim = null, aimUntil = 0;
+    var pinned = false, scTabs, frame = 0, aim = null, aimUntil = 0, settle = 0, lastY = window.scrollY, lastT = performance.now(), speed = 0;
+    var HOLD = .5;                                       /* of a screen: the first tab, at rest, once the frame is full */
     var fills = [].slice.call(sc.querySelectorAll('.sc-prog span'));
     var wide = window.matchMedia('(min-width:901px) and (min-height:640px)');
     var REST_W = 1200, REST_H = 660;
@@ -1057,27 +1311,40 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       sc.style.height = lerp(Math.min(REST_H, vh), vh, e) + 'px';
       /* the bottom corners round off again over the last half-stretch, so the
          frame leaves as a card rather than a hard-edged block */
-      var seg0 = (runway.offsetHeight - vh) / 4;
-      var q = clamp((-r.top - seg0 * 3.5) / (seg0 * .5));
+      var lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / 4;
+      var q = clamp((-r.top - lead - seg * 3.5) / (seg * .5));
       var top = lerp(48, 0, e), bottom = lerp(top, 48, q);
       sc.style.borderRadius = top + 'px ' + top + 'px ' + bottom + 'px ' + bottom + 'px';
       sc.style.paddingTop = lerp(56, 92, e) + 'px';      /* clears the floating header once full */
       sc.style.paddingBottom = lerp(64, 28, e) + 'px';
-      /* play: the scroll left after opening, in four equal stretches */
-      var seg = (runway.offsetHeight - vh) / 4, d = Math.max(0, -r.top);
+      /* play: after the hold, the rest of the scroll in four equal stretches */
+      var d = Math.max(0, -r.top - lead);
       var i = Math.min(3, Math.floor(d / seg));
       /* while a click is still scrolling to its tab, the stretches passed on
          the way don't get to reselect -- that read as a flicker back */
       if (aim !== null) { if (i === aim || Date.now() > aimUntil) aim = null; else i = aim; }
-      if (scTabs.current() !== i) scTabs.select(i, false, false);
-      fills.forEach(function(f, k){ f.style.setProperty('--fill', k === i ? clamp((d - i * seg) / seg).toFixed(3) : 0); });
+      /* how fast the page is moving, px per ms, smoothed a little */
+      var t = performance.now(), y = window.scrollY;
+      if (t > lastT) speed = speed * .5 + (Math.abs(y - lastY) / (t - lastT)) * .5;
+      lastY = y; lastT = t;
+      var cur = scTabs.current();
+      if (cur !== i) {
+        /* at reading speed the tab changes as you pass it; on a fast flick it
+           waits until the page slows or stops, then lands once -- instead of
+           flashing every tab on the way */
+        if (aim !== null || speed < 1.5) { scTabs.select(i, false, false); cur = i; }
+        else { clearTimeout(settle); settle = setTimeout(function(){ speed = 0; queue(); }, 140); }
+      }
+      fills.forEach(function(f, k){ f.style.setProperty('--fill', k === cur ? clamp((d - cur * seg) / seg).toFixed(3) : 0); });
     }
     function queue(){ if (!frame) frame = requestAnimationFrame(layout); }
     function setMode(){
+      sc.style.setProperty('--vw', document.documentElement.clientWidth + 'px');
       var on = wide.matches && !reduce;
       if (on === pinned) { queue(); return; }
       pinned = on;
       runway.classList.toggle('is-pinned', on);
+      sc.style.setProperty('--vw', document.documentElement.clientWidth + 'px');
       runway.parentElement.classList.toggle('has-pinned', on);
       if (!on) ['width', 'marginLeft', 'height', 'borderRadius', 'paddingTop', 'paddingBottom'].forEach(function(k){ sc.style[k] = ''; });
       queue();
@@ -1085,10 +1352,10 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     scTabs = tabs(sc.querySelector('[role="tablist"]'), function(i, fromUser){
       sc.setAttribute('data-active', String(i));
       if (fromUser && pinned) {
-        var seg = (runway.offsetHeight - window.innerHeight) / 4;
+        var vh = window.innerHeight, lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / 4;
         var top = window.scrollY + runway.getBoundingClientRect().top;
         aim = i; aimUntil = Date.now() + 1500;
-        window.scrollTo({ top: top + i * seg + 2, behavior: 'smooth' });
+        window.scrollTo({ top: top + lead + i * seg + 2, behavior: 'smooth' });
       }
     });
     window.addEventListener('scroll', queue, { passive:true });
@@ -1106,28 +1373,79 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   var closer = document.querySelector('.closer');
   if (closer) {
     var manual = false, visible = false, hovering = false;
-    var cPinned = false, cFrame = 0, cAim = null, cAimUntil = 0;
+    var cPinned = false, cFrame = 0, cAim = null, cAimUntil = 0, cSettle = 0, cLastY = window.scrollY, cLastT = performance.now(), cSpeed = 0;
+    var C_HOLD = .5;                                     /* of a screen: the first saying, at rest, once the section has arrived */
     var cWide = window.matchMedia('(min-width:901px) and (min-height:700px)');
+    var answers = [].slice.call(closer.querySelectorAll('.answer'));
+    var reel = closer.querySelector('.answer-reel');
+    /* FLIP: note where each row is, let the open description change the
+       heights once, then start each row where it was and glide it home */
+    var qItems = [].slice.call(closer.querySelectorAll('.q-item')), qTops = null;
+    function qBefore(){ qTops = reduce ? null : qItems.map(function(li){ return li.getBoundingClientRect().top; }); }
+    function qAfter(){
+      if (!qTops) return;
+      qItems.forEach(function(li, k){
+        var dy = qTops[k] - li.getBoundingClientRect().top;
+        li.classList.remove('is-gliding');
+        if (Math.abs(dy) < 1) { li.style.transform = ''; return; }
+        li.style.transform = 'translateY(' + dy + 'px)';
+      });
+      void closer.offsetWidth;
+      qItems.forEach(function(li){ if (li.style.transform) { li.classList.add('is-gliding'); li.style.transform = ''; } });
+      qTops = null;
+    }
+    function ql_current(){ return qItems.findIndex(function(li){ return li.querySelector('[aria-selected="true"]'); }); }
     var ql = tabs(closer.querySelector('[role="tablist"]'), function(i, fromUser){
+      qAfter();
+      answers.forEach(function(a, k){ a.classList.toggle('is-current', k === i); });
       if (fromUser && cPinned) {
-        var seg = (closer.offsetHeight - window.innerHeight) / 4;
+        var cvh = window.innerHeight, clead = cvh * C_HOLD, seg = (closer.offsetHeight - cvh - clead) / 4;
         var top = window.scrollY + closer.getBoundingClientRect().top;
         cAim = i; cAimUntil = Date.now() + 1500;
-        window.scrollTo({ top: top + i * seg + 2, behavior: 'smooth' });
+        window.scrollTo({ top: top + clead + i * seg + 2, behavior: 'smooth' });
         return;
       }
       if (fromUser && !manual) { manual = true; closer.classList.remove('is-playing', 'is-paused'); closer.classList.add('is-manual'); }
-    });
+    }, function(i){ if (i !== ql_current()) qBefore(); });
     var qFills = [].slice.call(closer.querySelectorAll('.q-fill'));
     function cLayout(){
       cFrame = 0;
       if (!cPinned) return;
       var vh = window.innerHeight, r = closer.getBoundingClientRect();
-      var seg = (closer.offsetHeight - vh) / 4, d = Math.max(0, -r.top);
-      var i = Math.min(3, Math.floor(d / seg));
-      if (cAim !== null) { if (i === cAim || Date.now() > cAimUntil) cAim = null; else i = cAim; }
-      if (ql.current() !== i) ql.select(i, false, false);
-      qFills.forEach(function(f, k){ f.style.setProperty('--fill', k === i ? Math.min(1, (d - i * seg) / seg).toFixed(3) : 0); });
+      var lead = vh * C_HOLD, seg = (closer.offsetHeight - vh - lead) / 4, d = Math.max(0, -r.top - lead);
+      /* each stretch: hold for the first 70%, then slide to the next over
+         the last 30%, so the reel moves with the scroll and rests between */
+      var pos = Math.min(4, d / seg), i = Math.min(3, Math.floor(pos)), t = pos - i;
+      var move = i < 3 ? Math.max(0, (t - .7) / .3) : 0;
+      move = move * move * (3 - 2 * move);
+      var at = i + move;
+      var pick = Math.round(at);                           /* the saying this scroll position belongs to */
+      if (cAim !== null) { if (pick === cAim || Date.now() > cAimUntil) cAim = null; else pick = cAim; }
+      /* as in the showcase: at reading speed the saying changes as you pass
+         it; on a fast flick the list waits for the page to slow, then lands
+         once, rather than opening and closing every row on the way */
+      var nowT = performance.now(), nowY = window.scrollY;
+      if (nowT > cLastT) cSpeed = cSpeed * .5 + (Math.abs(nowY - cLastY) / (nowT - cLastT)) * .5;
+      cLastY = nowY; cLastT = nowT;
+      var cur = ql.current();
+      if (cur !== pick) {
+        if (cAim !== null || cSpeed < 1.5) { ql.select(pick, false, false); cur = pick; }
+        else { clearTimeout(cSettle); cSettle = setTimeout(function(){ cSpeed = 0; cQueue(); }, 140); }
+      }
+      if (reel.__at !== cur) {
+        /* a jump of more than one saying starts from the neighbour of the
+           target, so only one card slides in -- not every card in between */
+        var was = reel.__at;
+        if (was !== undefined && Math.abs(cur - was) > 1) {
+          reel.style.transition = 'none';
+          reel.style.transform = 'translateY(' + (-(cur - Math.sign(cur - was)) * 100) + '%)';
+          void reel.offsetWidth;
+          reel.style.transition = '';
+        }
+        reel.__at = cur;
+        reel.style.transform = 'translateY(' + (-cur * 100) + '%)';   /* the reel is one answer tall */
+      }
+      qFills.forEach(function(f, k){ f.style.setProperty('--fill', k !== cur ? 0 : cur === i ? Math.min(1, t / .7).toFixed(3) : (cur < i ? 1 : 0)); });
     }
     function cQueue(){ if (!cFrame) cFrame = requestAnimationFrame(cLayout); }
     function cMode(){
@@ -1135,6 +1453,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
       if (on !== cPinned) {
         cPinned = on;
         closer.classList.toggle('is-pinned', on);
+        if (!on) { reel.style.transform = ''; reel.__at = undefined; }
         if (on) closer.classList.remove('is-playing', 'is-paused', 'is-manual');
         else sync();
       }
@@ -1143,6 +1462,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     window.addEventListener('scroll', cQueue, { passive:true });
     window.addEventListener('resize', cMode);
     function sync(){
+      if (stacked) return;
       if (cPinned) return;
       if (manual || reduce) { closer.classList.add('is-manual'); return; }
       closer.classList.toggle('is-playing', visible);
@@ -1157,10 +1477,192 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
     closer.addEventListener('mouseleave', function(){ hovering = false; sync(); });
     closer.addEventListener('focusin', function(){ hovering = true; sync(); });
     closer.addEventListener('focusout', function(e){ if (!closer.contains(e.relatedTarget)) { hovering = false; sync(); } });
-    if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ visible = es[0].isIntersecting; sync(); }, { threshold:.35 }).observe(closer);
+    /* the chips' pick-and-move plays when the section arrives, not at page load off screen */
+    function replayLens(){ var cur = closer.querySelector('.answer.is-current'); if (cur) { cur.classList.remove('is-current'); void cur.offsetWidth; cur.classList.add('is-current'); } }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ var was = visible; visible = es[0].isIntersecting; if (visible && !was) replayLens(); sync(); }, { threshold:.35 }).observe(closer);
     else { visible = true; sync(); }
     if (cWide.addEventListener) cWide.addEventListener('change', cMode);
+
+    /* Phones: stack each answer under its saying (see .is-stacked). The
+       tabs' roles come off while stacked -- every card is shown, so they are
+       no longer tabs -- and go back on if the window widens. */
+    var stacked = false, stackMQ = window.matchMedia('(max-width:900px)');
+    var qRows = [].slice.call(closer.querySelectorAll('.q-item')), nearIO = null;
+    function setStack(){
+      var on = stackMQ.matches && !cPinned;
+      if (on === stacked) return;
+      stacked = on;
+      closer.classList.toggle('is-stacked', on);
+      answers.forEach(function(a, k){
+        var btn = qRows[k].querySelector('.q-btn');
+        if (on) {
+          qRows[k].appendChild(a);
+          a.removeAttribute('role'); a.hidden = false;
+          btn.removeAttribute('role'); btn.removeAttribute('aria-selected'); btn.removeAttribute('aria-controls'); btn.tabIndex = -1;
+        } else {
+          reel.appendChild(a);
+          a.setAttribute('role', 'tabpanel');
+          btn.setAttribute('role', 'tab'); btn.setAttribute('aria-controls', a.id);
+          qRows[k].classList.remove('is-near');
+        }
+      });
+      if (on) {
+        closer.classList.remove('is-playing', 'is-paused', 'is-manual');
+        /* the row crossing the middle band of the screen is the one in focus */
+        if ('IntersectionObserver' in window) {
+          nearIO = new IntersectionObserver(function(es){
+            es.forEach(function(e){
+              e.target.classList.toggle('is-near', e.isIntersecting);
+              var a = e.target.querySelector('.answer');
+              if (a && e.isIntersecting && !a.classList.contains('is-current')) a.classList.add('is-current');
+            });
+          }, { rootMargin:'-38% 0px -38% 0px' });
+          qRows.forEach(function(r){ nearIO.observe(r); });
+        } else qRows.forEach(function(r){ r.classList.add('is-near'); });
+      } else {
+        if (nearIO) { nearIO.disconnect(); nearIO = null; }
+        answers.forEach(function(a){ a.classList.remove('is-current'); });
+        ql.select(0, false, false);
+        sync();
+      }
+    }
+    /* while stacked a saying is a heading, not a tab: tapping it just brings
+       its card into view, and the tab machinery never hears about it */
+    closer.addEventListener('click', function(e){
+      var b = stacked && e.target.closest('.q-btn');
+      if (!b) return;
+      e.stopPropagation(); e.preventDefault();
+      var a = b.parentNode.querySelector('.answer');
+      if (a) a.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block:'center' });
+    }, true);
+    if (stackMQ.addEventListener) stackMQ.addEventListener('change', setStack);
+    setStack();
     cMode();
+  }
+
+  /* 9. Signed in already: the platform sets ally_hint=in|out on the shared
+     goxlally.ai domain. "in" turns every Log in into the way back to the
+     dashboard; anything else (no cookie, cookies blocked) leaves Log in. */
+  (function(){
+    var m = /(?:^|; )ally_hint=(in|out)(?:;|$)/.exec(document.cookie || '');
+    if (!m || m[1] !== 'in') return;
+    [['navCta', 'Dashboard'], ['heroCta', 'Go to my dashboard'], ['closeCta', 'Go to my dashboard'], ['footLoginLink', 'Dashboard']].forEach(function(pair){
+      var el = document.getElementById(pair[0]); if (!el) return;
+      var label = el.firstChild;                       /* the text node before the arrow icon */
+      if (label && label.nodeType === 3) label.nodeValue = pair[1] + (el.children.length ? ' ' : '');
+      el.setAttribute('href', '/go/app');
+    });
+  })();
+
+  /* 10. Floating "Ask Ally": takes you to the Ask section, cursor in the box. */
+  (function(){
+    var fab = document.getElementById('askFab'), askSec = document.getElementById('ask'), field = document.getElementById('askInput');
+    var viewerEl = document.getElementById('viewer');
+    if (!fab || !askSec) return;
+    var askInView = false, fabFrame = 0;
+    var phone = window.matchMedia('(max-width:720px)');
+    function update(){
+      fabFrame = 0;
+      var past = window.scrollY > window.innerHeight * .6;
+      var bn = document.querySelector('.ally-consent');   /* stays in the page, hidden, once a choice is made */
+      var banner = phone.matches && bn && !bn.hidden && bn.getClientRects().length > 0;
+      var viewerOpen = viewerEl && !viewerEl.hidden;
+      fab.classList.toggle('is-shown', past && !askInView && !banner && !viewerOpen);
+    }
+    function queueFab(){ if (!fabFrame) fabFrame = requestAnimationFrame(update); }
+    window.addEventListener('scroll', queueFab, { passive:true });
+    window.addEventListener('resize', queueFab);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ askInView = es[0].isIntersecting; queueFab(); }, { threshold:.25 }).observe(askSec);
+    /* the cookie banner and the viewer open and close without a scroll */
+    new MutationObserver(queueFab).observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] });
+    fab.addEventListener('click', function(e){
+      e.preventDefault();
+      askSec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block:'start' });
+      if (!field) return;
+      /* focus once the page has arrived, so focusing doesn't fight the scroll */
+      var done = false;
+      function land(){ if (done) return; done = true; window.removeEventListener('scrollend', land); field.focus({ preventScroll:true }); }
+      window.addEventListener('scrollend', land);
+      setTimeout(land, reduce ? 0 : 1200);
+    });
+    update();
+  })();
+
+  /* 8. Your starting point:  /* 8. Your starting point: the four stages play on their own, five seconds
+     each, while the card is on screen; pointer or focus over the card pauses
+     them; choosing one stops them there. Never under reduced motion. */
+  var start = document.getElementById('start');
+  if (start) {
+    var stManual = false, stVisible = false, stHover = false, stNow = document.getElementById('stNow');
+    var st = tabs(start.querySelector('[role="tablist"]'), function(i, fromUser){
+      if (stNow) stNow.textContent = '0' + (i + 1);
+      if (fromUser && !stManual) { stManual = true; stSync(); }
+    });
+    function stSync(){
+      var play = !stManual && !reduce && stVisible;
+      start.classList.toggle('is-playing', play);
+      start.classList.toggle('is-paused', play && stHover);
+    }
+    start.addEventListener('animationend', function(e){
+      if (e.animationName !== 'fill' || stManual || !e.target.closest('.st-timer')) return;
+      st.select((st.current() + 1) % st.count, false, false);
+      start.classList.remove('is-playing'); void start.offsetWidth; stSync();
+    });
+    var stCard = start.querySelector('.start-card');
+    stCard.addEventListener('mouseenter', function(){ stHover = true; stSync(); });
+    stCard.addEventListener('mouseleave', function(){ stHover = false; stSync(); });
+    stCard.addEventListener('focusin', function(){ stHover = true; stSync(); });
+    stCard.addEventListener('focusout', function(e){ if (!stCard.contains(e.relatedTarget)) { stHover = false; stSync(); } });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ stVisible = es[0].isIntersecting; stSync(); }, { threshold:.4 }).observe(stCard);
+    else { stVisible = true; stSync(); }
+  }
+
+  /* 7. Meet Ally: load the dashboard when the section is near, and open it
+     full screen in a dialog (Esc or Close shut it, focus goes back to the
+     Full screen button). */
+  var meetCard = document.getElementById('meetOpen');
+  var viewer = document.getElementById('viewer');
+  if (meetCard && viewer) {
+    var pf = document.querySelector('.meet-body iframe');
+    /* the dashboard is a whole app: starting it costs the page a moment, so
+       it starts only with the card on screen and the scrolling at rest */
+    var meetSeen = false, meetIdle = null;
+    pf.addEventListener('load', function(){ if (pf.src) pf.classList.add('is-ready'); });
+    function loadPreview(){ if (!pf.src) pf.src = pf.getAttribute('data-src'); }
+    function meetWhenStill(){
+      clearTimeout(meetIdle);
+      if (!meetSeen || pf.src) return;
+      meetIdle = setTimeout(function(){ (window.requestIdleCallback || setTimeout)(loadPreview, { timeout:800 }); }, 350);
+    }
+    window.addEventListener('scroll', meetWhenStill, { passive:true });
+    if ('IntersectionObserver' in window) {
+      var meetIO = new IntersectionObserver(function(es){ meetSeen = es[0].isIntersecting; if (meetSeen) meetWhenStill(); else clearTimeout(meetIdle); }, { threshold:.25 });
+      meetIO.observe(pf.parentNode);
+    } else loadPreview();
+
+    var vf = viewer.querySelector('iframe'), vClose = document.getElementById('viewerClose'), opener = null;
+    function openViewer(e){
+      opener = e && e.currentTarget || null;
+      if (!vf.src) vf.src = pf.getAttribute('data-src');
+      loadPreview();
+      viewer.hidden = false; viewer.classList.add('is-open');
+      document.documentElement.classList.add('viewer-lock');
+      vClose.focus();
+    }
+    function closeViewer(){
+      viewer.classList.remove('is-open'); viewer.hidden = true;
+      document.documentElement.classList.remove('viewer-lock');
+      if (opener) opener.focus();
+    }
+    meetCard.addEventListener('click', openViewer);
+    vClose.addEventListener('click', closeViewer);
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !viewer.hidden) closeViewer(); });
+    /* keep Tab inside the dialog: the close button and the dashboard frame */
+    viewer.addEventListener('keydown', function(e){
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey && document.activeElement === vClose) { e.preventDefault(); vf.focus(); }
+      else if (!e.shiftKey && document.activeElement === vf) { e.preventDefault(); vClose.focus(); }
+    });
   }
 
   /* 6. Stats: count up from zero the first time they come into view. The
@@ -1189,11 +1691,42 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
   function openStep(s){
     steps.forEach(function(x){ var on = x === s; x.classList.toggle('is-active', on); x.querySelector('.step-btn').setAttribute('aria-expanded', String(on)); });
   }
-  steps.forEach(function(s){
-    s.querySelector('.step-btn').addEventListener('click', function(){ openStep(s); });
-    s.addEventListener('mouseenter', function(){ if (window.matchMedia('(hover:hover) and (min-width:1081px)').matches) openStep(s); });
-    s.addEventListener('click', function(e){ if (!e.target.closest('.step-btn')) openStep(s); });
+  /* On wide screens the stages also open on their own, four seconds each,
+     in order and round again, while the section is on screen. Pointer or
+     keyboard focus over the cards pauses it (and hovering opens that card,
+     so it carries on from there); a click stops it for good. The timer is
+     the CSS animation on the open card's line, so pausing is just pausing
+     that animation. Never under reduced motion; narrow screens show every
+     stage open and have nothing to play. */
+  var how = document.querySelector('.how');
+  var howWide = window.matchMedia('(min-width:1081px)');
+  var howManual = false, howVisible = false, howHover = false;
+  function howSync(){
+    var play = !howManual && !reduce && howVisible && howWide.matches;
+    how.classList.toggle('is-playing', play);
+    how.classList.toggle('is-paused', play && howHover);
+  }
+  function howRestart(){ how.classList.remove('is-playing'); void how.offsetWidth; howSync(); }
+  how.addEventListener('animationend', function(e){
+    if (e.animationName !== 'fill' || !e.target.closest('.step-timer')) return;
+    var i = steps.findIndex(function(x){ return x.classList.contains('is-active'); });
+    openStep(steps[(i + 1) % steps.length]);
+    howRestart();
   });
+  function stopHow(){ howManual = true; howSync(); }
+  steps.forEach(function(s){
+    s.querySelector('.step-btn').addEventListener('click', function(){ openStep(s); stopHow(); });
+    s.addEventListener('mouseenter', function(){ if (window.matchMedia('(hover:hover) and (min-width:1081px)').matches && !s.classList.contains('is-active')) { openStep(s); howRestart(); } });
+    s.addEventListener('click', function(e){ if (!e.target.closest('.step-btn')) { openStep(s); stopHow(); } });
+  });
+  var stepList = document.querySelector('.steps');
+  stepList.addEventListener('mouseenter', function(){ howHover = true; howSync(); });
+  stepList.addEventListener('mouseleave', function(){ howHover = false; howSync(); });
+  stepList.addEventListener('focusin', function(){ howHover = true; howSync(); });
+  stepList.addEventListener('focusout', function(e){ if (!stepList.contains(e.relatedTarget)) { howHover = false; howSync(); } });
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ howVisible = es[0].isIntersecting; howSync(); }, { threshold:.4 }).observe(stepList);
+  else { howVisible = true; howSync(); }
+  if (howWide.addEventListener) howWide.addEventListener('change', howSync);
 })();
 </script>
 
