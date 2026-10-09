@@ -209,6 +209,10 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .sc-prog{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:2px; background:rgba(22,36,28,.1); overflow:hidden; opacity:0; transition:opacity .2s var(--ease); pointer-events:none; }
 .sc-prog span{ display:block; height:100%; background:var(--forest); transform:scaleX(var(--fill, 0)); transform-origin:0 50%; }
 .sc-runway.is-pinned .sc-tab[aria-selected="true"] .sc-prog{ opacity:1; }
+/* unpinned: the tabs play on their own; the open tab's line is the timer */
+.showcase.is-autoplay .sc-tab[aria-selected="true"] .sc-prog{ opacity:1; }
+.showcase.is-autoplay .sc-tab[aria-selected="true"] .sc-prog span{ animation:scFill 4s linear forwards; }
+@keyframes scFill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
 /* sized to the window once, centred, and only moved: a background that
    resized with the frame was re-painted, all four panels of it, every frame */
 .sc-runway.is-pinned .mesh{ inset:auto; left:50%; top:50%; width:var(--vw, 100vw); height:100vh; border-radius:0; transform:translate(-50%,-50%); will-change:transform; }
@@ -243,6 +247,7 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .chip-ico.t1{ background:#bfeed6; } .chip-ico.t2{ background:#c6f3ec; } .chip-ico.t3{ background:#cde7c0; } .chip-ico.t4{ background:#e4efc6; } .chip-ico.t5{ background:#cdeee6; } .chip-ico.t6{ background:#d6ecc8; }
 .badge{ padding:3px 8px; border-radius:7px; background:rgba(22,36,28,.06); font-size:12px; font-weight:600; color:var(--muted); }
 .sc-copy p{ margin:18px 0 28px; color:var(--muted); font-size:17px; }
+.sc-copy p.sc-sum{ display:none; }   /* phones: the short version of the paragraph below it */
 
 /* the right-hand demo: real product moments, drawn in HTML */
 .demo{ position:relative; min-height:360px; display:grid; place-items:center; padding:36px 28px; border-radius:26px; overflow:hidden; }
@@ -556,6 +561,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
 /* ── plans ────────────────────────────────────────────────── */
 .plans{ padding:40px 0 120px; }
+.plans, #product, #how, #why, #meet, #ask, #start{ scroll-margin-top:84px; }   /* in-page links land below the floating header */
 .plan-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:56px; }
 .plan{ display:flex; flex-direction:column; padding:32px; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
 .plan.is-pro{ position:relative; background:linear-gradient(170deg,var(--forest),var(--forest-deep)); color:var(--on-dark); box-shadow:0 30px 60px -30px rgba(6,20,13,.55); }
@@ -585,6 +591,10 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 .foot-cta h2 em{ color:var(--emerald-bright); }
 .foot-cta > p:not(.eyebrow){ margin:22px 0 34px; color:var(--on-dark-muted); font-size:18px; }
 .foot-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; align-content:start; padding-top:8px; }
+/* a line over the link columns, across all of them */
+.foot-lead{ grid-column:1 / -1; padding-bottom:22px; margin-bottom:2px; border-bottom:1px solid rgba(234,243,238,.12); }
+.foot-lead-title{ margin:0; font:500 clamp(22px,2vw,26px)/1.25 var(--serif); letter-spacing:-.01em; color:var(--on-dark); }
+.foot-lead-sub{ margin:6px 0 0; font-size:15px; color:var(--on-dark-muted); }
 .foot-cols h3{ margin-bottom:16px; font:600 15px/1.2 var(--sans); color:var(--on-dark); letter-spacing:0; }
 .foot-cols ul{ margin:0; padding:0; list-style:none; }
 .foot-cols li + li{ margin-top:10px; }
@@ -612,6 +622,15 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   .step.is-active{ flex-grow:1; }
   .step:not(.is-active) .step-body, .step:not(.is-active) .step-result{ position:relative; left:auto; right:auto; visibility:visible; opacity:1; pointer-events:auto; }
   .step + .step::before{ display:none; }
+  /* every stage is open here, so the green glow and dark icon follow the card
+     in the middle of the screen instead of the "active" one; the glow is its own
+     layer and only its opacity changes, so the hand-over is a cheap crossfade */
+  .step.is-active::after{ background:radial-gradient(closest-side, rgba(16,185,129,.10), transparent 72%); }
+  .step.is-active .step-ico{ background:rgba(16,185,129,.1); color:var(--forest); }
+  .step::before, .step + .step::before{ content:''; display:block; position:absolute; left:-20%; right:-20%; top:auto; bottom:-30%; width:auto; height:46%; z-index:0; border-radius:50%;
+    background:radial-gradient(closest-side, rgba(16,185,129,.30), rgba(168,217,74,.18) 55%, transparent 74%); opacity:0; transition:opacity .5s var(--ease); pointer-events:none; }
+  .step.is-lit::before, .step + .step.is-lit::before{ opacity:1; }
+  .step.is-lit .step-ico{ background:var(--forest); color:var(--on-dark); }
   .foot-top{ grid-template-columns:1fr; gap:56px; }
 }
 @media (max-width:900px){
@@ -650,9 +669,23 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   .sc-tab .sc-name{ display:none; }
   .sc-panel .chip-ico{ display:none; }   /* the tab above already shows the icon; the panel keeps just the name */
   .sc-panel .chip{ margin-bottom:14px; }
+  /* phone: heading + a short version of the paragraph; the full paragraph and the link made the card a screen and a half long */
+  .sc-copy > p:not(.chip):not(.sc-sum), .sc-copy .link-arrow{ display:none; }
+  .sc-copy p.sc-sum{ display:block; margin:12px 0 0; font-size:15.5px; line-height:1.5; }
+  .sc-panel{ gap:18px; padding:22px 18px 18px; }
+  .sc-copy h3{ font-size:26px; }
+  .demo{ padding:40px 10px 12px; border-radius:20px; }
+  .demo-tag{ top:10px; right:10px; font-size:10px; }
+  .mock{ padding:14px; font-size:13px; }
+  .mock-ally{ font-size:14px; padding:11px 13px; }
+  .mock-day li{ padding:8px 0; }
+  .mock .bubble{ max-width:96%; font-size:14px; }
+  .sc-card{ display:flex; flex-direction:column; justify-content:center; }   /* shorter panels sit in the middle of the fixed-height card */
   .vis-tile{ min-height:64px; padding:10px; }
   .vis-tile span{ font-size:13px; }   /* six tabs: icons only; the panel's own heading names it */
-  .sc-tab{ min-width:0; width:48px; height:48px; padding:0; }
+  .sc-tab{ min-width:0; width:42px; height:42px; padding:0; border-width:2px; border-radius:13px; }
+  .sc-tab svg.ico{ width:20px; height:20px; }
+  .sc-prog{ left:8px; right:8px; bottom:4px; }
   .sc-long{ display:none; }
   .sc-short{ display:inline; }
   .sc-card{ border-radius:28px; }
@@ -692,6 +725,70 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 }
 
 /* Reduced motion: no sliding, no auto-advance, nothing that moves on its own. */
+@media (max-width:720px){
+  /* phone-compact */
+  /* Ask Ally: the answer card sits right under the question box (the copy column is flattened so its pieces and the card can be ordered) */
+  .ask-grid{ gap:0; grid-template-columns:minmax(0,1fr); }   /* the one-line chips must scroll, not widen the column */
+  .ask-stage, .ask-card{ min-width:0; }
+  .ask-copy{ display:contents; }
+  .ask-copy > .eyebrow{ order:1; }
+  .ask-copy > h2{ order:2; }
+  .ask-copy > p:not(.eyebrow){ order:3; }
+  .ask-stage{ order:4; margin-top:6px; }
+  /* the question box and the suggestions live inside the card on phones (moved by the script): a chat, typed at the bottom */
+  .ask-card.has-input .ask-chips{ flex:none; flex-wrap:nowrap; gap:6px; margin:0; max-width:none; padding:8px 12px 2px; overflow-x:auto; scrollbar-width:none; }
+  .ask-card.has-input .ask-chips::-webkit-scrollbar{ display:none; }
+  .ask-card.has-input .ask-chips button{ flex:none; padding:7px 12px; font-size:13px; white-space:nowrap; }
+  .ask-card.has-input .ask-form{ flex:none; flex-direction:row; gap:8px; max-width:none; padding:8px 12px 12px; }
+  .ask-card.has-input .ask-field{ flex:1; height:46px; padding:0 14px; }
+  .ask-card.has-input .ask-field input{ font-size:15px; }
+  .ask-card.has-input .ask-form .btn{ width:auto; height:46px; padding:0 18px; font-size:15px; }
+  .ask-card.has-input .ask-log{ padding:16px 14px 8px; }
+  .proof, .closer, .ask{ padding:56px 0; }
+  .how{ padding:56px 0; }
+  .meet{ padding-top:56px; }
+  .start{ padding-bottom:56px; }
+  .plans{ padding-bottom:64px; }
+  .sec-head p:not(.eyebrow), .ask-copy > p:not(.eyebrow), .meet-copy > p:not(.eyebrow), .start-copy > p:not(.eyebrow){ font-size:16px; }
+  /* How it works: every stage open, as on a laptop, sized for a phone */
+  .steps{ gap:14px; margin-top:32px; }
+  .step{ padding:20px 20px 22px; }
+  .step-ico{ width:36px; height:36px; border-radius:11px; }
+  .step-ico svg{ width:18px; height:18px; }
+  .step-title{ margin-top:10px; font-size:20px; }
+  .step-time{ margin-top:10px; }
+  .step-body{ margin-top:14px; }
+  .step-body li{ padding:4px 0 4px 20px; font-size:14.5px; }
+  .step-body li::before{ top:11px; }
+  .step-body h4{ margin:10px 0 2px; }
+  .step-result{ padding-top:12px; font-size:16.5px; }
+  .step::after{ height:46%; bottom:-30%; }
+  .how-foot{ margin-top:26px; font-size:16px; }
+  /* Look closer, stacked: the saying is already the heading above its card */
+  .closer.is-stacked .answer > .who:not(.ally), .closer.is-stacked .answer blockquote, .closer.is-stacked .trail{ display:none; }
+  .closer.is-stacked .answer, .closer.is-stacked .answer[hidden]{ margin:14px 0 16px; padding:20px 18px 18px; }
+  .closer.is-stacked .q-btn{ padding-top:18px; }
+  /* plans */
+  .plan-grid{ gap:14px; margin-top:32px; }
+  .plan{ padding:24px 22px; }
+  .plan-for{ min-height:0; margin:6px 0 16px; }
+  .price strong{ font-size:42px; }
+  .plan .btn{ margin-top:20px; height:48px; }
+  .trust{ margin-top:24px; gap:8px 18px; }
+  /* Ask Ally and the dashboard card */
+  .ask-copy > p:not(.eyebrow){ margin:14px 0 20px; }
+  .ask-card{ height:470px; }
+  .meet-copy > p:not(.eyebrow){ margin-top:14px; }
+  .meet-card{ height:420px; }
+  /* footer */
+  .foot-panel{ padding:56px 22px 28px; }
+  .foot-top{ gap:40px; }
+  .foot-cta h2{ font-size:32px; }
+  .foot-cta > p:not(.eyebrow){ margin:16px 0 22px; font-size:16px; }
+  .foot-cols{ gap:24px 16px; }
+  .foot-cols li + li{ margin-top:8px; }
+  .foot-bottom{ margin-top:40px; }
+}
 @media (prefers-reduced-motion: reduce){
   .meet-tip.is-on{ animation:none; }
   .ask-fab-pulse{ animation:none; opacity:0; }
@@ -705,7 +802,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
 <div class="announce" id="announce" role="region" aria-label="Announcement">
   <p><span class="dot" aria-hidden="true"></span><span class="ann-long">Launch pricing is live: Starter ₹199, Plus ₹499 a month.</span><span class="ann-short">Launch pricing: Starter ₹199, Plus ₹499/mo.</span>
-    <a href="/pricing.html">See plans <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+    <a href="#plans">See plans <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
   <button class="announce-x" type="button" aria-label="Dismiss announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div>
 
@@ -718,7 +815,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     <ul class="nav-links">
       <li><a href="#product">Product</a></li>
       <li><a href="#how">How it works</a></li>
-      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="#plans">Pricing</a></li>
       <li><a href="/about.html">Our story</a></li>
     </ul>
     <div class="nav-cta">
@@ -729,7 +826,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   <div class="mobile-menu" id="mobileMenu" hidden>
     <a href="#product">Product</a>
     <a href="#how">How it works</a>
-    <a href="/pricing.html">Pricing</a>
+    <a href="#plans">Pricing</a>
     <a href="/about.html">Our story</a>
   </div>
 </header>
@@ -802,6 +899,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span>Adaptive diagnosis</p>
               <h3>A diagnosis that adapts to how you answer.</h3>
+              <p class="sc-sum">About 20 minutes, and you can pause. Ally learns how you decide and how the business really makes money.</p>
               <p>About 20 minutes, and you can stop and pick it up later. Ally maps your Founder DNA — how you decide under pressure — and your Business DNA — how the business actually makes money.</p>
               <a class="link-arrow" href="#how">See how it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
@@ -820,6 +918,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg></span>Clarity Report</p>
               <h3>One named cause, with its reasoning.</h3>
+              <p class="sc-sum">Ally traces symptoms to their drivers and names the one cause to fix first — in a report that’s yours to keep.</p>
               <p>Ally traces symptoms to their drivers, checks your founder profile against your business, and lands on the one cause to fix first — written up as a report that’s yours to keep.</p>
               <a class="link-arrow" href="/ally-dashboard.html">See a sample dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
@@ -838,6 +937,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.2A8 8 0 1 1 20 12z"/></svg></span>Talk to Ally <span class="badge">Plus</span></p>
               <h3>Ask with your whole picture in the room.</h3>
+              <p class="sc-sum">Every answer starts from your founder, business and current context — not from scratch.</p>
               <p>Ally holds your founder context, your business context and your current situation in one place, so every answer starts from where you actually are — not from a blank prompt.</p>
               <a class="link-arrow" href="#plans">Included from Plus <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
@@ -855,6 +955,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16"/></svg></span>Plan your day <span class="badge">Plus</span></p>
               <h3>One clear day beats ten unfinished priorities.</h3>
+              <p class="sc-sum">Goals, vision and today’s plan point the same way, so the work that matters gets the time.</p>
               <p>Your goals, your vision and today’s plan point the same way — so the work that moves the business forward is the work that gets the time.</p>
               <a class="link-arrow" href="#plans">Included from Plus <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
@@ -876,6 +977,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t5" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7"/></svg></span>Knowledge base</p>
               <h3>What to read, watch and know — chosen, not scraped.</h3>
+              <p class="sc-sum">Books, talks and a searchable founder glossary — open to every founder, on every plan.</p>
               <p>Books worth the hours, talks worth the time, and a founder glossary you can search: the terms you’re expected to know and are rarely told. Open to every founder, on every plan.</p>
               <a class="link-arrow" href="#plans">Included in every plan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
@@ -894,6 +996,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t6" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M10 10v10"/><circle cx="16" cy="15" r="1.6"/></svg></span>Vision board <span class="badge">Pro</span></p>
               <h3>Write down where you’re going. Plan toward it.</h3>
+              <p class="sc-sum">Your life, business, impact, money, ideal day and legacy — so goals and daily plans point one way.</p>
               <p>Six parts of the picture — your life, your business, your impact, your financial future, your ideal day and your legacy — so the goals and the daily plan keep pointing the same way.</p>
               <a class="link-arrow" href="#plans">Included in Pro <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
@@ -1204,11 +1307,15 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       <a class="btn btn-light btn-lg" id="closeCta" href="/go/login">Sign up <svg class="arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <nav class="foot-cols" aria-label="Footer">
+      <div class="foot-lead">
+        <p class="foot-lead-title">Want to go deeper?</p>
+        <p class="foot-lead-sub">Each link below opens a detailed read on Ally — how it works, what it costs and the thinking behind it.</p>
+      </div>
       <div>
         <h3>Product</h3>
         <ul>
           <li><a href="#how">How it works</a></li>
-          <li><a href="/pricing.html">Pricing</a></li>
+          <li><a href="#plans">Pricing</a></li>
           <li><a href="/ally-dashboard.html">Sample dashboard</a></li>
           <li><a id="footLoginLink" href="/go/login">Log in</a></li>
         </ul>
@@ -1450,8 +1557,34 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       if (!on) ['width', 'marginLeft', 'height', 'borderRadius', 'paddingTop', 'paddingBottom'].forEach(function(k){ sc.style[k] = ''; });
       queue();
     }
+    /* unpinned autoplay (see .is-autoplay) */
+    var scManual = false, scVisible = false;
+    function scSync(){
+      sc.classList.toggle('is-autoplay', !pinned && !reduce && !scManual && scVisible);
+    }
+    sc.addEventListener('animationend', function(e){
+      if (e.animationName !== 'scFill' || pinned || scManual) return;
+      scTabs.select((scTabs.current() + 1) % N, false, false);
+      sc.classList.remove('is-autoplay'); void sc.offsetWidth; scSync();
+    });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ scVisible = es[0].isIntersecting; scSync(); }, { threshold:.4 }).observe(sc);
+    else { scVisible = true; }
+    /* one height for every panel while unpinned, so the page below never moves */
+    var scCard = sc.querySelector('.sc-card'), scPanels = [].slice.call(sc.querySelectorAll('.sc-panel'));
+    function scEqualise(){
+      if (pinned) { scCard.style.minHeight = ''; return; }
+      scCard.style.minHeight = '';
+      var tallest = 0;
+      scPanels.forEach(function(p){ var was = p.hidden; p.hidden = false; tallest = Math.max(tallest, p.offsetHeight); p.hidden = was; });
+      scCard.style.minHeight = tallest + 'px';
+    }
+    var eqTimer = 0;
+    window.addEventListener('resize', function(){ clearTimeout(eqTimer); eqTimer = setTimeout(function(){ scEqualise(); scSync(); }, 150); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scEqualise);
+
     scTabs = tabs(sc.querySelector('[role="tablist"]'), function(i, fromUser){
       sc.setAttribute('data-active', String(i));
+      if (fromUser && !pinned && !scManual) { scManual = true; scSync(); }
       if (fromUser && pinned) {
         var vh = window.innerHeight, lead = vh * HOLD, seg = (runway.offsetHeight - vh - lead) / N;
         var top = window.scrollY + runway.getBoundingClientRect().top;
@@ -1461,8 +1594,10 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     });
     window.addEventListener('scroll', queue, { passive:true });
     window.addEventListener('resize', setMode);
-    if (wide.addEventListener) wide.addEventListener('change', setMode);
+    if (wide.addEventListener) wide.addEventListener('change', function(){ setMode(); scEqualise(); scSync(); });
     setMode();
+    scEqualise();
+    scSync();
   }
 
   /* 4. Look closer: advances on its own while it is on screen, stops for good
@@ -1756,24 +1891,13 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       if (opener) opener.focus();
     }
 
-    /* the hint: on when the card is in view, off for the visit once used */
-    var tip = document.getElementById('meetTip'), tipDone = false;
-    try { tipDone = sessionStorage.getItem('ally_v3_meet_tip') === 'x'; } catch(e) {}
-    if (tip && !tipDone && 'IntersectionObserver' in window) {
-      var tipTimer = 0;
-      new IntersectionObserver(function(es){
-        clearTimeout(tipTimer);
-        if (tipDone) return;
-        /* as the card comes into view while scrolling -- not after the visitor stops */
-        if (es[0].isIntersecting) tip.classList.add('is-on');
-        else tip.classList.remove('is-on');
-      }, { threshold:.25 }).observe(pf.parentNode.parentNode);
+    /* the hint: on every time the card comes into view (as it scrolls in, not
+       after the visitor stops); off while it is out of view or the viewer is open */
+    var tip = document.getElementById('meetTip');
+    if (tip && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function(es){ tip.classList.toggle('is-on', es[0].isIntersecting); }, { threshold:.25 }).observe(pf.parentNode.parentNode);
     }
-    meetCard.addEventListener('click', function(){
-      tipDone = true;
-      if (tip) tip.classList.remove('is-on');
-      try { sessionStorage.setItem('ally_v3_meet_tip', 'x'); } catch(e) {}
-    });
+    meetCard.addEventListener('click', function(){ if (tip) tip.classList.remove('is-on'); });
     meetCard.addEventListener('click', openViewer);
     vClose.addEventListener('click', closeViewer);
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !viewer.hidden) closeViewer(); });
@@ -1808,6 +1932,29 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   /* 5. How it works: one stage open at a time on wide screens; the open
      card takes the width. On narrow screens CSS shows them all. */
   var steps = [].slice.call(document.querySelectorAll('.step'));
+  /* Narrow screens (every stage open): the glow goes to the card crossing the
+     middle of the screen and stays on the last one passed. */
+  var litMQ = window.matchMedia('(max-width:1080px)'), litIO = null;
+  function setLit(){
+    if (litIO) { litIO.disconnect(); litIO = null; }
+    steps.forEach(function(s){ s.classList.remove('is-lit'); });
+    if (!litMQ.matches) return;
+    steps[0].classList.add('is-lit');
+    if (!('IntersectionObserver' in window)) return;
+    /* cards crossing the middle band; on two columns a row lights together,
+       and if two rows touch the band the one nearer the centre wins */
+    var inBand = [];
+    litIO = new IntersectionObserver(function(es){
+      es.forEach(function(e){ var k = inBand.indexOf(e.target); if (e.isIntersecting && k < 0) inBand.push(e.target); else if (!e.isIntersecting && k >= 0) inBand.splice(k, 1); });
+      if (!inBand.length) return;                        /* between cards or past the section: keep the last */
+      var mid = window.innerHeight / 2, best = null, bestD = Infinity;
+      inBand.forEach(function(s){ var r = s.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < bestD) { bestD = d; best = r.top; } });
+      steps.forEach(function(s){ s.classList.toggle('is-lit', inBand.indexOf(s) >= 0 && Math.abs(s.getBoundingClientRect().top - best) < 4); });
+    }, { rootMargin:'-45% 0px -45% 0px' });
+    steps.forEach(function(s){ litIO.observe(s); });
+  }
+  setLit();
+  if (litMQ.addEventListener) litMQ.addEventListener('change', setLit);
   function openStep(s){
     steps.forEach(function(x){ var on = x === s; x.classList.toggle('is-active', on); x.querySelector('.step-btn').setAttribute('aria-expanded', String(on)); });
   }
@@ -1867,6 +2014,18 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   if (!form) return;
   var busy = false;
 
+  /* phones: the question box and the suggestions move into the card, under
+     the conversation, like a chat app; wider screens keep them beside it */
+  var askCard = log.closest('.ask-card'), askCopy = form.parentNode, askPhone = window.matchMedia('(max-width:720px)');
+  function placeAsk(){
+    if (askPhone.matches) { askCard.appendChild(chips); askCard.appendChild(form); askCard.classList.add('has-input'); }
+    else if (askCard.classList.contains('has-input')) { askCopy.appendChild(form); askCopy.appendChild(chips); askCard.classList.remove('has-input'); }
+  }
+  var longHint = input.getAttribute('placeholder');
+  function placeAskAll(){ placeAsk(); input.setAttribute('placeholder', askPhone.matches ? 'Ask about Ally…' : longHint); }   /* the long example does not fit the box in the card */
+  placeAskAll();
+  if (askPhone.addEventListener) askPhone.addEventListener('change', placeAskAll);
+
   STARTERS.forEach(function(q){
     var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
     b.addEventListener('click', function(){ ask(q); });
@@ -1885,7 +2044,13 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
   function bubble(who, text){
     var p = document.createElement('p'); p.className = 'bubble ' + who; p.textContent = text;
-    log.appendChild(p); log.scrollTop = log.scrollHeight; return p;
+    log.appendChild(p);
+    /* a long answer is read from its start: show the question above it and the
+       answer's first line, not its last; anything else scrolls to the end */
+    var prev = p.previousElementSibling;
+    if (who === 'ally' && prev && p.offsetHeight > log.clientHeight * .6) log.scrollTop = Math.max(0, log.scrollTop + prev.getBoundingClientRect().top - log.getBoundingClientRect().top - 12);   /* measured inside the log, not from the card */
+    else log.scrollTop = log.scrollHeight;
+    return p;
   }
   function miss(){
     var p = bubble('ally', 'I don’t have an answer for that one. Email ');
@@ -1898,6 +2063,11 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     if (!text || busy) return;
     busy = true; input.value = '';
     bubble('me', text);
+    var stageEl = log.closest('.ask-stage');
+    if (stageEl && window.matchMedia('(max-width:720px)').matches) {
+      var sr = stageEl.getBoundingClientRect();
+      if (sr.bottom > window.innerHeight || sr.top < 70) stageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     var dots = document.createElement('div'); dots.className = 'typing'; dots.setAttribute('aria-label', 'Ally is typing');
     dots.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(dots); log.scrollTop = log.scrollHeight;
 
