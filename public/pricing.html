@@ -109,6 +109,7 @@ img,svg{ display:block; max-width:100%; }
 .pr-hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4.6vw,42px);line-height:1.1;letter-spacing:-.02em;color:#0E2A1C;margin:0 0 12px}
 .pr-hero h1 em{font-style:italic;color:#10B981}
 .pr-hero p{font-size:clamp(14px,1.7vw,16px);line-height:1.6;color:#556458;margin:0 auto;max-width:52ch}
+.pr-hero p.pr-incl{margin-top:8px;font-size:clamp(13px,1.5vw,14.5px);color:#6c7a70}   /* what every plan includes, under the landing page's line */
 /* auto-fit, not repeat(4,1fr): the tier count comes from the API now, so a fixed
    four columns left a phantom empty track and crushed three cards to ~130px on a
    phone. minmax(0,…) lets a track shrink below its content's min-content width,
@@ -334,9 +335,10 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
 <main class="pricing shell">
 <div class="bill-wrap">
   <div class="pr-hero reveal">
-    <div class="pr-eye"><span class="lv"></span>Transparent Pricing</div>
-    <h1>Simple plans, <em>powerful</em> clarity</h1>
-    <p>Every plan includes the adaptive diagnosis and your Clarity Report. Upgrade for chat, planning and Ally&rsquo;s own recommendations.</p>
+    <div class="pr-eye"><span class="lv"></span>Plans and pricing</div>
+    <h1>Small investment to achieve <em>bigger dreams.</em></h1>
+    <p>Get the right support to turn your entrepreneurial dreams into reality.</p>
+    <p class="pr-incl">Every plan includes the adaptive diagnosis and your Clarity Report. Upgrade for chat, planning and Ally&rsquo;s own recommendations.</p>
     <p class="pr-year"><span class="pr-launch">Launch offer</span>Our early prices, while they last. Pay yearly and the first days are on us &mdash; <b>15 days free on Plus</b>, <b>30 days free on Pro</b>.</p>
   </div>
 
@@ -423,7 +425,7 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
 
   <div class="pr-trust">
     <span><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Payments secured by Razorpay</span>
-    <span><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Encrypted &amp; never sold</span>
+    <span><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Encrypted</span>
     <span><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Your privacy, our priority</span>
   </div>
 
@@ -585,7 +587,7 @@ a.pc-cta{ text-decoration:none; flex-shrink:0; }
     <p class="eyebrow">GoXL Ally</p>
     <h2>Every founder deserves a compass.</h2>
     <p>Pick a plan once you&rsquo;re in. Direct signup is available while access spots are open.</p>
-    <a class="cta" href="/go/login">Log in <span aria-hidden="true">&rarr;</span></a>
+    <a class="cta" href="/go/login">Sign up <span aria-hidden="true">&rarr;</span></a>
     <p class="cta-note">www.goxlally.ai &mdash; Limited access is open. When current spots fill, new registrations move to the waitlist.</p>
   </div>
 </section>
