@@ -86,7 +86,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        { source: "/", destination: "/ally-landing-v2.html" },
+        { source: "/", destination: "/ally-landing-v3.html" },
         {
           source: "/founder-business-diagnosis",
           destination: "/founder-business-diagnosis.html",
@@ -174,7 +174,7 @@ const nextConfig: NextConfig = {
       // fetches the page, so it never sees the noindex either. Permanent, so
       // any link equity moves to the page that replaced them.
       {
-        source: "/:old(ally-landing|ally-landing-v1-backup|ally-landing.original).html",
+        source: "/:old(ally-landing|ally-landing-v1-backup|ally-landing.original|ally-landing-v2).html",
         destination: "/",
         permanent: true,
       },
