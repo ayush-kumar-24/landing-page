@@ -373,6 +373,16 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .vis-tile.is-filled small{ color:var(--emerald); }
 .demo::before{ content:''; position:absolute; inset:auto -10% -40% -10%; height:80%; background:radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.55), transparent 70%); pointer-events:none; }
 .demo-tag{ position:absolute; top:0.875rem; right:0.875rem; padding:3px 0.5625rem; border-radius:0.4375rem; background:rgba(255,253,249,.7); font-size:max(11px, 0.6875rem); font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+/* real app screens in two of the demos: the card look of the mocks, the picture edge to edge */
+.demo.has-shot{ padding:1.75rem 1.5rem; }
+.demo-shot{ display:block; width:100%; max-width:26.25rem; height:auto; border-radius:1rem; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 18px 40px -18px rgba(22,36,28,.22); }
+.sc-links{ display:flex; flex-wrap:wrap; gap:0.75rem 1.5rem; }
+.demo-dl{ position:absolute; z-index:2; left:50%; bottom:0.75rem; transform:translateX(-50%); display:inline-flex; align-items:center; gap:0.4375rem; padding:0.5rem 0.875rem; border-radius:999px; background:var(--forest); color:#fff; font-size:max(13px, 0.8125rem); font-weight:600; white-space:nowrap; text-decoration:none; box-shadow:0 10px 24px -10px rgba(22,36,28,.55); transition:transform .2s var(--ease), box-shadow .2s var(--ease); }
+.demo-dl svg{ flex:none; width:0.9375rem; height:0.9375rem; }
+.demo-dl:hover{ transform:translateX(-50%) translateY(-2px); box-shadow:0 14px 28px -10px rgba(22,36,28,.6); }
+.sc-panel.is-entering .demo-dl{ animation:dlPop .45s var(--ease) .35s both; }
+@keyframes dlPop{ from{ opacity:0; transform:translateX(-50%) translateY(8px) scale(.94); } to{ opacity:1; transform:translateX(-50%); } }
+@media (prefers-reduced-motion:reduce){ .sc-panel.is-entering .demo-dl{ animation:none; } }
 .mock{ position:relative; width:100%; max-width:26.25rem; padding:1.375rem; border-radius:1.25rem; background:var(--card); box-shadow:0 1px 2px rgba(22,36,28,.05), 0 18px 40px -18px rgba(22,36,28,.22); font-size:max(14px, 0.875rem); }
 .mock-top{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.375rem 0.75rem; margin-bottom:0.875rem; }
 .mock-pill{ white-space:nowrap; padding:0.3125rem 0.625rem; border-radius:999px; background:#dff4e9; color:var(--forest); font-size:max(12px, 0.75rem); font-weight:600; }
@@ -796,6 +806,10 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   .sc-card{ border-radius:1.75rem; }
   .sc-panel{ padding:1.75rem 1.375rem; }
   .demo{ min-height:0; padding:3.25rem 0.875rem 1.25rem; }
+  .demo.has-shot{ padding:2.5rem 0.375rem 0.375rem; }   /* app screenshots: as wide as the card allows */
+  .demo-shot{ max-width:none; border-radius:0.75rem; }
+  .demo:has(.demo-dl){ padding-bottom:4rem; }   /* room for the download pill under the sample card */
+  .demo-dl{ bottom:1rem; }
   .mock{ padding:1.125rem; }
   .proof, .closer, .ask{ padding:5rem 0; }
   .how{ padding:5rem 0; }
@@ -959,7 +973,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
         <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="2 of 2" aria-hidden="true" inert>
           <p class="eyebrow">Beside you</p>
           <p class="hero-h" role="heading" aria-level="2">When someone stays beside you, <em>dreams are easy to achieve.</em></p>
-          <p class="lede">Ally stays with you after the diagnosis. It keeps your founder and business context, so every next step is worked out with you — not left to you.</p>
+          <p class="lede">Ally stays with you after the diagnosis. It remembers you and your business, and works out every next step with you.</p>
         </div>
       </div>
       <div class="hero-nav">
@@ -1053,10 +1067,11 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
               <h3>A report that shows where you stand — and your next steps.</h3>
               <p class="sc-sum">Where you are, what’s holding you back, and your next steps toward your vision — in a report you keep.</p>
               <p>Ally looks at you and your business together, finds what’s holding you back, and gives you your next steps toward your vision. The report is yours to keep.</p>
-              <a class="link-arrow" href="/ally-dashboard.html">See a sample dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <span class="sc-links"><a class="link-arrow" href="/ally-dashboard.html">See a sample dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></span>
             </div>
             <div class="demo t2" aria-label="Sample: a finding from a Clarity Report">
               <span class="demo-tag">Sample</span>
+              <a class="demo-dl" href="/assets/sample-clarity-report.v1.pdf" download="GoXL-Ally-sample-Clarity-Report.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>Download sample report</a>
               <div class="mock">
                 <p class="mock-kicker">What Ally noticed</p>
                 <p class="mock-title">Getting customers consistently</p>
@@ -1088,21 +1103,13 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
             <div class="sc-copy">
               <p class="chip"><span class="chip-ico t4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16"/></svg></span>Plan your day <span class="badge">Plus</span></p>
               <h3>One clear day beats ten unfinished priorities.</h3>
-              <p class="sc-sum">Goals, vision and today’s plan point the same way, so the work that matters gets the time.</p>
-              <p>Your goals, your vision and today’s plan point the same way — so the work that moves the business forward is the work that gets the time.</p>
+              <p class="sc-sum">Set today’s priorities. Ally reminds you, so the important work gets done.</p>
+              <p>Set today’s priorities with a time and a reminder. Ally keeps you accountable, so the work that moves the business forward actually gets done.</p>
               <a class="link-arrow" href="#plans">Included from Plus <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
-            <div class="demo t4" aria-label="Sample: a planned day">
+            <div class="demo t4 has-shot" aria-label="From the app: Plan Your Day">
               <span class="demo-tag">Sample</span>
-              <div class="mock mock-day">
-                <div class="mock-top"><span class="mock-pill">Today</span><span class="mock-meta">4 blocks</span></div>
-                <ul>
-                  <li class="is-now"><time>09:30</time><span>See where customers are getting stuck</span><em>45 min</em></li>
-                  <li><time>11:30</time><span>Investors meeting</span><em>30 min</em></li>
-                  <li><time>14:00</time><span>Talk to five customers or potential customers</span><em>45 min</em></li>
-                  <li><time>18:10</time><span>Team meeting</span><em>10 min</em></li>
-                </ul>
-              </div>
+              <img class="demo-shot" src="/assets/plan-your-day.v1.webp" width="918" height="822" loading="lazy" decoding="async" alt="Plan Your Day in the Ally app: add a task with a priority, a time and a reminder; today’s goals are listed below.">
             </div>
           </div>
 
@@ -1147,16 +1154,9 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
               <p>Six parts of the picture — your life, your business, your impact, your financial future, your ideal day and your legacy — so the goals and the daily plan keep pointing the same way.</p>
               <a class="link-arrow" href="#plans">Included in Pro <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
-            <div class="demo t6" aria-label="Sample: a vision board">
+            <div class="demo t6 has-shot" aria-label="From the app: Your Vision Board">
               <span class="demo-tag">Sample</span>
-              <div class="mock mock-vision">
-                <div class="vis-tile is-filled"><small>My Business</small><span>A brand customers recommend without being asked.</span></div>
-                <div class="vis-tile is-filled"><small>My Ideal Day</small><span>Mornings on product, afternoons with customers, home by seven.</span></div>
-                <div class="vis-tile"><small>My Life</small></div>
-                <div class="vis-tile"><small>My Impact</small></div>
-                <div class="vis-tile"><small>My Financial Future</small></div>
-                <div class="vis-tile"><small>My Legacy</small></div>
-              </div>
+              <img class="demo-shot" src="/assets/vision-board.v1.webp" width="995" height="687" loading="lazy" decoding="async" alt="Your Vision Board in the Ally app: a goal for each part of life and business, with a picture and a timeline.">
             </div>
           </div>
         </div>
@@ -1171,7 +1171,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       <h2 class="sr-only" id="proof-title">What Ally is built on</h2>
       <p class="proof-intro">Built on a structured way of understanding founders and businesses — not generic prompts or advice templates.</p>
       <ul class="stats">
-        <li><strong><span class="count" data-to="30">30</span><span>+</span></strong><p>industries whose parameters Ally is trained on</p></li>
+        <li><strong><span class="count" data-to="30">30</span><span>+</span></strong><p>different industries</p></li>
         <li><strong><span class="count" data-to="100">100</span><span>+</span></strong><p>entrepreneurial dimensions</p></li>
         <li><strong><span class="count" data-to="10000">10,000</span><span>+</span></strong><p>founder case studies</p></li>
         <li><strong><span class="count" data-to="25000">25,000</span><span>+</span></strong><p>founder problems mapped to their root causes</p></li>
@@ -1276,7 +1276,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
         <li class="step">
           <button class="step-btn" type="button" aria-expanded="false" aria-controls="step-b-3"><span class="step-top"><span class="step-num">04</span><span class="step-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span></span><span class="step-title">Clarity Report</span><span class="step-time">Generated on demand</span></button>
           <div class="step-body" id="step-b-3">
-            <ul><li>Diagnosis in plain language</li><li>Root cause stated with evidence</li><li>Prioritised actions and timelines</li><li>Baselines for the next 90 days</li></ul>
+            <ul><li>Diagnosis in plain language</li><li>Root cause stated with evidence</li><li>Your next three actions, prioritised</li><li>Baselines for the next 90 days</li></ul>
           </div>
           <p class="step-result">An open action list and live metrics.</p>
           <span class="step-timer" aria-hidden="true"><i></i></span>
@@ -1408,7 +1408,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">Plans and pricing</p>
-        <h2 id="plans-title">Small investment to achieve <em>bigger dreams.</em></h2>
+        <h2 id="plans-title">Small Investment To Achieve <em>Bigger Dreams.</em></h2>
         <p>Get the right support to turn your entrepreneurial dreams into reality.</p>
       </div>
       <div class="plan-grid">
@@ -2222,24 +2222,36 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     });
   }
 
-  /* 6. Stats: count up from zero the first time they come into view. The
-     final figures are already in the markup, so without this script (or
-     under reduced motion) they simply sit there. */
+  /* 6. Stats: each figure counts up from zero the first time ITS card reaches
+     the reading part of the screen -- a little above the middle, not the moment
+     it peeks in at the bottom edge. Started at the edge, the count was over
+     before a reader scrolled the cards up to eye level (seen on a 1530x780
+     laptop and on phones, where the four cards stack). On a wide screen the
+     row arrives together and counts together. The final figures are already
+     in the markup, so without this script (or under reduced motion) they
+     simply sit there. */
   var counts = [].slice.call(document.querySelectorAll('.count[data-to]'));
   if (counts.length && !reduce && 'IntersectionObserver' in window) {
     var fmt = function(n){ return Math.round(n).toLocaleString('en-US'); };
-    counts.forEach(function(c){ c.textContent = '0'; });
-    var countIO = new IntersectionObserver(function(es){
-      if (!es.some(function(e){ return e.isIntersecting; })) return;
-      countIO.disconnect();
-      var t0 = performance.now(), DUR = 3200;
+    var DUR = 2800;
+    var run = function(c){
+      var t0 = performance.now(), to = +c.getAttribute('data-to');
       (function tick(now){
         var t = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - t, 3);   /* ease-out: fast, then settles */
-        counts.forEach(function(c){ c.textContent = fmt(+c.getAttribute('data-to') * e); });
+        c.textContent = fmt(to * e);
         if (t < 1) requestAnimationFrame(tick);
       })(t0);
-    }, { threshold:.5 });
-    countIO.observe(document.querySelector('.stats'));
+    };
+    counts.forEach(function(c){ c.textContent = '0'; });
+    var countIO = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        countIO.unobserve(e.target);
+        [].forEach.call(e.target.querySelectorAll('.count[data-to]'), run);
+      });
+    }, { rootMargin:'0px 0px -45% 0px', threshold:0 });   /* card top past ~55% of the screen: about where the eye is */
+    /* the card each number sits in (or the number itself, if it has none) */
+    counts.forEach(function(c){ countIO.observe(c.closest('.stat, .stats > *') || c); });
   }
 
   /* 5. How it works: one stage open at a time on wide screens; the open
