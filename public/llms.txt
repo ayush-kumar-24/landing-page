@@ -30,7 +30,6 @@ Access to GoXL Ally opens in limited batches: founders can sign up with an email
 - [What Is GoXL Ally?](https://www.goxlally.ai/what-is-goxl-ally): canonical product explainer and how the diagnosis-first system works
 - [GoXL Ally vs General AI Assistants](https://www.goxlally.ai/ally-vs-general-ai): factual comparison of general-purpose AI assistants as a category and Ally's diagnosis-first founder workflow
 - [AI Business Advisor vs Consultant](https://www.goxlally.ai/ai-business-advisor-vs-consultant): founder-focused comparison of AI advisory, consultants, coaches and mentors
-- [AI Tools for Founders](https://www.goxlally.ai/ai-tools-for-founders): practical 2026 founder AI stack organized by thinking, research, building, design, automation and decision workflows
 - [Business Health Check for Founders](https://www.goxlally.ai/business-health-check-for-founders): eight-area current-state review across strategy, market, sales, finance, operations, team, systems and founder dependence
 - [AI Founder Advisor](https://www.goxlally.ai/ai-founder-advisor): how context-aware AI advisory differs from a blank chat
 - [Founder Business Diagnosis](https://www.goxlally.ai/founder-business-diagnosis): how Ally examines founder, business and current situation together

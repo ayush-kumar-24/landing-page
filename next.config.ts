@@ -120,10 +120,6 @@ const nextConfig: NextConfig = {
           destination: "/ai-business-advisor-vs-consultant.html",
         },
         {
-          source: "/ai-tools-for-founders",
-          destination: "/ai-tools-for-founders.html",
-        },
-        {
           source: "/business-health-check-for-founders",
           destination: "/business-health-check-for-founders.html",
         },
@@ -163,6 +159,14 @@ const nextConfig: NextConfig = {
       {
         source: "/:old(ally-vs-chatgpt|ally-vs-chatgpt.html)",
         destination: "/ally-vs-general-ai",
+        permanent: true,
+      },
+      // The AI tools page was removed. Its readers and any search ranking go to
+      // the closest page still standing. Permanent, so search engines drop the
+      // old URL and carry its signals over.
+      {
+        source: "/:old(ai-tools-for-founders|ai-tools-for-founders.html)",
+        destination: "/ai-founder-advisor",
         permanent: true,
       },
       // Earlier builds of the landing page. A redirect beats serving them with
