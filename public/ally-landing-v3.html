@@ -225,8 +225,10 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
    then fade back behind "It's worth it." Sized to sit inside the height the
    first slide already gives the hero, so nothing below moves. */
 .hero-slide-wall{ align-self:center; }
-.hero-h-wall{ font-size:clamp(2rem, 4.2vw, 3.5rem); }
-.hw-box{ position:relative; margin:clamp(0.75rem, 1.6vw, 1.25rem) auto 0; max-width:44rem; min-height:clamp(7.5rem, 13vw, 11.5rem); padding:clamp(0.875rem, 1.8vw, 1.5rem) 1.75rem; border-radius:1.75rem; overflow:hidden; display:grid; place-items:center;
+.hero-h-wall{ font-size:clamp(1.875rem, 3.9vw, 3.25rem); }
+.hero-slide-wall .eyebrow{ margin-bottom:0.75rem; }
+@media (min-width:721px) and (max-width:1100px){ .hero-slide-wall .hero-h-wall{ font-size:3.5vw; } .hero-slide-wall .hw-box{ min-height:6rem; padding:0.75rem 1.25rem; } .hero-slide-wall .hw-ally{ margin-top:0.625rem; } }   /* tablets: the first slide is the shortest here */
+.hw-box{ position:relative; margin:clamp(0.75rem, 1.6vw, 1.25rem) auto 0; max-width:44rem; min-height:clamp(6.5rem, 11vw, 10.5rem); padding:clamp(0.875rem, 1.8vw, 1.5rem) 1.75rem; border-radius:1.75rem; overflow:hidden; display:grid; place-items:center;
   background:radial-gradient(36rem 14rem at 50% 0%, #15352a 0%, #0d1f17 75%); box-shadow:0 40px 70px -46px rgba(13,31,23,.7); }
 .hw-words{ display:flex; flex-wrap:wrap; justify-content:center; gap:0.25rem 0; transition:opacity 1.1s var(--ease), filter 1.1s var(--ease); }
 .hw-w{ display:inline-block; margin:0.125rem 0.75rem; font:500 clamp(0.875rem, 1.65vw, 1.3125rem)/1.3 var(--sans); letter-spacing:-.02em; color:rgba(255,255,255,.22); transition:color .55s var(--ease), transform .6s var(--ease); }
@@ -991,7 +993,8 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     <div class="hero-copy">
       <div class="hero-slides" id="heroSlides" role="group" aria-roledescription="carousel" aria-label="About Ally">
         <div class="hero-slide hero-slide-wall is-on" role="group" aria-roledescription="slide" aria-label="1 of 3">
-          <p class="hero-h hero-h-wall" role="heading" aria-level="2">Your <em>entrepreneurship</em> journey will be full of&hellip;</p>
+          <p class="eyebrow">Every founder’s saga</p>
+          <p class="hero-h hero-h-wall" role="heading" aria-level="2">Your <em>Entrepreneurship</em> Journey Will Be Full Of&hellip;</p>
           <div class="hw-box" id="heroWall">
             <p class="sr-only">Learning, building, scaling, growing, setbacks and belief. It’s worth it.</p>
             <div class="hw-words" aria-hidden="true"><span class="hw-w">dreams</span><span class="hw-w">doubt</span><span class="hw-w hw-key" data-n="0" style="--c:#7dd3fc">learning</span><span class="hw-w">runway</span><span class="hw-w">vision</span><span class="hw-w">risk</span><span class="hw-w hw-key" data-n="1" style="--c:#bef264">building</span><span class="hw-w">launch</span><span class="hw-w">trust</span><span class="hw-w">pivot</span><span class="hw-w hw-key" data-n="2" style="--c:#fbbf24">scaling</span><span class="hw-w">hope</span><span class="hw-w hw-key" data-n="5" style="--c:#34d399">belief</span><span class="hw-w">first sale</span><span class="hw-w hw-key" data-n="3" style="--c:#fda4af">growing</span><span class="hw-w">late nights</span><span class="hw-w">pitch</span><span class="hw-w">hiring</span><span class="hw-w">pressure</span><span class="hw-w hw-key" data-n="4" style="--c:#c4b5fd">setbacks</span><span class="hw-w">customers</span><span class="hw-w">patience</span></div>
