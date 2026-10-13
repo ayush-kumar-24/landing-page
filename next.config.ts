@@ -34,7 +34,8 @@ const contentSecurityPolicy = [
   // GA4's fallback beacon is an image request; the container also loads
   // one for its own diagnostics. The Meta Pixel's PageView is the same shape —
   // an image request to www.facebook.com/tr. Named host, not a wildcard.
-  "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com https://www.facebook.com",
+  // i.ytimg.com: the thumbnails on /tutorials, before a video is played.
+  "img-src 'self' data: blob: https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com https://www.facebook.com",
   // GA4 sends its hits to google-analytics.com, or to a regional endpoint
   // when Google routes the visitor there. Named hosts, not wildcards.
   // api.goxlally.ai is the Ally backend. The help widget below the fold asks
@@ -48,7 +49,9 @@ const contentSecurityPolicy = [
   // path is governed by connect-src rather than img-src.
   "connect-src 'self' https://api.goxlally.ai https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://*.clarity.ms https://c.bing.com https://www.facebook.com",
   // The no-JavaScript container frame, and the Tag Assistant debug badge.
-  "frame-src 'self' https://www.googletagmanager.com",
+  // youtube-nocookie.com: the player on /tutorials, loaded only once a
+  // visitor presses play.
+  "frame-src 'self' https://www.googletagmanager.com https://www.youtube-nocookie.com",
   "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
@@ -87,6 +90,7 @@ const nextConfig: NextConfig = {
     return {
       beforeFiles: [
         { source: "/", destination: "/ally-landing-v3.html" },
+        { source: "/tutorials", destination: "/tutorials.html" },
         {
           source: "/founder-business-diagnosis",
           destination: "/founder-business-diagnosis.html",
