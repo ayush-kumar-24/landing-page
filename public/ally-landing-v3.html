@@ -241,6 +241,18 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 .hw-ally{ margin:clamp(0.625rem, 1.4vw, 1.125rem) 0 0; font:600 clamp(1.125rem, 2vw, 1.5rem)/1.3 var(--sans); letter-spacing:-.02em; color:var(--ink); opacity:0; transform:translateY(8px); transition:opacity 1s var(--ease), transform 1s var(--ease); }
 .hw-ally em{ font-family:var(--serif); font-style:italic; font-weight:500; color:var(--emerald); }
 .hw-box.end + .hw-ally{ opacity:1; transform:none; }
+/* a light card instead of a dark block, so the slide belongs to the hero;
+   the lit words take earthy shades that sit with the beige and green, and
+   belief -- the last and the point of the story -- is the brand's emerald,
+   bolder and a touch larger */
+.hw-box{ background:var(--card); border:1px solid var(--border); box-shadow:var(--shadow-float); }
+.hw-w{ color:rgba(22,36,28,.3); }
+.hw-w.pop, .hw-w.lit{ font-weight:600; }
+.hw-key[data-n="5"].lit{ font-weight:700; transform:scale(1.12); }
+.hw-key[data-n="5"].pop{ transform:scale(1.4); }
+.hw-finale{ color:var(--ink); }
+.hw-finale em{ color:var(--emerald); }
+.hw-box.end .hw-words{ opacity:.12; filter:blur(3px); }
 /* the wall slide's story needs longer than six seconds to be read */
 .hero-panel.is-sliding .hero-dot:nth-child(1)[aria-current="true"] span::after{ animation-duration:9.5s; }
 @media (max-width:720px){
@@ -997,7 +1009,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
           <p class="hero-h hero-h-wall" role="heading" aria-level="2">Your <em>Entrepreneurship</em> Journey Will Be Full Of&hellip;</p>
           <div class="hw-box" id="heroWall">
             <p class="sr-only">Learning, building, scaling, growing, setbacks and belief. It’s worth it when Ally walks every step with you.</p>
-            <div class="hw-words" aria-hidden="true"><span class="hw-w">dreams</span><span class="hw-w">doubt</span><span class="hw-w hw-key" data-n="0" style="--c:#7dd3fc">learning</span><span class="hw-w">runway</span><span class="hw-w">vision</span><span class="hw-w">risk</span><span class="hw-w hw-key" data-n="1" style="--c:#bef264">building</span><span class="hw-w">launch</span><span class="hw-w">trust</span><span class="hw-w">pivot</span><span class="hw-w hw-key" data-n="2" style="--c:#fbbf24">scaling</span><span class="hw-w">hope</span><span class="hw-w hw-key" data-n="5" style="--c:#34d399">belief</span><span class="hw-w">first sale</span><span class="hw-w hw-key" data-n="3" style="--c:#fda4af">growing</span><span class="hw-w">late nights</span><span class="hw-w">pitch</span><span class="hw-w">hiring</span><span class="hw-w">pressure</span><span class="hw-w hw-key" data-n="4" style="--c:#c4b5fd">setbacks</span><span class="hw-w">customers</span><span class="hw-w">patience</span></div>
+            <div class="hw-words" aria-hidden="true"><span class="hw-w">dreams</span><span class="hw-w">doubt</span><span class="hw-w hw-key" data-n="0" style="--c:#0f766e">learning</span><span class="hw-w">runway</span><span class="hw-w">vision</span><span class="hw-w">risk</span><span class="hw-w hw-key" data-n="1" style="--c:#4d7c0f">building</span><span class="hw-w">launch</span><span class="hw-w">trust</span><span class="hw-w">pivot</span><span class="hw-w hw-key" data-n="2" style="--c:#b45309">scaling</span><span class="hw-w">hope</span><span class="hw-w hw-key" data-n="5" style="--c:#059669">belief</span><span class="hw-w">first sale</span><span class="hw-w hw-key" data-n="3" style="--c:#c2410c">growing</span><span class="hw-w">late nights</span><span class="hw-w">pitch</span><span class="hw-w">hiring</span><span class="hw-w">pressure</span><span class="hw-w hw-key" data-n="4" style="--c:#475569">setbacks</span><span class="hw-w">customers</span><span class="hw-w">patience</span></div>
             <p class="hw-finale" aria-hidden="true"><span>It’s <em>worth it</em></span></p>
           </div>
           <p class="hw-ally">when <em>Ally</em> walks every step with you.</p>
