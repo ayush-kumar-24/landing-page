@@ -6706,6 +6706,1943 @@ body.lp-done #landing-page { display:none; }
   .dc-booked-row { flex-direction: column; align-items: flex-start; gap: 6px; }
 }
 
+
+/* ==== Synced from the platform (frontend/src/styles/plan.css, vision.css, platform.css .qc) — 2026-10-12 ==== */
+/* ==========================================================================
+   ALLY — Plan Your Day View Stylesheet
+   ========================================================================== */
+
+/* ---- Ask Ally planning box ---- */
+.pl-input-card {
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.pl-input-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pl-input-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--emerald, #10B981);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.pl-input-avatar svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+.pl-input-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.pl-input-title {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 750;
+  color: var(--ink, #16241c);
+}
+
+.pl-input-subtitle {
+  font-family: var(--body);
+  font-size: 11px;
+  color: var(--muted-2, #6c7a70);
+}
+
+.pl-textarea {
+  width: 100%;
+  min-height: 84px;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: var(--body);
+  font-size: 13.5px;
+  color: var(--ink, #16241c);
+  resize: none;
+  background: #fbf7f2;
+  outline: none;
+  transition: border-color 0.2s var(--ease);
+}
+
+.pl-textarea:focus {
+  border-color: var(--emerald, #10B981);
+  background: #ffffff;
+}
+
+.pl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pl-chip-btn {
+  font-family: var(--body);
+  font-size: 11.5px;
+  font-weight: 550;
+  color: var(--muted, #556458);
+  background: #efe6d9;
+  border: 1px solid #d8cfc2;
+  padding: 5px 12px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.pl-chip-btn:hover {
+  background: #e3d5bf;
+  border-color: var(--bd-2, #d8cfc2);
+}
+
+.pl-input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.pl-input-hint {
+  font-family: var(--body);
+  font-size: 11.5px;
+  color: var(--emerald-dark, #0c7a54);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pl-input-hint .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald, #10B981);
+}
+
+.pl-plan-btn {
+  background: #10B981;
+  color: #06231a;
+  font-family: var(--display);
+  font-size: 12.5px;
+  font-weight: 750;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+  box-shadow: 0 4px 12px -4px rgba(16, 185, 129, 0.4);
+}
+
+.pl-plan-btn:hover {
+  background: #34d399;
+  transform: translateY(-1px);
+}
+
+/* Was missing entirely -- the button just went inert with no visual change,
+   so clicking "Plan my day" looked broken while the request was in flight. */
+.pl-plan-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pl-plan-btn:disabled:hover {
+  background: #10B981;
+  transform: none;
+}
+
+.pl-plan-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+.pl-plan-btn .pl-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(6, 35, 26, 0.3);
+  border-top-color: #06231a;
+  border-radius: 50%;
+  animation: pl-spin 0.7s linear infinite;
+}
+
+@keyframes pl-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Checklist goal rows ---- */
+.pl-goal-row {
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+  transition: transform 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.pl-goal-row:hover {
+  border-color: var(--bd-2, #d8cfc2);
+  transform: translateY(-1px);
+}
+
+/* ---- Per-task "..." menu (edit / delete) ---- */
+.pl-task-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pl-task-menu-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--muted-2, #6c7a70);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.pl-task-menu-btn:hover,
+.pl-task-menu-btn[aria-expanded="true"] {
+  background: var(--bg-2, #f4efe6);
+  color: var(--ink, #16241c);
+}
+
+.pl-task-menu-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.pl-task-menu-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 5;
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  min-width: 110px;
+}
+
+.pl-task-menu-list button {
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink, #16241c);
+  cursor: pointer;
+}
+
+.pl-task-menu-list button:hover {
+  background: var(--bg-2, #f4efe6);
+}
+
+.pl-task-menu-list button.danger {
+  color: #b91c1c;
+}
+
+.pl-task-menu-list button.danger:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ---- Inline task edit row ---- */
+.pl-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.pl-edit-cancel {
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #556458);
+  background: transparent;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 8px;
+  padding: 8px 14px;
+  height: 36px;
+  cursor: pointer;
+}
+
+.pl-edit-cancel:hover {
+  border-color: var(--bd-2, #d8cfc2);
+}
+
+.pl-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bd-2, #d8cfc2);
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.pl-checkbox:hover {
+  border-color: var(--emerald, #10B981);
+}
+
+.pl-checkbox svg {
+  width: 11px;
+  height: 11px;
+  stroke: #ffffff;
+  stroke-width: 3.2;
+  fill: none;
+  display: none;
+}
+
+.pl-goal-row.completed .pl-checkbox {
+  background: var(--emerald, #10B981);
+  border-color: var(--emerald, #10B981);
+}
+
+.pl-goal-row.completed .pl-checkbox svg {
+  display: block;
+}
+
+.pl-goal-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pl-goal-title {
+  font-family: var(--body);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink, #16241c);
+  margin: 0;
+}
+
+.pl-goal-row.completed .pl-goal-title {
+  text-decoration: line-through;
+  color: var(--muted-2, #6c7a70);
+}
+
+.pl-goal-badges {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pl-badge {
+  font-family: var(--display);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2.5px 6.5px;
+  border-radius: 5px;
+}
+
+.pl-badge.high {
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.pl-badge.medium {
+  background: rgba(245, 158, 11, 0.08);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Was missing outright -- every task defaulted to medium with no way to set
+   a different priority, so "low" never actually got a badge shown. */
+.pl-badge.low {
+  background: rgba(16, 185, 129, 0.08);
+  color: #0c7a54;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* ---- Priority picker (manual add) ---- */
+.pl-priority-picker {
+  display: flex;
+  gap: 6px;
+}
+
+.pl-priority-opt {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bd, #e7e0d6);
+  background: #ffffff;
+  color: var(--muted, #556458);
+  cursor: pointer;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.pl-priority-opt:hover {
+  border-color: var(--emerald, #10B981);
+}
+
+.pl-priority-opt.active.high {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #b91c1c;
+}
+
+.pl-priority-opt.active.medium {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #b45309;
+}
+
+.pl-priority-opt.active.low {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #0c7a54;
+}
+
+.pl-meta-item {
+  font-family: var(--body);
+  font-size: 11.5px;
+  color: var(--muted-2, #6c7a70);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pl-meta-item svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+/* ---- Completed Items Section ---- */
+.pl-completed-row {
+  background: #edf3f0;
+  border: 1px solid #d0dfd8;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.pl-completed-row .pl-checkbox {
+  background: var(--emerald, #10B981);
+  border-color: var(--emerald, #10B981);
+}
+
+.pl-completed-row .pl-checkbox svg {
+  display: block;
+}
+
+.pl-completed-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pl-completed-title {
+  font-family: var(--body);
+  font-size: 13.5px;
+  font-weight: 550;
+  color: var(--muted, #556458);
+  text-decoration: line-through;
+  margin: 0;
+}
+
+.pl-completed-time {
+  font-family: var(--body);
+  font-size: 10.5px;
+  color: var(--muted-2, #6c7a70);
+}
+
+/* ---- Right progress card ---- */
+.pl-prog-card {
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.pl-prog-title {
+  align-self: flex-start;
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-2, #6c7a70);
+  margin-bottom: 16px;
+}
+
+.pl-prog-ring {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin-bottom: 14px;
+}
+
+.pl-prog-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.pl-prog-ring .bg {
+  fill: none;
+  stroke: var(--ivory-3, #efe6d9);
+  stroke-width: 8;
+}
+
+.pl-prog-ring .fg {
+  fill: none;
+  stroke: url(#plGrad);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 308;
+  stroke-dashoffset: 308;
+  transition: stroke-dashoffset 1s var(--ease);
+}
+
+.pl-prog-ring-c {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.pl-prog-ring-c b {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 850;
+  color: var(--ink, #16241c);
+}
+
+.pl-prog-ring-c b span {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted-2, #6c7a70);
+}
+
+.pl-prog-ring-c small {
+  font-family: var(--display);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-2, #6c7a70);
+  margin-top: 4px;
+}
+
+.pl-prog-stats {
+  font-family: var(--body);
+  font-size: 12px;
+  color: var(--muted, #556458);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pl-prog-stats b {
+  color: var(--ink, #16241c);
+}
+
+.pl-prog-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--body);
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--emerald-dark, #0c7a54);
+  border-top: 1px solid var(--bd, #e7e0d6);
+  width: 100%;
+  padding-top: 12px;
+  justify-content: center;
+}
+
+.pl-prog-footer .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--emerald, #10B981);
+}
+
+/* ---- Upcoming Reminder Section ---- */
+.pl-reminder-kicker {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--forest, #1B4332);
+  margin: 20px 2px 8px;
+  text-align: left;
+  width: 100%;
+}
+
+.pl-reminder-card {
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.pl-reminder-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--emerald, #10B981);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.pl-reminder-ic svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.pl-reminder-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pl-reminder-time {
+  font-family: var(--display);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--emerald-dark, #0c7a54);
+}
+
+.pl-reminder-title {
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink, #16241c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pl-reminder-hint {
+  font-family: var(--body);
+  font-size: 11px;
+  color: var(--muted-2, #6c7a70);
+  margin: 6px 4px 0;
+  text-align: left;
+}
+
+/* ---- Motivation card ---- */
+.pl-motiv-card {
+  background: linear-gradient(150deg, #f1f7f4, #e8f3ee);
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-card);
+  text-align: left;
+}
+
+.pl-motiv-kicker {
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--emerald-dark, #0c7a54);
+  margin-bottom: 4px;
+}
+
+.pl-motiv-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--forest, #1B4332);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* plan.css likewise had no breakpoints; .plan-grid (defined in platform.css)
+   stayed 1.55fr/1fr all the way down. */
+@media (max-width: 860px) {
+  .plan-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The two mode cards are `flex:1` siblings, so on a phone they split the row
+   into ~150px each and their labels wrapped mid-phrase ("Plan / manually").
+   Stacking gives each one a full-width tap target. */
+@media (max-width: 560px) {
+}
+
+/* ── Month calendar + Google Calendar connection ───────────────────────────
+   Uses the page's existing tokens (--bd, --ink, --muted-2, --emerald) rather
+   than a second palette, so this reads as part of Plan Your Day. */
+
+/* A date picker is a FIXED-SIZE control. The first cut sized day cells with
+   aspect-ratio:1/1, which at full page width made every cell ~215px tall and
+   six rows swallowed the screen. Width is capped and cell height is fixed, so
+   the calendar looks the same whether the column is 400px or 1400px wide. */
+.cal {
+  width: 100%;
+  /* Fills the aside column so it lines up with the cards beneath it, but never
+     grows past a size that still reads as a date picker. */
+  max-width: 380px;
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 14px;
+  padding: 12px 12px 10px;
+  margin-bottom: 20px;
+}
+
+.cal-head {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.cal-selects { display: flex; gap: 6px; min-width: 0; }
+
+/* appearance:none so the native chrome does not fight the card's styling;
+   the arrow is drawn back on as a background so it still reads as a menu. */
+.cal-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 8px;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236c7a70' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding: 0 22px 0 9px;
+  height: 30px;
+  color: var(--ink, #16241c);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.cal-select-year { flex: 0 0 74px; }
+.cal-select:hover { border-color: var(--emerald, #10B981); }
+
+.cal-nav-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--bd, #e7e0d6);
+  background: #ffffff;
+  color: var(--ink, #16241c);
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cal-nav-btn:hover { border-color: var(--emerald, #10B981); color: var(--emerald, #10B981); }
+
+.cal-select:focus-visible,
+.cal-nav-btn:focus-visible,
+.cal-today:focus-visible,
+.cal-day:focus-visible { outline: 2px solid var(--emerald, #10B981); outline-offset: 1px; }
+
+.cal-weekdays,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-weekdays {
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--muted-2, #6c7a70);
+  text-align: center;
+}
+
+.cal-weekdays abbr { text-decoration: none; cursor: default; }
+
+.cal-day {
+  position: relative;
+  /* Fixed, not derived from width — this is the whole fix. */
+  height: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink, #16241c);
+  font-family: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cal-day:hover { background: #f4f1ea; }
+/* Neighbouring months recede but stay — removing them would break the
+   seven-column rhythm and make the first week look ragged. */
+.cal-day-out { color: var(--muted-2, #6c7a70); opacity: .4; }
+.cal-day-today { border-color: var(--emerald, #10B981); font-weight: 750; }
+.cal-day-selected { background: var(--emerald, #10B981); color: #ffffff; font-weight: 700; }
+.cal-day-selected:hover { background: var(--emerald, #10B981); }
+.cal-day-num { line-height: 1; }
+
+.cal-day-dots { display: flex; align-items: center; gap: 2px; height: 4px; }
+
+.cal-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--emerald, #10B981); }
+/* Done tasks read as outlines: a day that finished four tasks should not look
+   identical to an empty one. */
+.cal-dot-done { background: transparent; box-shadow: inset 0 0 0 1px var(--emerald, #10B981); }
+.cal-dot-more { width: 5px; border-radius: 1px; }
+.cal-day-selected .cal-dot { background: #ffffff; }
+.cal-day-selected .cal-dot-done { background: transparent; box-shadow: inset 0 0 0 1px #ffffff; }
+
+.cal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid var(--bd, #e7e0d6);
+}
+
+.cal-today {
+  border: 1px solid var(--bd, #e7e0d6);
+  background: #ffffff;
+  color: var(--ink, #16241c);
+  border-radius: 8px;
+  height: 27px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.cal-today:hover { border-color: var(--emerald, #10B981); color: var(--emerald, #10B981); }
+
+/* Names the day the add-task row will use. Without it the selection is a green
+   square whose consequence is invisible. */
+.cal-foot-hint {
+  font-size: 11.5px;
+  color: var(--muted-2, #6c7a70);
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- connection card --- */
+
+.cal-conn {
+  background: #ffffff;
+  border: 1px solid var(--bd, #e7e0d6);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.cal-conn-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.cal-conn-title { font-size: 13.5px; font-weight: 700; color: var(--ink, #16241c); }
+.cal-conn-sub { font-size: 12px; color: var(--muted-2, #6c7a70); margin-top: 2px; }
+
+.cal-conn-btn {
+  border: 1px solid var(--emerald, #10B981);
+  background: var(--emerald, #10B981);
+  color: #ffffff;
+  border-radius: 9px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cal-conn-btn:disabled { opacity: .6; cursor: default; }
+.cal-conn-ghost { background: #ffffff; color: var(--ink, #16241c); border-color: var(--bd, #e7e0d6); }
+.cal-conn-danger { background: #b3261e; border-color: #b3261e; }
+
+.cal-conn-confirm {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bd, #e7e0d6);
+  font-size: 12.5px;
+  color: var(--muted-2, #6c7a70);
+}
+
+.cal-conn-confirm p { margin: 0 0 10px; line-height: 1.55; }
+.cal-conn-confirm strong { color: var(--ink, #16241c); }
+.cal-conn-confirm-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* --- per-task sync badge --- */
+
+.pl-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 650;
+  padding: 2px 7px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.pl-sync-ok { background: #e7f5ee; color: #0f5132; }
+.pl-sync-bad { background: #fdecea; color: #b3261e; }
+.pl-sync-muted { background: #f1efe9; color: var(--muted-2, #6c7a70); }
+
+@media (max-width: 560px) {
+  .cal { max-width: 100%; }
+  .cal-conn-row { align-items: flex-start; }
+}
+
+/* Escape hatch from the day filter, shown only when it would reveal something. */
+.pl-showall {
+  border: 1px solid var(--bd, #e7e0d6);
+  background: #ffffff;
+  color: var(--muted-2, #6c7a70);
+  border-radius: 7px;
+  padding: 3px 9px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pl-showall:hover { border-color: var(--emerald, #10B981); color: var(--emerald, #10B981); }
+.pl-showall:focus-visible { outline: 2px solid var(--emerald, #10B981); outline-offset: 1px; }
+
+/* ---- header chips: the day being planned, and the actual time -------------
+   Grouped so they stay together at the header's right edge, and wrap as a pair
+   on a phone instead of one dropping under the title on its own. */
+.plan-head-chips{display:flex;align-items:center;gap:10px;flex-wrap:wrap;height:fit-content}
+.plan-clock{display:inline-flex;align-items:center;gap:8px;background:#fff;
+  border:1px solid var(--bd,#e7e0d6);border-radius:10px;padding:8px 14px;
+  font-size:12.5px;font-weight:700;color:var(--forest,#1B4332);height:fit-content}
+.plan-clock svg{width:14px;height:14px;flex-shrink:0}
+/* Tabular figures so the digits keep their columns -- proportional numerals
+   make the whole clock twitch sideways every second as the widths change. */
+.plan-clock time{font-variant-numeric:tabular-nums}
+/* Your Vision — long-term founder vision, six territories + a vision/current/
+   gap summary. Frontend-only (services/vision.js), so nothing here reads
+   from a report or renders a number nobody entered. */
+
+.vis-page { padding: 18px 24px 64px; max-width: 1240px; margin: 0 auto; }
+
+.vis-head { margin-bottom: 22px; }
+.vis-head h1 { font-family: var(--font-display); font-size: clamp(26px, 3.2vw, 38px); line-height: 1.08; letter-spacing: -.02em; color: var(--color-forest, #1B4332); margin: 0 0 10px; }
+.vis-sub { font-size: 13.5px; line-height: 1.6; color: var(--color-muted-2, #6c7a70); max-width: 62ch; margin: 0 0 18px; }
+.vis-head-acts { display: flex; gap: 10px; flex-wrap: wrap; }
+.vis-head-acts .btn svg { width: 15px; height: 15px; }
+
+.vt-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 22px; }
+@media (max-width: 1000px) { .vt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .vt-grid { grid-template-columns: 1fr; } }
+
+/* Carries the standard card shadow at rest, not only on hover. Six tiles in a
+   3-across grid with a hairline border and no shadow read as one ruled sheet;
+   the shadow is what makes each one its own object. The heavier border does
+   the same job for the dashed empty state, which has no gradient to sit on. */
+.vt-card {
+  border-radius: 18px;
+  border: 1px solid var(--bd-2, #d8cfc2);
+  background: linear-gradient(150deg, #fff, var(--color-ivory-2, #fbf7f2));
+  box-shadow: var(--shadow-card, 0 1px 2px -1px rgba(6,20,13,.14), 0 6px 16px -6px rgba(6,20,13,.18));
+  display: flex;
+  flex-direction: column;
+  transition: .2s cubic-bezier(.2,.7,.2,1);
+  overflow: hidden;
+}
+.vt-card:hover { transform: translateY(-4px); border-color: rgba(16,185,129,.4); box-shadow: 0 6px 24px -8px rgba(6,20,13,.2), 0 16px 40px -12px rgba(6,20,13,.16); }
+.vt-card.is-empty { border-style: dashed; background: var(--color-ivory-2, #fbf7f2); }
+
+.vt-card-body {
+  text-align: left;
+  min-height: 150px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  cursor: pointer;
+  background: none;
+}
+
+/* Per-card "talk to Ally about this one" -- a footer strip, separate from
+   the edit surface above it so the two actions don't fight for the same
+   click. Always visible rather than hover-revealed, so it's just as
+   discoverable on touch as on desktop. */
+.vt-talk {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 12px; font-size: 11.5px; font-weight: 700; color: #0b6a52;
+  background: rgba(16,185,129,.07); border: none; border-top: 1px solid var(--color-bd, #e7e0d6);
+  cursor: pointer;
+}
+.vt-talk svg { width: 13px; height: 13px; }
+.vt-talk:hover { background: rgba(16,185,129,.14); }
+
+.vt-top { display: flex; align-items: center; gap: 8px; }
+.vt-ic { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: rgba(16,185,129,.12); color: #0b6a52; flex-shrink: 0; }
+.vt-ic svg { width: 14px; height: 14px; }
+.vt-label { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: var(--color-muted-2, #6c7a70); flex: 1; }
+.vt-edit-ic { width: 14px; height: 14px; color: var(--color-muted-2, #8a958b); flex-shrink: 0; }
+
+.vt-placeholder { font-size: 13px; line-height: 1.55; color: var(--color-muted-2, #8a958b); margin: 14px 0 auto; }
+.vt-add { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; font-weight: 700; color: #0b6a52; }
+.vt-add svg { width: 14px; height: 14px; }
+
+.vt-statement { font-family: var(--font-display); font-size: 17px; line-height: 1.32; letter-spacing: -.01em; color: var(--color-forest, #1B4332); margin: 12px 0 auto; }
+.vt-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+.vt-tag { font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: rgba(16,185,129,.1); color: #0b6a52; }
+.vt-tag.muted { background: rgba(0,0,0,.05); color: var(--color-muted-2, #6c7a70); }
+
+/* Territory editor (inside Modal) */
+.vt-editor { display: flex; flex-direction: column; gap: 14px; }
+.vt-field { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--color-forest, #1B4332); }
+.vt-field input, .vt-field textarea {
+  font: inherit; font-weight: 500; font-size: 13.5px; padding: 10px 12px;
+  border-radius: 10px; border: 1px solid var(--color-bd, #e7e0d6); background: #fff; color: var(--color-ink, #16241c);
+  resize: vertical;
+  /* An <input> carries an intrinsic width of about twenty characters whether
+     you want it or not, and it does not shrink to its container on its own.
+     Two of them side by side were therefore wider than the modal. */
+  width: 100%;
+  min-width: 0;
+}
+.vt-field input:focus, .vt-field textarea:focus { outline: 2px solid rgba(16,185,129,.4); outline-offset: 1px; }
+/* minmax(0, 1fr), NOT 1fr. A grid track's min size is `auto`, meaning it will
+   not shrink below the intrinsic width of what is inside it -- and an <input>
+   insists on roughly twenty characters. So two `1fr` columns holding inputs
+   came to more than the 396px of content width a 440px modal actually has, and
+   the row pushed the modal wider than the screen. minmax(0, 1fr) lets the
+   track shrink; the width:100% above makes the input follow it. */
+.vt-field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 480px) { .vt-field-row { grid-template-columns: 1fr; } }
+.vt-editor-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+
+/* Vision / Current / Gap summary strip */
+.vis-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 720px) { .vis-summary { grid-template-columns: 1fr; } }
+.vis-sum-box {
+  padding: 20px 22px; border-radius: 18px; border: 1px solid var(--color-bd, #e7e0d6);
+  background: linear-gradient(150deg, #fff, var(--color-ivory-2, #fbf7f2));
+  display: flex; flex-direction: column; gap: 6px;
+}
+.vis-sum-box.gap { background: radial-gradient(120% 140% at 100% 0%, #164a32, var(--color-forest-deep, #0E2A1C) 65%); border-color: transparent; color: #fff; }
+.vis-sum-label { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; }
+.vis-sum-box:not(.gap) .vis-sum-label { color: var(--color-muted-2, #6c7a70); }
+.vis-sum-box.gap .vis-sum-label { color: #34d399; }
+.vis-sum-value, .vis-sum-value-input {
+  font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -.02em;
+}
+.vis-sum-box:not(.gap) .vis-sum-value-input { color: var(--color-forest, #1B4332); }
+.vis-sum-box.gap .vis-sum-value { color: #fff; }
+.vis-sum-value-input {
+  border: none; background: transparent; padding: 0; width: 100%;
+}
+.vis-sum-value-input:focus { outline: none; }
+.vis-sum-value-input::placeholder { color: var(--color-muted-2, #b7c2b9); font-weight: 700; }
+.vis-sum-sub { font-size: 12px; }
+.vis-sum-box:not(.gap) .vis-sum-sub { color: var(--color-muted-2, #8a958b); }
+.vis-sum-box.gap .vis-sum-sub { color: #a7c0b4; }
+.vis-sum-sub-input {
+  font: inherit; font-size: 12px; color: var(--color-muted-2, #8a958b); border: none; background: transparent; padding: 0; width: 100%;
+}
+.vis-sum-sub-input:focus { outline: none; }
+.vis-sum-sub-input::placeholder { color: var(--color-muted-2, #b7c2b9); }
+
+/* ---- territory picture -------------------------------------------------
+   Optional throughout. A vision is words first, so nothing here changes the
+   shape of a card that has no image -- these rules only exist once one does. */
+
+.vt-image {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: var(--ivory-3, #efe6d9);
+  /* Fixed ratio so six cards in a grid keep their tops aligned regardless of
+     what shape the founder uploaded. object-fit crops rather than distorts --
+     a squashed photo of the house someone is working toward is worse than a
+     cropped one. */
+  aspect-ratio: 16 / 9;
+}
+.vt-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---- editor ---- */
+.vt-image-field { display: flex; flex-direction: column; gap: 8px; }
+.vt-field-label {
+  font-family: var(--body);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted, #556458);
+}
+
+.vt-image-drop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 84px;
+  padding: 14px;
+  border: 1.5px dashed var(--bd-2, #d8cfc2);
+  border-radius: 12px;
+  background: var(--ivory-2, #fbf7f2);
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted, #556458);
+  cursor: pointer;
+  transition: border-color .2s var(--ease), color .2s var(--ease);
+}
+.vt-image-drop:hover:not(:disabled) { border-color: var(--emerald, #10B981); color: var(--forest, #1B4332); }
+/* Disabled is the "save this vision first" state, so it has to read as an
+   explanation rather than something broken. */
+.vt-image-drop:disabled { cursor: not-allowed; opacity: .75; }
+.vt-image-drop svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.vt-image-preview { display: flex; flex-direction: column; gap: 10px; }
+.vt-image-preview img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--bd, #e7e0d6);
+  display: block;
+}
+.vt-image-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.vt-image-remove { color: #b91c1c; }
+
+/* A picture chosen before the vision exists server-side. Says plainly that it
+   is not saved yet -- a preview that looks identical to a stored image would
+   let a founder close the modal believing it was kept. */
+.vt-image-pending {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 12.5px;
+  color: var(--muted-2, #6c7a70);
+}
+
+.vt-image-error {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 12.5px;
+  color: #b91c1c;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion.
+
+   The page arrives as a reading order, not all at once: kicker, headline, sub,
+   actions, then the six territories cascading across the grid, then the summary
+   row. Each step is small (10-14px) and the whole sequence is under a second --
+   the point is to guide the eye down the page on first paint, not to make the
+   founder wait for their own vision to appear.
+
+   `backwards` rather than `both` on every entrance. `both` would hold the
+   animation's final transform after it finished, which silently wins over
+   .vt-card:hover's own translateY and kills the lift. `backwards` applies the
+   from-state during the delay and then hands the element back to its normal
+   style, so hover works the moment the entrance ends.
+
+   The cascade is indexed off the GRID, not the DOM: at three columns
+   nth-child(4) starts the second row, so the delays read as a diagonal sweep.
+   The one-column breakpoint re-times them as a straight top-to-bottom run.
+--------------------------------------------------------------------------- */
+.vis-head h1,.vis-sub,.vis-head-acts{animation:vis-rise .5s cubic-bezier(.22,1,.36,1) backwards}
+.vis-head h1{animation-delay:.02s}
+.vis-sub{animation-delay:.09s}
+.vis-head-acts{animation-delay:.16s}
+
+.vt-card{animation:vis-card-in .52s cubic-bezier(.22,1,.36,1) backwards}
+.vt-card:nth-child(1){animation-delay:.26s}
+.vt-card:nth-child(2){animation-delay:.32s}
+.vt-card:nth-child(3){animation-delay:.38s}
+.vt-card:nth-child(4){animation-delay:.34s}
+.vt-card:nth-child(5){animation-delay:.40s}
+.vt-card:nth-child(6){animation-delay:.46s}
+@media (max-width:640px){
+  .vt-card:nth-child(4){animation-delay:.44s}
+  .vt-card:nth-child(5){animation-delay:.50s}
+  .vt-card:nth-child(6){animation-delay:.56s}
+}
+.vis-sum-box{animation:vis-rise .5s cubic-bezier(.22,1,.36,1) backwards}
+.vis-sum-box:nth-child(1){animation-delay:.52s}
+.vis-sum-box:nth-child(2){animation-delay:.58s}
+.vis-sum-box:nth-child(3){animation-delay:.64s}
+
+/* Hover is where the card stops being a static tile. The existing lift stays;
+   these add the detail that makes it feel responsive -- the icon tile warms and
+   nudges up, the label darkens toward the brand green, and the empty card's
+   "Add your vision" shifts right as if the cursor were pulling it. */
+.vt-ic{transition:transform .28s cubic-bezier(.22,1,.36,1),background-color .28s ease,color .28s ease}
+.vt-card:hover .vt-ic{transform:translateY(-1px) scale(1.08);background:rgba(16,185,129,.2);color:#0a5a45}
+.vt-label{transition:color .28s ease}
+.vt-card:hover .vt-label{color:#0b6a52}
+.vt-add{transition:transform .28s cubic-bezier(.22,1,.36,1)}
+.vt-card:hover .vt-add{transform:translateX(3px)}
+.vt-edit-ic{opacity:.55;transition:opacity .28s ease,transform .28s cubic-bezier(.22,1,.36,1)}
+.vt-card:hover .vt-edit-ic{opacity:1;transform:rotate(-8deg) scale(1.08)}
+/* The footer strip is always visible (see above), so hover only deepens it
+   rather than revealing it -- discoverability on touch is unchanged. */
+.vt-talk{transition:background-color .24s ease,color .24s ease}
+.vt-card:hover .vt-talk{background:rgba(16,185,129,.11)}
+
+/* GAP is the one dark card in the row and the only number on the page the
+   founder did not type. A slow sheen drifting across it marks it as the live
+   figure without adding another colour. 9s, and opacity-only so it composites. */
+.vis-sum-box.gap{position:relative;overflow:hidden;isolation:isolate}
+.vis-sum-box.gap::after{content:"";position:absolute;inset:-40% -60%;z-index:-1;pointer-events:none;
+  background:linear-gradient(115deg,transparent 42%,rgba(52,211,153,.14) 50%,transparent 58%);
+  animation:vis-sheen 9s ease-in-out infinite}
+.vis-sum-box:hover{transform:translateY(-2px)}
+.vis-sum-box{transition:transform .28s cubic-bezier(.22,1,.36,1)}
+
+@keyframes vis-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes vis-card-in{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes vis-sheen{0%,62%{transform:translateX(-45%);opacity:0}70%{opacity:.9}100%{transform:translateX(45%);opacity:0}}
+
+/* Entrances are the whole point of this block, so under reduce they are removed
+   outright rather than shortened -- the page simply renders finished. */
+@media (prefers-reduced-motion:reduce){
+  .vis-head h1,.vis-sub,.vis-head-acts,.vt-card,.vis-sum-box,
+  .vis-sum-box.gap::after{animation:none}
+  .vt-card:hover .vt-ic,.vt-card:hover .vt-edit-ic,.vt-card:hover .vt-add,
+  .vis-sum-box:hover{transform:none}
+}
+
+/* Reached territories.
+
+   The footer strip now carries two actions, so it becomes a row. "Mark
+   reached" is only rendered on a written vision -- the backend answers 404
+   for an unwritten one, and a card should not offer what the server will
+   refuse.
+
+   A reached card keeps its full colour, unlike a reached goal. A goal is work
+   in progress and dimming says "closed"; a vision is the thing the founder was
+   aiming at the whole time, and the moment they land it is the moment it should
+   look most like theirs. It gains a border and a tick, not a strikethrough. */
+.vt-foot { display: flex; align-items: stretch; border-top: 1px solid var(--color-bd, #e7e0d6); }
+.vt-foot .vt-talk { flex: 1; border-top: none; }
+.vt-reach {
+  display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+  padding: 9px 13px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+  color: var(--color-muted-2, #6c7a70);
+  background: none; border: none; border-left: 1px solid var(--color-bd, #e7e0d6);
+  transition: .22s cubic-bezier(.2,.7,.2,1);
+}
+.vt-reach svg { width: 13px; height: 13px; }
+.vt-reach:hover:not(:disabled) { color: #0b6a52; background: rgba(16,185,129,.08); }
+.vt-reach.on { color: #0b6a52; background: rgba(16,185,129,.14); }
+.vt-reach:disabled { cursor: not-allowed; opacity: .55; }
+.vt-card.is-reached { border-color: rgba(16,185,129,.45); }
+@media (prefers-reduced-motion: reduce) { .vt-reach { transition: none; } }
+/* The card's print button, matching the reached toggle beside it. */
+.vt-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--body);
+  font-size: 12.5px;
+  color: var(--muted-2, #6c7a70);
+  padding: 4px 6px;
+  border-radius: 7px;
+}
+.vt-print:hover { color: var(--forest, #1B4332); background: var(--ivory-3, #efe6d9); }
+.vt-print svg { width: 14px; height: 14px; flex-shrink: 0; }
+.qc{position:relative;overflow:hidden;margin:0;border:1px solid rgba(255,255,255,.09);border-left:3px solid var(--emerald);border-radius:14px;
+  background:radial-gradient(130% 110% at 18% 0%,#164630,var(--forest-deep) 58%,var(--forest-night));
+  box-shadow:0 1px 2px rgba(6,20,13,.16),0 14px 30px -12px rgba(6,20,13,.32);display:flex;flex-direction:column;gap:8px}
+.qc::before{content:"\201C";position:absolute;pointer-events:none;font-family:var(--serif);font-weight:700;font-style:normal;color:var(--emerald);opacity:.13;line-height:1}
+.qc::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 120% at 0% 50%,rgba(16,185,129,.16),transparent 70%)}
+.qc-text{position:relative;z-index:1;margin:0;font-family:var(--serif);font-style:italic;font-weight:500;color:var(--on-dark);line-height:1.5;text-wrap:pretty}
+.qc-by{display:none}
+.qc-sm{padding:15px 18px}
+.qc-sm .qc-text{font-size:14px}
+.qc-sm::before{font-size:88px;top:-14px;right:12px}
+.qc-lg{padding:24px 28px;gap:10px}
+.qc-lg .qc-text{font-size:18px;line-height:1.55}
+.qc-lg::before{font-size:132px;top:-22px;right:20px}
+.plan-wrap > .qc-sm{margin:20px 0 0}
+@media(max-width:640px){.qc-lg{padding:18px 20px}.qc-lg .qc-text{font-size:15.5px}.qc-lg::before{font-size:104px;top:-16px;right:14px}.qc-sm::before{font-size:74px}}
+/* demo-only: tokens the platform has that this file did not */
+.view-page{--bg-2:#f4efe6;--emerald-dark:#0c7a54}
+.plan-wrap > .cal-conn{margin-top:20px}
+.vis-sum-value-input[readonly]{cursor:pointer}
+
+
+/* ==== Synced from the platform: frameworks.css (library parts) — 2026-10-12 ==== */
+/* The title row. Without artwork it is the heading and nothing else, so the
+   default (block) leaves every card in the other sections exactly as it was;
+   with artwork it becomes a two-column row and the heading's own bottom
+   margin moves onto the row, so a one-line and a two-line title sit at the
+   same height beside the image. */
+.fw-card-head.has-art { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.fw-card-head.has-art h3 { margin: 0; min-width: 0; }
+
+/* Fixed box, so the card does not jump when a lazily-loaded image lands, and
+   object-fit rather than a stretch -- podcast art is square by convention but
+   nothing enforces it, and a squashed logo looks worse than none. */
+.fw-art {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 10px;
+  background: rgba(16, 24, 20, .06);
+  box-shadow: 0 1px 3px rgba(6, 20, 13, .18);
+}
+.fw-tagline { margin: 0 0 18px; font-size: 13.5px; line-height: 1.55; color: var(--color-muted-2, #6c7a70); min-height: 40px; }
+
+.fw-meta { border-top: 1px dashed var(--color-bd-2, #d8cfc2); padding-top: 12px; margin-top: auto; display: flex; flex-direction: column; gap: 6px; }
+.fw-meta-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 12px; }
+.fw-meta-label { text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--color-muted-2, #8a958b); font-size: 10.5px; flex-shrink: 0; }
+.fw-meta-value { color: var(--color-ink, #16241c); text-align: right; }
+
+.fw-note {
+  margin: 14px 0 0; padding: 12px 14px; border-left: 3px solid var(--color-emerald, #10B981);
+  background: rgba(16,185,129,.06); font-size: 12.5px; line-height: 1.55; color: var(--color-forest, #1B4332); font-style: italic;
+}
+
+.fw-use-btn {
+  margin-top: 18px; padding: 12px; border-radius: 11px; border: 1px solid var(--color-bd, #e7e0d6);
+  background: #fff; color: var(--color-forest, #1B4332); font-weight: 700; font-size: 13.5px; cursor: pointer;
+  transition: .18s ease;
+}
+.fw-use-btn:hover { border-color: rgba(16,185,129,.4); background: rgba(16,185,129,.06); }
+
+/* --- shared with the read / watch / learn libraries ------------------------
+   Those pages reuse .fw-page, .fw-grid and .fw-card wholesale; only these two
+   are new. Kept here rather than in a fourth stylesheet so a change to the card
+   cannot leave the libraries looking different from Frameworks. */
+
+/* The empty state, which these libraries will show for a while: the team is
+   only listing things it has actually read or watched, so they fill up slowly.
+   Styled as a considered sentence rather than a grey "no data" box -- the
+   emptiness is the policy, not a failure. */
+.fw-empty {
+  margin: 0;
+  padding: 28px 24px;
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-muted-2, #6c7a70);
+  background: var(--color-surface, #fbf7f2);
+  border: 1px dashed var(--color-bd, #e7e0d6);
+  border-radius: 14px;
+}
+
+/* A card that is itself the link, for entries that have a URL. An entry with
+   no link stays a plain <article> and must not pick up hover or pointer. */
+a.fw-card-link {
+  text-decoration: none;
+  color: inherit;
+  transition: transform .16s ease, box-shadow .16s ease,
+              border-color .16s ease, background-color .16s ease;
+}
+a.fw-card-link:hover {
+  /* The "pops up a little" the brief asked for. 4px with a soft shadow reads
+     as the card lifting off the page; 1-2px reads as a rendering wobble.
+
+     The green is not a new one. Emerald at 8% over ivory, with the border at
+     40%, is what every other hoverable card on a light surface in Ally already
+     uses (.ac-pcard:hover, .fp-choice.on in platform.css). Picking a fresh
+     green here would make hover mean two different things in one product. */
+  transform: translateY(-4px);
+  background-color: rgba(16, 185, 129, .08);
+  border-color: rgba(16, 185, 129, .4);
+  box-shadow: 0 12px 28px rgba(16, 24, 20, .10);
+}
+
+/* Anyone who has asked their system not to animate gets the colour change and
+   the shadow, without the movement. */
+@media (prefers-reduced-motion: reduce) {
+  a.fw-card-link {
+    transition: border-color .16s ease, box-shadow .16s ease,
+                background-color .16s ease;
+  }
+  a.fw-card-link:hover { transform: none; }
+}
+/* --color-accent is not a token this app defines -- only the fallback was ever
+   rendering. Named the real one. */
+a.fw-card-link:focus-visible {
+  outline: 2px solid var(--color-emerald, #10B981);
+  outline-offset: 2px;
+}
+
+
+/* --- the tabs inside "Things to watch" ------------------------------------ */
+
+.fw-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 22px;
+  flex-wrap: wrap;
+}
+
+.fw-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-muted-2, #6c7a70);
+  background: transparent;
+  border: 1px solid var(--color-bd, #e7e0d6);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color .16s ease, background .16s ease, border-color .16s ease;
+}
+.fw-tab:hover { color: var(--color-ink, #16241c); border-color: var(--color-muted-2, #6c7a70); }
+.fw-tab:focus-visible { outline: 2px solid var(--color-emerald, #10B981); outline-offset: 2px; }
+
+.fw-tab.is-active {
+  color: #fff;
+  background: var(--color-forest, #1B4332);
+  border-color: var(--color-forest, #1B4332);
+}
+
+/* How many are in there, so an empty tab is honest before it is clicked. */
+.fw-tab-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .08);
+}
+.fw-tab.is-active .fw-tab-count { background: rgba(255, 255, 255, .22); }
+
+/* A caveat on a card -- currently only "this link goes to the show, not the
+   episode". Quiet, because it is a footnote and not the point of the card. */
+.fw-card-note {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--color-muted-2, #6c7a70);
+  font-style: italic;
+}
+
+
+/* --- films and series: title tiles that open on hover ----------------------
+   Sixty-five titles with their descriptions printed underneath is a wall
+   nobody reads, so the tile carries the name and the detail arrives on
+   demand. */
+
+/* One caveat that applies to a whole list, said once above it. */
+.fw-standing {
+  margin: -6px 0 22px;
+  max-width: 70ch;
+  font-size: 12.5px;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--color-muted-2, #6c7a70);
+}
+
+.wt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 14px;
+  /* Room for the last row's detail to overhang. Without it the document grows
+     on hover, the scrollbar appears, and the whole page shifts sideways. */
+  padding-bottom: 200px;
+}
+
+/* A veil over the rest of the grid while one tile is open.
+   The panel overhangs the tile below it and its bottom edge lands wherever the
+   text ends, which can cut a covered tile's subtitle in half -- that reads as
+   broken layout rather than as an overlay. Dropping everything else behind a
+   wash of the page colour makes the open card the only sharp thing on screen,
+   so a half-covered tile beneath it is obviously behind, not broken. One
+   pseudo-element rather than an opacity change on sixty-five tiles. */
+.wt-grid { position: relative; }
+.wt-grid::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  z-index: 4;
+  background: var(--color-ivory, #f7f1eb);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .16s ease;
+}
+.wt-grid:has(.wt-tile:hover)::after,
+.wt-grid:has(.wt-tile:focus-within)::after { opacity: .66; }
+
+/* The whole tile is the link, panel included -- see the note in
+   KnowledgePage. Anchors carry the browser's underline and link colour, so
+   both are reset here rather than on every child. */
+.wt-tile {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .16s ease;
+}
+.wt-tile:hover, .wt-tile:focus-within { transform: translateY(-4px); z-index: 5; }
+
+.wt-face {
+  display: flex;   /* a <span>, so this is what makes it a box at all */
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  /* Fill the grid row rather than only the text. A row is as tall as its
+     longest title, and without this the shorter tiles in that row stop early
+     and the row looks ragged. */
+  height: 100%;
+  min-height: 104px;
+  padding: 17px 18px;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid var(--color-bd, #e7e0d6);
+  background-color: var(--color-ivory-2, #fbf7f2);
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.wt-tile:hover .wt-face,
+.wt-tile:focus-within .wt-face {
+  background-color: rgba(16, 185, 129, .08);
+  border-color: rgba(16, 185, 129, .4);
+  box-shadow: 0 12px 28px rgba(16, 24, 20, .10);
+}
+.wt-tile:focus-visible { outline: 2px solid var(--color-emerald, #10B981); outline-offset: 3px; border-radius: 16px; }
+
+.wt-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.32;
+  font-weight: 600;
+  color: var(--color-forest, #1B4332);
+}
+.wt-sub {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-muted-2, #8a958b);
+}
+
+/* The detail. Positioned over the tile and free to overhang downwards --
+   growing the tile in place would reflow the whole row on a mouse-over, which
+   looks broken even when it is not. #e8f2e9 is emerald-at-8% over the ivory
+   card, resolved to an opaque colour: the panel and the tile beneath it have
+   to be exactly the same green or the seam shows where it overhangs. */
+.wt-pop {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 17px 18px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(16, 185, 129, .4);
+  background: #e8f2e9;
+  /* Heavier than a card's own shadow on purpose. The panel overhangs the tile
+     below it and its bottom edge lands wherever the text happens to end, which
+     can slice the covered tile's subtitle in half. A soft shadow leaves that
+     reading as broken layout; a real elevation reads as one thing floating
+     over another, which is what is actually happening. */
+  box-shadow: 0 2px 6px -2px rgba(6, 20, 13, .18), 0 24px 48px -12px rgba(6, 20, 13, .34);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .16s ease, visibility 0s linear .16s;
+}
+/* Title and cover on one row inside the panel.
+
+   The head is a plain block when there is no cover, so a tile without one is
+   byte-for-byte the layout it had before covers existed -- which is most of
+   them until the lookup has been run, and permanently for the editions nobody
+   has scanned. */
+.wt-pop-head { display: block; }
+.wt-pop-head.has-cover {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.wt-pop-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+/* Fixed box, so the panel does not jump when a lazily-loaded cover lands, and
+   object-fit rather than a stretch: these come back in whatever aspect ratio
+   the scan had, and a squashed cover looks worse than none.
+
+   84x126, up from 56x84. At 56 the cover read as an icon rather than a book.
+   The ceiling is the title beside it: the grid is minmax(232px, 1fr) and the
+   panel takes 18px of padding each side, so at a typical 300px tile the title
+   still gets ~186px, which holds "Business Sutra: A Very Indian Approach to
+   Management" in four lines. Much past this and the long titles start
+   shredding on the narrower columns. */
+.wt-cover {
+  width: 84px;
+  height: 126px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 5px;
+  background: rgba(16, 24, 20, .06);
+  box-shadow: 0 1px 3px rgba(6, 20, 13, .25);
+}
+
+.wt-tile:hover .wt-pop,
+.wt-tile:focus-within .wt-pop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .16s ease;
+}
+
+.wt-why { display: block; margin: 3px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--color-ink, #16241c); }
+
+.wt-line { display: block; margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--color-moss, #3a5f47); }
+.wt-line-label {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-muted-2, #8a958b);
+  margin-bottom: 2px;
+}
+
+/* The way a title is commonly misread. Warm rather than green so it separates
+   from the recommendation it is qualifying. */
+.wt-care {
+  display: block;
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(16, 185, 129, .35);
+  font-size: 11.5px;
+  line-height: 1.5;
+  font-style: italic;
+  color: #7a5527;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-tile { transition: none; }
+  .wt-tile:hover, .wt-tile:focus-within { transform: none; }
+}
+
+
+/* The nudge that says the peek is not the whole thing. */
+.wt-more {
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--color-emerald-dark, #0c7a54);
+}
+
+
+/* The fifteen the shortlist names as carrying the most weight. The reasons it
+   gives are about Ally's own corpus gaps, so the ranking travels to a founder
+   and the reasoning does not -- hence a badge and not a sentence. */
+.wt-pick {
+  align-self: flex-start;
+  margin-bottom: 2px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--color-emerald-dark, #0c7a54);
+  background: rgba(16, 185, 129, .13);
+  border: 1px solid rgba(16, 185, 129, .3);
+}
+
+
+/* --- the glossary: a searchable list, not a grid ---------------------------
+   A definition is the content itself rather than a title you click through, so
+   it is set as a definition list and reads top to bottom. */
+
+.gl { max-width: 900px; }
+
+/* Sticky, because with ~180 terms you are usually several screens down when
+   you think of the next thing to look up. */
+.gl-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0 14px;
+  margin-bottom: 4px;
+  background: var(--color-ivory, #f7f1eb);
+}
+.gl-search {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 15px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-ink, #16241c);
+  background: #fff;
+  border: 1px solid var(--color-bd, #e7e0d6);
+  border-radius: 12px;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+.gl-search::placeholder { color: var(--color-muted-2, #8a958b); }
+.gl-search:focus {
+  outline: none;
+  border-color: rgba(16, 185, 129, .5);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, .12);
+}
+.gl-count {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-muted-2, #8a958b);
+}
+
+.gl-jump { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 26px; }
+.gl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-muted-2, #6c7a70);
+  background: transparent;
+  border: 1px solid var(--color-bd, #e7e0d6);
+  border-radius: 999px;
+  transition: color .16s ease, background-color .16s ease, border-color .16s ease;
+}
+.gl-chip:hover {
+  color: var(--color-forest, #1B4332);
+  background-color: rgba(16, 185, 129, .08);
+  border-color: rgba(16, 185, 129, .4);
+}
+.gl-chip-n { font-size: 10px; font-weight: 800; color: var(--color-muted-2, #8a958b); }
+
+/* Each section is a panel of its own. As one continuous list the sections
+   disappeared and 182 rows read as a single wall of text. */
+.gl-section {
+  margin-bottom: 26px;
+  scroll-margin-top: 78px;
+  border: 1px solid var(--color-bd, #e7e0d6);
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.gl-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, rgba(16, 185, 129, .10), rgba(16, 185, 129, .05));
+  border-bottom: 1px solid var(--color-bd, #e7e0d6);
+}
+.gl-num {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--color-forest, #1B4332);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+}
+.gl-head-text { flex: 1; min-width: 0; }
+.gl-h {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: -.01em;
+  color: var(--color-forest, #1B4332);
+}
+.gl-blurb {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--color-muted-2, #6c7a70);
+}
+.gl-h-n {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .75);
+  border: 1px solid rgba(16, 185, 129, .28);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-emerald-dark, #0c7a54);
+}
+
+.gl-note {
+  margin: 16px 20px 0;
+  padding: 11px 14px;
+  border-left: 3px solid #c08a4a;
+  background: rgba(192, 138, 74, .08);
+  border-radius: 0 10px 10px 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #6d4a20;
+}
+
+/* The document's four-column table, kept as a table.
+
+   FULL WIDTH, not the 900px the prose version used. Four columns of real
+   sentences need the room; at 900px "What It Actually Means" wraps to six
+   lines and the table stops being scannable. */
+.gl { max-width: 100%; }
+
+.gl-tablewrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gl-table {
+  width: 100%;
+  min-width: 860px;            /* below this the columns are unreadable; scroll instead */
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* The document's dark header row.
+
+   NOT sticky, deliberately. It was, at top:62px to clear the search bar, and it
+   lifted out of its own table and sat on top of the first data row -- the
+   offset is measured against the scroll container, which is not the same
+   element the table sits in. Two stacked sticky elements for a table of at most
+   31 rows was not worth the breakage. */
+.gl-table thead th {
+  text-align: left;
+  padding: 11px 14px;
+  background: var(--color-forest, #1B4332);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+
+.gl-table td {
+  padding: 12px 14px;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(231, 224, 214, .8);
+  color: var(--color-ink, #16241c);
+}
+.gl-table tbody tr:last-child td { border-bottom: none; }
+.gl-table tbody tr:hover td { background: rgba(16, 185, 129, .04); }
+
+/* Column widths. Term and Full Form are short and fixed; the two prose columns
+   take what is left, weighted towards the meaning -- the document calls that
+   the column that matters most. */
+.gl-c-term  { width: 14%; font-weight: 700; color: var(--color-forest, #1B4332); }
+.gl-c-full  { width: 18%; color: var(--color-muted-2, #6c7a70); }
+.gl-c-used  { width: 27%; color: var(--color-moss, #3a5f47); }
+.gl-c-means { width: 41%; }
+
+.kb-more{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:18px 0 0;padding:14px 16px;border:1.5px dashed var(--bd-2,#d8cfc2);border-radius:14px;background:var(--ivory-2,#fbf7f2);font:inherit;font-size:13px;font-weight:700;color:#0b6a52;cursor:pointer;transition:border-color .2s,background-color .2s}
+.kb-more:hover{border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.06)}
+.gl-chip.kb-locked{opacity:.6;cursor:pointer;font-family:inherit}
+.wt-grid + .kb-more{position:relative;z-index:1;margin-top:-176px}
+.kb-page [hidden]{display:none !important}
 </style>
 </head>
 <body>
@@ -6739,7 +8676,7 @@ body.lp-done #landing-page { display:none; }
       <button class="nav-item" type="button" data-route="diagnosis" data-tip="Adaptive diagnosis" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-7.5-2.1 2.1M7.6 16.4l-2.1 2.1m0-12.9 2.1 2.1m8.7 8.7 2.1 2.1"/></svg><span class="lbl">Adaptive diagnosis</span></button>
       <button class="nav-item" type="button" data-route="founder-dna" data-tip="Founder DNA" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lbl">Founder DNA</span></button>
       <button class="nav-item" type="button" data-route="business-dna" data-tip="Business DNA" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg><span class="lbl">Business DNA</span></button>
-      <button class="nav-item" type="button" data-route="vision" data-tip="Your Vision" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">Your Vision</span></button>
+      <button class="nav-item" type="button" data-route="vision" data-tip="Your Vision Board" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">Your Vision Board</span></button>
       <button class="nav-item locked" type="button" data-route="journey" data-tip="Journey" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="lbl">Journey</span><svg class="nav-lock" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
       <button class="nav-item locked" type="button" data-route="achievements" data-tip="Your Achievements" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span class="lbl">Your Achievements</span><svg class="nav-lock" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
       <button class="nav-item" type="button" data-route="goals" data-tip="Goals" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="lbl">Goals</span></button>
@@ -6752,6 +8689,9 @@ body.lp-done #landing-page { display:none; }
     <div>
       <div class="sb-group">KNOWLEDGE</div>
       <button class="nav-item" type="button" data-route="frameworks" data-tip="Frameworks" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="lbl">Frameworks</span></button>
+      <button class="nav-item" type="button" data-route="knowledge-read" data-tip="Things to read" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v6h6"/></svg><span class="lbl">Things to read</span></button>
+      <button class="nav-item" type="button" data-route="knowledge-watch" data-tip="Things to watch" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="lbl">Things to watch</span></button>
+      <button class="nav-item" type="button" data-route="knowledge-learn" data-tip="Things to learn" data-navitem><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg><span class="lbl">Things to learn</span></button>
     </div>
     <div>
       <div class="sb-group">YOUR FEEDBACK</div>
@@ -7049,22 +8989,93 @@ body.lp-done #landing-page { display:none; }
 </div></div><div class="view-page" data-view="vision">
 <div class="vis-page">
   <header class="vis-head">
-    <div class="vis-kicker">Your Vision</div>
-    <h1>Where Loopcart is going — in your own words.</h1>
-    <p class="vis-sub">Ally reads today&rsquo;s work against this. When the two drift apart, you&rsquo;ll hear about it.</p>
+    <h1>Build the future you actually want.</h1>
+    <p class="vis-sub">4 of 6 territories written. Keep going, or revisit one.</p>
+    <div class="vis-head-acts">
+      <button type="button" class="btn btn-ghost" data-signin="add to your vision"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M12 5v14M5 12h14"/></svg> Add vision</button>
+      <button type="button" class="btn btn-em" data-discuss="I want to talk through my overall vision — here's what I've written so far:
+
+My Life: Home by 7 most nights, and Sundays that are actually off.
+My Business: Loopcart is the retention layer 500 D2C stores rely on every day.
+My Impact: Every small D2C brand in India keeps the customers it worked so hard to win.
+My Financial Future: Six months of personal runway saved, so no decision is made out of fear.">Talk to Ally about my vision</button>
+    </div>
   </header>
+  <div class="vt-grid">
+    <div class="vt-card">
+      <button type="button" class="vt-card-body" data-signin="edit your vision">
+        <div class="vt-top"><span class="vt-ic"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="5" r="3"/><path d="M12 8v8M4 16h4a4 4 0 0 0 8 0h4"/><path d="M6 13a6 6 0 0 0 12 0"/></svg></span><span class="vt-label">MY LIFE</span><svg class="vt-edit-ic" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <p class="vt-statement">Home by 7 most nights, and Sundays that are actually off.</p>
+        <div class="vt-tags"><span class="vt-tag">4-day weeks</span><span class="vt-tag muted">Dec 2027</span></div>
+      </button>
+      <div class="vt-foot">
+        <button type="button" class="vt-talk" data-discuss="Let's talk through my vision for My Life: &quot;Home by 7 most nights, and Sundays that are actually off.&quot;"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Talk to Ally about this</button>
+        <button type="button" class="vt-reach" aria-pressed="false" title="Mark this reached" data-signin="mark a vision reached"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M20 6 9 17l-5-5"/></svg> Mark reached</button>
+        <button type="button" class="vt-print" title="Print this vision" data-signin="print your vision"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Print</button>
+      </div>
+    </div>
+    <div class="vt-card">
+      <button type="button" class="vt-card-body" data-signin="edit your vision">
+        <div class="vt-top"><span class="vt-ic"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></span><span class="vt-label">MY BUSINESS</span><svg class="vt-edit-ic" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <p class="vt-statement">Loopcart is the retention layer 500 D2C stores rely on every day.</p>
+        <div class="vt-tags"><span class="vt-tag">500 stores</span><span class="vt-tag muted">Mar 2028</span></div>
+      </button>
+      <div class="vt-foot">
+        <button type="button" class="vt-talk" data-discuss="Let's talk through my vision for My Business: &quot;Loopcart is the retention layer 500 D2C stores rely on every day.&quot;"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Talk to Ally about this</button>
+        <button type="button" class="vt-reach" aria-pressed="false" title="Mark this reached" data-signin="mark a vision reached"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M20 6 9 17l-5-5"/></svg> Mark reached</button>
+        <button type="button" class="vt-print" title="Print this vision" data-signin="print your vision"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Print</button>
+      </div>
+    </div>
+    <div class="vt-card">
+      <button type="button" class="vt-card-body" data-signin="edit your vision">
+        <div class="vt-top"><span class="vt-ic"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="vt-label">MY IMPACT</span><svg class="vt-edit-ic" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <p class="vt-statement">Every small D2C brand in India keeps the customers it worked so hard to win.</p>
+        <div class="vt-tags"><span class="vt-tag">₹50Cr retained</span><span class="vt-tag muted">2028</span></div>
+      </button>
+      <div class="vt-foot">
+        <button type="button" class="vt-talk" data-discuss="Let's talk through my vision for My Impact: &quot;Every small D2C brand in India keeps the customers it worked so hard to win.&quot;"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Talk to Ally about this</button>
+        <button type="button" class="vt-reach" aria-pressed="false" title="Mark this reached" data-signin="mark a vision reached"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M20 6 9 17l-5-5"/></svg> Mark reached</button>
+        <button type="button" class="vt-print" title="Print this vision" data-signin="print your vision"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Print</button>
+      </div>
+    </div>
+    <div class="vt-card is-reached">
+      <button type="button" class="vt-card-body" data-signin="edit your vision">
+        <div class="vt-top"><span class="vt-ic"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="vt-label">MY FINANCIAL FUTURE</span><svg class="vt-edit-ic" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <p class="vt-statement">Six months of personal runway saved, so no decision is made out of fear.</p>
+        <div class="vt-tags"><span class="vt-tag">6 months saved</span><span class="vt-tag muted">Aug 2026</span></div>
+      </button>
+      <div class="vt-foot">
+        <button type="button" class="vt-talk" data-discuss="Let's talk through my vision for My Financial Future: &quot;Six months of personal runway saved, so no decision is made out of fear.&quot;"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Talk to Ally about this</button>
+        <button type="button" class="vt-reach on" aria-pressed="true" title="Reopen this vision" data-signin="reopen a vision"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M20 6 9 17l-5-5"/></svg> Reached</button>
+        <button type="button" class="vt-print" title="Print this vision" data-signin="print your vision"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Print</button>
+      </div>
+    </div>
+    <div class="vt-card is-empty">
+      <button type="button" class="vt-card-body" data-signin="write your vision">
+        <div class="vt-top"><span class="vt-ic"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="vt-label">MY IDEAL DAY</span></div>
+        <p class="vt-placeholder">Walk through it, hour by hour.</p>
+        <span class="vt-add"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M12 5v14M5 12h14"/></svg> Add your vision</span>
+      </button>
+      <div class="vt-foot">
+        <button type="button" class="vt-talk" data-discuss="I want to think through my vision for My Ideal Day — Walk through it, hour by hour."><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Brainstorm this with Ally</button>
+      </div>
+    </div>
+    <div class="vt-card is-empty">
+      <button type="button" class="vt-card-body" data-signin="write your vision">
+        <div class="vt-top"><span class="vt-ic"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span><span class="vt-label">MY LEGACY</span></div>
+        <p class="vt-placeholder">What outlasts you?</p>
+        <span class="vt-add"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M12 5v14M5 12h14"/></svg> Add your vision</span>
+      </button>
+      <div class="vt-foot">
+        <button type="button" class="vt-talk" data-discuss="I want to think through my vision for My Legacy — What outlasts you?"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Brainstorm this with Ally</button>
+      </div>
+    </div>
+  </div>
   <section class="vis-summary">
-    <div class="vis-sum-box"><span class="vis-sum-label">Target</span><span class="vis-sum-sub">500 stores retained on Loopcart</span></div>
-    <div class="vis-sum-box"><span class="vis-sum-label">Today</span><span class="vis-sum-sub">210 stores — 42% of the way</span></div>
+    <div class="vis-sum-box"><span class="vis-sum-label">VISION</span><input class="vis-sum-value-input" type="text" value="500" readonly aria-label="Vision" data-signin="edit your vision"><span class="vis-sum-sub"><input class="vis-sum-sub-input" type="text" value="Stores retained on Loopcart, by Mar 2028" readonly aria-label="What this is, and by when" data-signin="edit your vision"></span></div>
+    <div class="vis-sum-box"><span class="vis-sum-label">CURRENT</span><input class="vis-sum-value-input" type="text" value="210" readonly aria-label="Current" data-signin="edit your vision"><span class="vis-sum-sub">Where you are today</span></div>
+    <div class="vis-sum-box gap"><span class="vis-sum-label">GAP</span><span class="vis-sum-value">290</span><span class="vis-sum-sub">Difference between vision and current</span></div>
   </section>
-  <div class="vt-top" style="margin-top:20px">
-    <p class="vt-statement">&ldquo;Every small D2C brand in India keeps the customers it worked so hard to win.&rdquo;</p>
-    <div class="vt-tags"><span class="vt-tag">Business</span><span class="vt-tag muted">Written 3 weeks ago</span></div>
-  </div>
-  <div class="btn-row" style="margin-top:22px">
-    <button class="btn btn-em" type="button" data-signin="edit your vision">Edit vision</button>
-    <button class="btn btn-ghost" type="button" data-discuss="Read my vision back to me — is this week actually moving toward it?"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Talk it through with Ally</button>
-  </div>
 </div></div><div class="view-page" data-view="journey">
 <div class="jny-page">
   <section class="jny-hero"><div class="jny-kicker">Your Journey</div>
@@ -7176,43 +9187,76 @@ body.lp-done #landing-page { display:none; }
 <div class="pad plan-wrap">
   <div class="plan-head stagger d1">
     <div>
+      <div class="pl-input-hint" style="display:block;font-size:15px;font-weight:650;color:#b7895f;margin-bottom:8px"><span data-greet>Good evening</span>, Priya 👋</div>
       <h2 class="plan-title" style="font-family:var(--display);font-size:32px;font-weight:800;color:var(--forest);margin:0 0 6px">Plan Your Day</h2>
+      <p class="plan-sub" style="font-family:var(--body);font-size:13.5px;color:var(--muted);margin:0">Set today's priorities. Ally will keep you accountable and remind you to stay on track.</p>
     </div>
     <div class="plan-head-chips">
-      <div class="plan-date">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="plan-date" style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--bd);border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:700;color:var(--forest);height:fit-content">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:14px;height:14px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span id="plan-date-label">Today</span>
       </div>
       <span class="plan-clock"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><time id="plan-clock">--:--:--</time></span>
     </div>
   </div>
-  <figure class="qc qc-sm stagger d2"><blockquote class="qc-text">Start where you are. Use what you have. Do what you can.</blockquote><figcaption class="qc-by">Arthur Ashe</figcaption></figure>
-  <div class="pl-tabs stagger d2" style="margin-top:24px" role="tablist" aria-label="Planning mode">
-    <button type="button" role="tab" class="pl-tab active" id="tab-ally" aria-selected="true">
-      <div class="pl-tab-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-      <div class="pl-tab-content"><span class="pl-tab-title">Plan with Ally</span><span class="pl-tab-desc">List them with commas — I'll add each one.</span></div>
-    </button>
-    <button type="button" role="tab" class="pl-tab" id="tab-manual" aria-selected="false">
-      <div class="pl-tab-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-      <div class="pl-tab-content"><span class="pl-tab-title">Add tasks myself</span><span class="pl-tab-desc">One at a time, exactly as you type them.</span></div>
-    </button>
+  <figure class="qc qc-sm stagger d2"><blockquote class="qc-text">A hard week is not evidence. It is a week.</blockquote></figure>
+  <div class="cal-conn">
+    <div class="cal-conn-row">
+      <div class="cal-conn-text">
+        <div class="cal-conn-title">Google Calendar</div>
+        <div class="cal-conn-sub">Connect it and dated tasks become calendar events, with a reminder.</div>
+      </div>
+      <button type="button" class="cal-conn-btn" data-signin="connect your Google Calendar">Connect</button>
+    </div>
   </div>
   <div class="plan-grid stagger d3">
     <div class="plan-main">
-      <div class="pl-input-card" id="panel-ally">
-        <div class="pl-input-header">
-          <div class="pl-input-avatar"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-          <div class="pl-input-header-text"><span class="pl-input-title">Tell me about your day, Priya.</span><span class="pl-input-subtitle">Meetings, calls, deadlines — however it comes to you.</span></div>
+      <div class="pl-input-card" style="gap:12px">
+        <div class="pl-input-header"><span class="pl-input-title">Add your tasks</span></div>
+        <div role="radiogroup" aria-label="Priority" class="pl-priority-picker" id="pl-prio">
+          <button type="button" role="radio" aria-checked="false" class="pl-priority-opt low" data-p="low">low</button>
+          <button type="button" role="radio" aria-checked="true" class="pl-priority-opt medium active" data-p="medium">medium</button>
+          <button type="button" role="radio" aria-checked="false" class="pl-priority-opt high" data-p="high">high</button>
         </div>
-        <textarea id="pl-day" class="pl-textarea" placeholder="Call Rajesh about pricing, draft the follow-up email, book the factory visit…"></textarea>
-        <div class="pl-input-footer"><button class="pl-plan-btn" type="button" id="pl-plan-btn" data-signin="have Ally plan your day">Plan my day</button></div>
+        <div class="pl-time-row" style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+          <label for="pl-manual-time" style="font-size:12px;color:var(--muted-2)">Time (optional)</label>
+          <input id="pl-manual-time" type="time" class="pl-time-input" style="height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--bd);font-family:inherit;font-size:12.5px;background:#fff">
+          <label for="pl-manual-reminder" style="font-size:12px;color:var(--muted-2)">Remind me</label>
+          <select id="pl-manual-reminder" aria-label="Remind me" class="pl-reminder-select" style="height:34px;padding:0 8px;border-radius:8px;border:1px solid var(--bd);font-family:inherit;font-size:12.5px;background:#fff;color:inherit">
+            <option value="0">At the time</option><option value="5">5 minutes before</option><option value="10">10 minutes before</option><option value="15">15 minutes before</option><option value="30" selected>30 minutes before</option><option value="60">1 hour before</option><option value="120">2 hours before</option><option value="1440">1 day before</option>
+          </select>
+        </div>
+        <div id="pl-remind-hint" style="font-size:11.5px;color:var(--muted-2);margin-bottom:10px">30m before 9:00 — the default hour for a task with no time. Connect your calendar to get the reminder.</div>
+        <div style="display:flex;gap:10px">
+          <label class="sr-only" for="pl-manual-task">Task description</label>
+          <input id="pl-manual-task" type="text" class="pl-textarea" style="min-height:auto;height:40px;padding:0 12px" placeholder="Add a task for today…">
+          <button class="pl-plan-btn" type="button" style="height:40px;padding:0 20px;flex-shrink:0" data-signin="add tasks to your day">Add task</button>
+        </div>
       </div>
-      <div class="pl-input-card" id="panel-manual" style="display:none">
-        <div class="pl-input-header"><div class="pl-input-header-text"><span class="pl-input-title">Add a task</span></div></div>
-        <div style="display:flex;gap:10px"><input id="pl-manual-in" class="pl-textarea" style="min-height:0;height:46px" type="text" placeholder="What needs doing?"><button class="pl-plan-btn" type="button" id="pl-add-btn" style="flex-shrink:0">Add</button></div>
+      <div class="sec-row">
+        <div class="sec-title" style="font-size:15px;font-weight:750" id="pl-day-title">Today's goals</div>
+        <div class="plan-count" style="font-size:12px;color:var(--muted-2);display:flex;align-items:center;gap:10px"><span id="pl-todo">0 to do</span><button type="button" class="pl-showall" id="pl-showall" hidden></button></div>
       </div>
-      <div class="sec-row" style="margin-top:26px"><div class="sec-title" style="font-size:15px;font-weight:750">Today&rsquo;s tasks</div><span class="plan-count" id="plan-count">3 open</span></div>
-      <div id="pl-list"></div>
+      <div class="pl-goal-list" id="pl-list" style="margin-bottom:32px"></div>
+      <div class="sec-row">
+        <div class="sec-title" style="font-size:15px;font-weight:750">Completed today</div>
+        <div class="plan-count" style="font-size:12px;color:var(--muted-2)" id="pl-done-count">0 done</div>
+      </div>
+      <div class="pl-completed-list" id="pl-done"></div>
+      <div id="pl-history"></div>
+    </div>
+    <div class="plan-aside">
+      <div class="cal" id="pl-cal"></div>
+      <div class="pl-prog-card">
+        <div class="pl-prog-title">Today's progress</div>
+        <div class="pl-prog-ring">
+          <svg viewBox="0 0 110 110"><defs><linearGradient id="plGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#A8D94A"/></linearGradient></defs><circle class="bg" cx="55" cy="55" r="49"/><circle class="fg" id="pl-ring" cx="55" cy="55" r="49"/></svg>
+          <div class="pl-prog-ring-c"><b><i id="pl-pct-n" style="font-style:normal">0</i><span>%</span></b><small>Done</small></div>
+        </div>
+        <div class="pl-prog-stats"><b id="pl-total">0</b> goals<span style="width:4px;height:4px;border-radius:50%;background:#6c7a70"></span><b id="pl-completed">0</b> completed</div>
+        <div class="pl-prog-footer"><span class="dot"></span><span id="pl-prog-msg">Start your engine. Let us get to work.</span></div>
+      </div>
+      <div id="pl-next"></div>
     </div>
   </div>
 </div></div><div class="view-page" data-view="frameworks">
@@ -7233,6 +9277,24 @@ body.lp-done #landing-page { display:none; }
   <div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">Best for</span><span class="fw-meta-value">Big choices</span></div>
   <div class="fw-meta-row"><span class="fw-meta-label">Time</span><span class="fw-meta-value">20–40 min</span></div></div>
   <button class="fw-use-btn" type="button" data-discuss="Walk me through Decision matrix on my pricing decision.">Use with Ally <svg class="" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></article></div>
+</div></div><div class="view-page" data-view="knowledge-read">
+<div class="fw-page kb-page">
+  <div class="fw-kicker">Things to read</div>
+  <h1>Worth the hours.</h1>
+  <p class="fw-sub">Books worth the hours, grouped by what you need them for. Tap one to look it up.</p>
+  <div class="fw-tabs" role="tablist" aria-label="Things to read sections"><button type="button" role="tab" aria-selected="true" class="fw-tab is-active" data-kb-tab="mindset">Mindset<span class="fw-tab-count">38</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="building">Building<span class="fw-tab-count">26</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="gtm">Go-to-market<span class="fw-tab-count">16</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="scaling">Scaling<span class="fw-tab-count">19</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="money">Money<span class="fw-tab-count">7</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="stories">Stories<span class="fw-tab-count">22</span></button></div><div class="kb-panel" data-kb-panel="mindset"><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Business%20Sutra%3A%20A%20Very%20Indian%20Approach%20to%20Management%20Devdutt%20Pattanaik%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">Business Sutra: A Very Indian Approach to Management</span><span class="wt-sub">Devdutt Pattanaik · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Business Sutra: A Very Indian Approach to Management</span><span class="wt-sub">Devdutt Pattanaik · Indian</span></span></span><span class="wt-why">The best counterweight there is to imported Western management framing. It argues Indian business runs on a different mental model — belief, context, relationship — than the Anglo-American one.</span><span class="wt-line"><span class="wt-line-label">Read it when</span>Western playbooks keep not fitting your reality.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Corporate%20Chanakya%20Radhakrishnan%20Pillai%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Corporate Chanakya</span><span class="wt-sub">Radhakrishnan Pillai · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Corporate Chanakya</span><span class="wt-sub">Radhakrishnan Pillai · Indian</span></span></span><span class="wt-why">The Arthashastra applied to leadership, decision-making and people. Culturally legible if you bounce off Western self-help.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Chanakya%20in%20You%20Radhakrishnan%20Pillai%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Chanakya in You</span><span class="wt-sub">Radhakrishnan Pillai · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Chanakya in You</span><span class="wt-sub">Radhakrishnan Pillai · Indian</span></span></span><span class="wt-why">More personal and psychological than Corporate Chanakya — a better fit for early identity work than for management.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Made-in-India%20Manager%20R.%20Gopalakrishnan%20%26%20Ranjan%20Banerjee%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Made-in-India Manager</span><span class="wt-sub">R. Gopalakrishnan &amp; Ranjan Banerjee · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Made-in-India Manager</span><span class="wt-sub">R. Gopalakrishnan &amp; Ranjan Banerjee · Indian</span></span></span><span class="wt-why">Argues that scarcity, ambiguity and diversity shape Indian managers into a distinct capability set rather than a deficient one.</span><span class="wt-line"><span class="wt-line-label">Read it when</span>You read your own context as a disadvantage.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=What%20the%20Heck%20Do%20I%20Do%20With%20My%20Life%3F%20Ravi%20Venkatesan%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">What the Heck Do I Do With My Life?</span><span class="wt-sub">Ravi Venkatesan · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">What the Heck Do I Do With My Life?</span><span class="wt-sub">Ravi Venkatesan · Indian</span></span></span><span class="wt-why">Purpose and direction, from a former chairman of Microsoft India and Bosch India.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Skill%20It%2C%20Kill%20It%3A%20Up%20Your%20Game%20Ronnie%20Screwvala%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Skill It, Kill It: Up Your Game</span><span class="wt-sub">Ronnie Screwvala · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Skill It, Kill It: Up Your Game</span><span class="wt-sub">Ronnie Screwvala · Indian</span></span></span><span class="wt-why">Skill acquisition and execution discipline. Practical, non-mystical, and written for Indian ambition specifically.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Dream%20With%20Your%20Eyes%20Open%20Ronnie%20Screwvala%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Dream With Your Eyes Open</span><span class="wt-sub">Ronnie Screwvala · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Dream With Your Eyes Open</span><span class="wt-sub">Ronnie Screwvala · Indian</span></span></span><span class="wt-why">An entrepreneurial memoir with real operating detail from UTV. Strong on risk appetite, and on building in India before the ecosystem existed.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=You%20Can%20Win%20Shiv%20Khera%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">You Can Win</span><span class="wt-sub">Shiv Khera · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">You Can Win</span><span class="wt-sub">Shiv Khera · Indian</span></span></span><span class="wt-why">Dated and heavily motivational — and the book a large share of Indian SME founders have actually read.</span><span class="wt-care">Motivational, not diagnostic. Worth knowing because your peers know it, not as a source of method.</span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">30 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div><div class="kb-panel" data-kb-panel="building" hidden><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Cut%20the%20Crap%20and%20Jargon%3A%20Lessons%20from%20the%20Start-up%20Trenches%20Shradha%20Sharma%20%26%20T.N.%20Hari%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">Cut the Crap and Jargon: Lessons from the Start-up Trenches</span><span class="wt-sub">Shradha Sharma &amp; T.N. Hari · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Cut the Crap and Jargon: Lessons from the Start-up Trenches</span><span class="wt-sub">Shradha Sharma &amp; T.N. Hari · Indian</span></span></span><span class="wt-why">Probably the highest-utility Indian startup book there is. Short, blunt chapters on hiring, firing, co-founder conflict and fundraising — the things that actually kill Indian startups.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Saying%20No%20to%20Jugaad%3A%20The%20Making%20of%20Bigbasket%20T.N.%20Hari%20%26%20M.S.%20Subramanian%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">Saying No to Jugaad: The Making of Bigbasket</span><span class="wt-sub">T.N. Hari &amp; M.S. Subramanian · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Saying No to Jugaad: The Making of Bigbasket</span><span class="wt-sub">T.N. Hari &amp; M.S. Subramanian · Indian</span></span></span><span class="wt-why">An operations-heavy account of an Indian company that deliberately refused the improvised route and built systems instead. Rare in Indian business writing.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Golden%20Tap%3A%20The%20Inside%20Story%20of%20Hyper-Funded%20Indian%20Start-Ups%20Kashyap%20Deorah%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Golden Tap: The Inside Story of Hyper-Funded Indian Start-Ups</span><span class="wt-sub">Kashyap Deorah · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Golden Tap: The Inside Story of Hyper-Funded Indian Start-Ups</span><span class="wt-sub">Kashyap Deorah · Indian</span></span></span><span class="wt-why">The sceptical account of India's funding boom, by a founder who lived through it. A counterweight to treating funding as validation.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Doglapan%3A%20The%20Hard%20Truth%20about%20Life%20and%20Start-Ups%20Ashneer%20Grover%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Doglapan: The Hard Truth about Life and Start-Ups</span><span class="wt-sub">Ashneer Grover · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Doglapan: The Hard Truth about Life and Start-Ups</span><span class="wt-sub">Ashneer Grover · Indian</span></span></span><span class="wt-why">Honest about Indian founder–investor dynamics, dilution and board conflict in a way very few Indian books are.</span><span class="wt-care">Self-serving in places, and the author is a polarising figure. One side of a story, not the record.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Big%20Billion%20Startup%3A%20The%20Untold%20Flipkart%20Story%20Mihir%20Dalal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Big Billion Startup: The Untold Flipkart Story</span><span class="wt-sub">Mihir Dalal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Big Billion Startup: The Untold Flipkart Story</span><span class="wt-sub">Mihir Dalal · Indian</span></span></span><span class="wt-why">The most rigorously reported Indian startup book there is. Good on scaling failure modes, co-founder dynamics, and what capital does to a company.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Maverick%20Effect%3A%20The%20Inside%20Story%20of%20India's%20IT%20Revolution%20Harish%20Mehta%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Maverick Effect: The Inside Story of India's IT Revolution</span><span class="wt-sub">Harish Mehta · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Maverick Effect: The Inside Story of India's IT Revolution</span><span class="wt-sub">Harish Mehta · Indian</span></span></span><span class="wt-why">NASSCOM's founding story. Excellent on industry-building, and on why Indian founders historically had to build the ecosystem as well as the company.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=How%20I%20Braved%20Anu%20Aunty%20and%20Co-Founded%20a%20Million%20Dollar%20Company%20Varun%20Agarwal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">How I Braved Anu Aunty and Co-Founded a Million Dollar Company</span><span class="wt-sub">Varun Agarwal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">How I Braved Anu Aunty and Co-Founded a Million Dollar Company</span><span class="wt-sub">Varun Agarwal · Indian</span></span></span><span class="wt-why">Light, and it is the book about family and social resistance to starting up in India.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=7%20Sutras%20of%20Innovation%20Nikhil%20Inamdar%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">7 Sutras of Innovation</span><span class="wt-sub">Nikhil Inamdar · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">7 Sutras of Innovation</span><span class="wt-sub">Nikhil Inamdar · Indian</span></span></span><span class="wt-why">Indian scale-up case studies, read through an innovation lens.</span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">18 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div><div class="kb-panel" data-kb-panel="gtm" hidden><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Monetizing%20Innovation%20Madhavan%20Ramanujam%20%26%20Georg%20Tacke%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">Monetizing Innovation</span><span class="wt-sub">Madhavan Ramanujam &amp; Georg Tacke · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Monetizing Innovation</span><span class="wt-sub">Madhavan Ramanujam &amp; Georg Tacke · Global</span></span></span><span class="wt-why">Price before you build. The answer to the underpricing that almost every founder regrets later.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Traction%20Gabriel%20Weinberg%20%26%20Justin%20Mares%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Traction</span><span class="wt-sub">Gabriel Weinberg &amp; Justin Mares · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Traction</span><span class="wt-sub">Gabriel Weinberg &amp; Justin Mares · Global</span></span></span><span class="wt-why">Nineteen channels and a method for choosing between them. The practical answer to &quot;which channel&quot;.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Founding%20Sales%20Peter%20Kazanjy%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Founding Sales</span><span class="wt-sub">Peter Kazanjy · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Founding Sales</span><span class="wt-sub">Peter Kazanjy · Global</span></span></span><span class="wt-why">Founder-led B2B sales from zero. Free online, which matters when cash is tight.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Predictable%20Revenue%20Aaron%20Ross%20%26%20Marylou%20Tyler%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Predictable Revenue</span><span class="wt-sub">Aaron Ross &amp; Marylou Tyler · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Predictable Revenue</span><span class="wt-sub">Aaron Ross &amp; Marylou Tyler · Global</span></span></span><span class="wt-why">Outbound sales split into specialised roles.</span><span class="wt-care">Applied far too early, far too often. It is a book about scaling something that already works.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=From%20Impossible%20to%20Inevitable%20Aaron%20Ross%20%26%20Jason%20Lemkin%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">From Impossible to Inevitable</span><span class="wt-sub">Aaron Ross &amp; Jason Lemkin · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">From Impossible to Inevitable</span><span class="wt-sub">Aaron Ross &amp; Jason Lemkin · Global</span></span></span><span class="wt-why">Scaling revenue once it repeats.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Qualified%20Sales%20Leader%20John%20McMahon%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Qualified Sales Leader</span><span class="wt-sub">John McMahon · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Qualified Sales Leader</span><span class="wt-sub">John McMahon · Global</span></span></span><span class="wt-why">Enterprise sales management, and how to qualify a pilot so it means something.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Never%20Split%20the%20Difference%20Chris%20Voss%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Never Split the Difference</span><span class="wt-sub">Chris Voss · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Never Split the Difference</span><span class="wt-sub">Chris Voss · Global</span></span></span><span class="wt-why">Negotiation, from hostage negotiation.</span><span class="wt-care">The framing reads as adversarial. Useful across a table, corrosive if you apply it to partners and staff.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Influence%20Robert%20Cialdini%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Influence</span><span class="wt-sub">Robert Cialdini · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Influence</span><span class="wt-sub">Robert Cialdini · Global</span></span></span><span class="wt-why">The persuasion primitives, named and evidenced.</span><span class="wt-care">Worth knowing so you can spot them being used on you. That is a different thing from using them.</span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">8 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div><div class="kb-panel" data-kb-panel="scaling" hidden><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Who%3A%20The%20A%20Method%20for%20Hiring%20Geoff%20Smart%20%26%20Randy%20Street%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">Who: The A Method for Hiring</span><span class="wt-sub">Geoff Smart &amp; Randy Street · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Who: The A Method for Hiring</span><span class="wt-sub">Geoff Smart &amp; Randy Street · Global</span></span></span><span class="wt-why">Scorecards, sourcing, structured interviews and reference checks.</span><span class="wt-line"><span class="wt-line-label">Read it when</span>Hiring keeps going wrong and you cannot say why.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Topgrading%20Bradford%20Smart%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Topgrading</span><span class="wt-sub">Bradford Smart · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Topgrading</span><span class="wt-sub">Bradford Smart · Global</span></span></span><span class="wt-why">The heavier, more rigorous version of the same method.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=High%20Output%20Management%20Andy%20Grove%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">High Output Management</span><span class="wt-sub">Andy Grove · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">High Output Management</span><span class="wt-sub">Andy Grove · Global</span></span></span><span class="wt-why">Managerial leverage, meetings as a medium, and matching supervision to how much someone has done the job before. Still the best operating manual ever written for a founder becoming a manager.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Only%20the%20Paranoid%20Survive%20Andy%20Grove%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Only the Paranoid Survive</span><span class="wt-sub">Andy Grove · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Only the Paranoid Survive</span><span class="wt-sub">Andy Grove · Global</span></span></span><span class="wt-why">Strategic inflection points — vocabulary for the moment a business changes shape.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Score%20Takes%20Care%20of%20Itself%20Bill%20Walsh%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Score Takes Care of Itself</span><span class="wt-sub">Bill Walsh · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Score Takes Care of Itself</span><span class="wt-sub">Bill Walsh · Global</span></span></span><span class="wt-why">Process over outcome, and what a standard of performance actually looks like day to day.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Great%20CEO%20Within%20Matt%20Mochary%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Great CEO Within</span><span class="wt-sub">Matt Mochary · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Great CEO Within</span><span class="wt-sub">Matt Mochary · Global</span></span></span><span class="wt-why">Free, practical, and the closest thing to an operating checklist for a first-time chief executive.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Measure%20What%20Matters%20John%20Doerr%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Measure What Matters</span><span class="wt-sub">John Doerr · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Measure What Matters</span><span class="wt-sub">John Doerr · Global</span></span></span><span class="wt-why">OKRs, from the person who took them to Google.</span><span class="wt-care">Routinely implemented badly below fifty people. Small teams usually need focus, not a cascade.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Scaling%20Up%20Verne%20Harnish%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Scaling Up</span><span class="wt-sub">Verne Harnish · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Scaling Up</span><span class="wt-sub">Verne Harnish · Global</span></span></span><span class="wt-why">The Rockefeller Habits and a one-page plan. Suits Indian SMEs unusually well.</span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">11 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div><div class="kb-panel" data-kb-panel="money" hidden><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Coffee%20Can%20Investing%20Saurabh%20Mukherjea%2C%20Rakshit%20Ranjan%20%26%20Pranab%20Uniyal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Coffee Can Investing</span><span class="wt-sub">Saurabh Mukherjea, Rakshit Ranjan &amp; Pranab Uniyal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Coffee Can Investing</span><span class="wt-sub">Saurabh Mukherjea, Rakshit Ranjan &amp; Pranab Uniyal · Indian</span></span></span><span class="wt-why">An investor's test for what makes an Indian business durable: consistent revenue growth and return on capital. A test of the business, not of the founder.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Unusual%20Billionaires%20Saurabh%20Mukherjea%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Unusual Billionaires</span><span class="wt-sub">Saurabh Mukherjea · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Unusual Billionaires</span><span class="wt-sub">Saurabh Mukherjea · Indian</span></span></span><span class="wt-why">Indian companies that compounded for decades. A useful antidote to venture-pace assumptions.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Venture%20Deals%20Brad%20Feld%20%26%20Jason%20Mendelson%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Venture Deals</span><span class="wt-sub">Brad Feld &amp; Jason Mendelson · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Venture Deals</span><span class="wt-sub">Brad Feld &amp; Jason Mendelson · Global</span></span></span><span class="wt-why">Term sheets explained honestly, by people who sit on the other side of the table.</span><span class="wt-care">US instruments. Indian terms differ — read it for the mechanics, not the paperwork.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Secrets%20of%20Sand%20Hill%20Road%20Scott%20Kupor%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Secrets of Sand Hill Road</span><span class="wt-sub">Scott Kupor · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Secrets of Sand Hill Road</span><span class="wt-sub">Scott Kupor · Global</span></span></span><span class="wt-why">How venture funds actually work, including why a fund's own structure dictates how it treats you.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Power%20Law%20Sebastian%20Mallaby%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Power Law</span><span class="wt-sub">Sebastian Mallaby · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Power Law</span><span class="wt-sub">Sebastian Mallaby · Global</span></span></span><span class="wt-why">Venture capital's history and its logic.</span><span class="wt-line"><span class="wt-line-label">Read it when</span>You need to understand why investors behave the way they do.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Financial%20Intelligence%20for%20Entrepreneurs%20Karen%20Berman%20%26%20Joe%20Knight%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Financial Intelligence for Entrepreneurs</span><span class="wt-sub">Karen Berman &amp; Joe Knight · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Financial Intelligence for Entrepreneurs</span><span class="wt-sub">Karen Berman &amp; Joe Knight · Global</span></span></span><span class="wt-why">Reading financial statements without an accounting background. The most useful finance book for a founder who is not a finance person.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Simple%20Numbers%2C%20Straight%20Talk%2C%20Big%20Profits%20Greg%20Crabtree%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Simple Numbers, Straight Talk, Big Profits</span><span class="wt-sub">Greg Crabtree · Global</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Simple Numbers, Straight Talk, Big Profits</span><span class="wt-sub">Greg Crabtree · Global</span></span></span><span class="wt-why">Owner-operator finance: what to pay yourself, and how much labour a rupee of revenue can carry. Written for businesses this size.</span><span class="wt-more">Look it up ›</span></span></a></div></div><div class="kb-panel" data-kb-panel="stories" hidden><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Stay%20Hungry%20Stay%20Foolish%20Rashmi%20Bansal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Stay Hungry Stay Foolish</span><span class="wt-sub">Rashmi Bansal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Stay Hungry Stay Foolish</span><span class="wt-sub">Rashmi Bansal · Indian</span></span></span><span class="wt-why">Twenty-five IIM-A graduates who became entrepreneurs. The book that started Indian startup non-fiction.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Connect%20the%20Dots%20Rashmi%20Bansal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Connect the Dots</span><span class="wt-sub">Rashmi Bansal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Connect the Dots</span><span class="wt-sub">Rashmi Bansal · Indian</span></span></span><span class="wt-why">Twenty entrepreneurs with no MBA — the better of the two if you did not take the credential route.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Take%20Me%20Home%20Rashmi%20Bansal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-pick">Start here</span><span class="wt-name">Take Me Home</span><span class="wt-sub">Rashmi Bansal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Take Me Home</span><span class="wt-sub">Rashmi Bansal · Indian</span></span></span><span class="wt-why">Entrepreneurs building in small-town and rural India. The closest thing in print to the businesses GoXL actually works with.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Arise%2C%20Awake%20Rashmi%20Bansal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Arise, Awake</span><span class="wt-sub">Rashmi Bansal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Arise, Awake</span><span class="wt-sub">Rashmi Bansal · Indian</span></span></span><span class="wt-why">Student entrepreneurs.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Shine%20Bright%20Rashmi%20Bansal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Shine Bright</span><span class="wt-sub">Rashmi Bansal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Shine Bright</span><span class="wt-sub">Rashmi Bansal · Indian</span></span></span><span class="wt-why">Intrapreneurs and chief executives.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Making%20of%20Hero%3A%20Four%20Brothers%2C%20Two%20Wheels%20and%20a%20Revolution%20that%20Shaped%20India%20Sunil%20Kant%20Munjal%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Making of Hero: Four Brothers, Two Wheels and a Revolution that Shaped India</span><span class="wt-sub">Sunil Kant Munjal · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Making of Hero: Four Brothers, Two Wheels and a Revolution that Shaped India</span><span class="wt-sub">Sunil Kant Munjal · Indian</span></span></span><span class="wt-why">Family business, manufacturing and succession.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Dhirubhai%20Ambani%3A%20Against%20All%20Odds%20A.G.%20Krishnamurthy%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Dhirubhai Ambani: Against All Odds</span><span class="wt-sub">A.G. Krishnamurthy · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Dhirubhai Ambani: Against All Odds</span><span class="wt-sub">A.G. Krishnamurthy · Indian</span></span></span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Z%20Factor%3A%20My%20Journey%20as%20the%20Wrong%20Man%20at%20the%20Right%20Time%20Subhash%20Chandra%20%26%20Pranjal%20Sharma%20book" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Z Factor: My Journey as the Wrong Man at the Right Time</span><span class="wt-sub">Subhash Chandra &amp; Pranjal Sharma · Indian</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Z Factor: My Journey as the Wrong Man at the Right Time</span><span class="wt-sub">Subhash Chandra &amp; Pranjal Sharma · Indian</span></span></span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">14 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div>
+</div></div><div class="view-page" data-view="knowledge-watch">
+<div class="fw-page kb-page">
+  <div class="fw-kicker">Things to watch</div>
+  <h1>Worth the time.</h1>
+  <p class="fw-sub">Talks and conversations that say something a blog post could not.</p>
+  <div class="fw-tabs" role="tablist" aria-label="Things to watch sections"><button type="button" role="tab" aria-selected="true" class="fw-tab is-active" data-kb-tab="podcasts">Podcasts<span class="fw-tab-count">30</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="series">Series<span class="fw-tab-count">13</span></button><button type="button" role="tab" aria-selected="false" class="fw-tab" data-kb-tab="movies">Movies<span class="fw-tab-count">52</span></button></div><div class="kb-panel" data-kb-panel="podcasts"><div class="fw-grid"><a class="fw-card fw-card-link" href="https://podscripts.co/podcasts/y-combinator-startup-podcast/paul-graham-on-startups-ambition-and-great-founders" target="_blank" rel="noopener noreferrer"><div class="fw-card-head"><h3>Paul Graham on Startups, Ambition, and Great Founders</h3></div><div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">From</span><span class="fw-meta-value">YC Startup Podcast · host Vivian Shen</span></div><div class="fw-meta-row"><span class="fw-meta-label">Published</span><span class="fw-meta-value">5 Sep 2026</span></div></div></a><a class="fw-card fw-card-link" href="https://pmfshow.buzzsprout.com/1889238/episodes/19558138-he-fired-almost-everyone-kept-2-engineers-then-grew-12x-and-raised-a-30m-series-a-rafael-broshi-co-founder-of-notch" target="_blank" rel="noopener noreferrer"><div class="fw-card-head"><h3>He fired almost everyone, kept 2 engineers, then grew 12x and raised a $30M Series A</h3></div><div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">From</span><span class="fw-meta-value">A Product Market Fit Show · Rafael Broshi, Notch</span></div><div class="fw-meta-row"><span class="fw-meta-label">Published</span><span class="fw-meta-value">3 Aug 2026</span></div></div></a><a class="fw-card fw-card-link" href="https://saasclub.io/podcast/enterprise-sales-vineet-jain-egnyte/" target="_blank" rel="noopener noreferrer"><div class="fw-card-head"><h3>How $6K in SEM Launched an Enterprise Sales Machine</h3></div><div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">From</span><span class="fw-meta-value">The SaaS Podcast · Vineet Jain, Egnyte</span></div></div></a><a class="fw-card fw-card-link" href="https://www.youtube.com/watch?v=whcfSGN6CAU" target="_blank" rel="noopener noreferrer"><div class="fw-card-head"><h3>What Happens When Everyone Lets It Cook</h3></div><div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">From</span><span class="fw-meta-value">YC Root Access · Peter Steinberger</span></div><div class="fw-meta-row"><span class="fw-meta-label">Published</span><span class="fw-meta-value">10 Aug 2026</span></div></div></a><a class="fw-card fw-card-link" href="https://podscripts.co/podcasts/a16z-podcast/the-two-ways-to-sell-ai-lighthouse-or-landgrab" target="_blank" rel="noopener noreferrer"><div class="fw-card-head"><h3>The Two Ways to Sell AI: Lighthouse or Landgrab?</h3></div><div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">From</span><span class="fw-meta-value">a16z Podcast · Elena Burger, Joe Schmidt, Andy McCall</span></div><div class="fw-meta-row"><span class="fw-meta-label">Published</span><span class="fw-meta-value">13 Aug 2026</span></div></div></a><a class="fw-card fw-card-link" href="https://a16z.com/podcast/marc-andreessen-on-the-mindset-of-great-founders-with-david-senra/" target="_blank" rel="noopener noreferrer"><div class="fw-card-head"><h3>Marc Andreessen on the Mindset of Great Founders</h3></div><div class="fw-meta"><div class="fw-meta-row"><span class="fw-meta-label">From</span><span class="fw-meta-value">a16z Podcast · with David Senra</span></div><div class="fw-meta-row"><span class="fw-meta-label">Published</span><span class="fw-meta-value">15 Mar 2026</span></div></div></a></div><button type="button" class="kb-more" data-signin="open the full list">24 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div><div class="kb-panel" data-kb-panel="series" hidden><p class="fw-standing">Almost every story here is about someone who made it — the ones who did not rarely get filmed. Read them with that in mind.</p><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=TVF%20Pitchers%202015%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">TVF Pitchers</span><span class="wt-sub">2015 · Indian series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">TVF Pitchers</span><span class="wt-sub">2015 · Indian series</span></span></span><span class="wt-why">Four people quit their jobs to start up: funding, co-founder friction, family pressure, and the gap between the pitch and the reality. The most relevant Indian screen content there is for early founders. Season 2 is weaker but covers scaling and investor dynamics.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are at the very beginning -- idea to first build.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Scam%201992%3A%20The%20Harshad%20Mehta%20Story%202020%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Scam 1992: The Harshad Mehta Story</span><span class="wt-sub">2020 · Indian series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Scam 1992: The Harshad Mehta Story</span><span class="wt-sub">2020 · Indian series</span></span></span><span class="wt-why">The best-made Indian business drama there is. Financial-system exploitation, the ratchet from grey to illegal, and how a system quietly enables it.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are rationalising a shortcut.</span><span class="wt-line"><span class="wt-line-label">Ask yourself after</span>Where exactly was the line, and had he already crossed it by then?</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Rocket%20Boys%202022%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Rocket Boys</span><span class="wt-sub">2022 · Indian series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Rocket Boys</span><span class="wt-sub">2022 · Indian series</span></span></span><span class="wt-why">Institution-building, scientific ambition, and long-horizon work under political constraint.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are building deep tech or hardware.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Shark%20Tank%20India%202021%E2%80%93%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Shark Tank India</span><span class="wt-sub">2021– · Indian series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Shark Tank India</span><span class="wt-sub">2021– · Indian series</span></span></span><span class="wt-why">Useful as a prompt rather than as a model. Pick one episode and find the question you would have failed on.</span><span class="wt-care">It badly distorts what fundraising actually is — it compresses valuation into theatre, and has left a lot of founders believing a pitch is a business.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Panchayat%202020%E2%80%93%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Panchayat</span><span class="wt-sub">2020– · Indian series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Panchayat</span><span class="wt-sub">2020– · Indian series</span></span></span><span class="wt-why">Not a business show, but the best portrayal available of operating inside Indian bureaucratic and community reality.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>Your go-to-market depends on government, rural distribution or local trust.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Silicon%20Valley%202014%E2%80%9319%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Silicon Valley</span><span class="wt-sub">2014–19 · Global series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Silicon Valley</span><span class="wt-sub">2014–19 · Global series</span></span></span><span class="wt-why">Comedy, and the most accurate thing ever made about startup life -- cap tables, pivots, board coups, term sheets.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You need to laugh and learn at the same time.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=The%20Dropout%202022%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">The Dropout</span><span class="wt-sub">2022 · Global series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">The Dropout</span><span class="wt-sub">2022 · Global series</span></span></span><span class="wt-why">Theranos. Narrative outrunning evidence, and the machinery that lets it happen. The essential counterweight to founder-conviction mythology.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=WeCrashed%202022%20series" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">WeCrashed</span><span class="wt-sub">2022 · Global series</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">WeCrashed</span><span class="wt-sub">2022 · Global series</span></span></span><span class="wt-why">WeWork. Capital as an accelerant for delusion, and governance failure at scale.</span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">5 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div><div class="kb-panel" data-kb-panel="movies" hidden><p class="fw-standing">Almost every story here is about someone who made it — the ones who did not rarely get filmed. Read them with that in mind.</p><div class="wt-grid"><a class="wt-tile" href="https://www.google.com/search?q=Rocket%20Singh%3A%20Salesman%20of%20the%20Year%202009%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Rocket Singh: Salesman of the Year</span><span class="wt-sub">2009 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Rocket Singh: Salesman of the Year</span><span class="wt-sub">2009 · Indian film</span></span></span><span class="wt-why">A company built inside a company, on the premise that honesty is a sales strategy rather than a handicap.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are about to compromise on ethics to close a deal, you think your people are a cost line, or you are building a services business on relationships.</span><span class="wt-line"><span class="wt-line-label">Ask yourself after</span>What would your version of his non-negotiable be?</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Guru%202007%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Guru</span><span class="wt-sub">2007 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Guru</span><span class="wt-sub">2007 · Indian film</span></span></span><span class="wt-why">Ambition, regulatory arbitrage and the moral cost of scale, loosely drawn on Dhirubhai Ambani.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>Your ambition is big and your ethics are vague.</span><span class="wt-care">It is romantic about rule-breaking in a way we would not endorse. Watch Scam 1992 alongside it.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Sui%20Dhaaga%3A%20Made%20in%20India%202018%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Sui Dhaaga: Made in India</span><span class="wt-sub">2018 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Sui Dhaaga: Made in India</span><span class="wt-sub">2018 · Indian film</span></span></span><span class="wt-why">Small-scale manufacturing, family resistance, and going from a job to your own business with no capital. Closer to the businesses GoXL actually works with than anything else on this list.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are first-generation and your family is sceptical.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Band%20Baaja%20Baaraat%202010%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Band Baaja Baaraat</span><span class="wt-sub">2010 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Band Baaja Baaraat</span><span class="wt-sub">2010 · Indian film</span></span></span><span class="wt-why">Two people start a service business with no money, succeed, then blow it up by mixing the personal and the professional.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You have a co-founder. Watch it before the conflict, not after.</span><span class="wt-line"><span class="wt-line-label">Ask yourself after</span>What did they never write down that they should have?</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Manjhi%3A%20The%20Mountain%20Man%202015%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Manjhi: The Mountain Man</span><span class="wt-sub">2015 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Manjhi: The Mountain Man</span><span class="wt-sub">2015 · Indian film</span></span></span><span class="wt-why">Twenty-two years on one obsessive project with no external validation at all.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are deep in a long build and have stopped believing in it.</span><span class="wt-care">Not for a founder who should actually be quitting. Endurance on its own is not a strategy.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Mission%20Mangal%202019%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Mission Mangal</span><span class="wt-sub">2019 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Mission Mangal</span><span class="wt-sub">2019 · Indian film</span></span></span><span class="wt-why">Frugal innovation under hard constraints -- doing it cheaper because there is no other option.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You believe your problem is budget.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=Rocketry%3A%20The%20Nambi%20Effect%202022%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">Rocketry: The Nambi Effect</span><span class="wt-sub">2022 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">Rocketry: The Nambi Effect</span><span class="wt-sub">2022 · Indian film</span></span></span><span class="wt-why">Deep technical work, institutional politics, and reputational destruction.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>You are technical, and navigating an institution or a public setback.</span><span class="wt-more">Look it up ›</span></span></a><a class="wt-tile" href="https://www.google.com/search?q=12th%20Fail%202023%20film" target="_blank" rel="noopener noreferrer"><span class="wt-face"><span class="wt-name">12th Fail</span><span class="wt-sub">2023 · Indian film</span></span><span class="wt-pop"><span class="wt-pop-head"><span class="wt-pop-title"><span class="wt-name">12th Fail</span><span class="wt-sub">2023 · Indian film</span></span></span><span class="wt-why">Repeated failure, restarting, and the psychology of trying again without a safety net.</span><span class="wt-line"><span class="wt-line-label">Watch it when</span>A venture just did not work and you are deciding whether to go again.</span><span class="wt-care">Powerful, and heavy. Not for a week when you are already low.</span><span class="wt-more">Look it up ›</span></span></a></div><button type="button" class="kb-more" data-signin="open the full list">44 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div>
+</div></div><div class="view-page" data-view="knowledge-learn">
+<div class="fw-page kb-page">
+  <div class="fw-kicker">Things to learn</div>
+  <h1>Worth knowing.</h1>
+  <p class="fw-sub">243 terms an early founder is expected to know and usually is not told. Search it, or read a section.</p>
+  <div class="gl"><div class="gl-bar"><input type="search" class="gl-search" placeholder="Search — try churn, ESOP, runway, GST" aria-label="Search the glossary" data-gl-search><span class="gl-count" aria-live="polite" data-gl-count data-total="38">38 of 243 terms in this sample</span></div><nav class="gl-jump" aria-label="Glossary sections"><a class="gl-chip" href="#gl-customer" data-gl-jump>Customers, market and positioning<span class="gl-chip-n">17</span></a><a class="gl-chip" href="#gl-product" data-gl-jump>Product, build and delivery<span class="gl-chip-n">21</span></a><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Growth, marketing and sales<span class="gl-chip-n">31</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Unit economics and financial basics<span class="gl-chip-n">24</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Revenue models and recurring revenue<span class="gl-chip-n">18</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Fundraising, valuation and cap table<span class="gl-chip-n">26</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Legal, compliance and company structure (India)<span class="gl-chip-n">27</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Operations, supply chain and fulfilment<span class="gl-chip-n">19</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">People, team and performance<span class="gl-chip-n">16</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Strategy and decision-making<span class="gl-chip-n">18</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">Founder psychology, clarity and capacity<span class="gl-chip-n">13</span></button><button type="button" class="gl-chip kb-locked" data-signin="read the whole glossary">The GoXL vocabulary<span class="gl-chip-n">13</span></button></nav><p class="fw-empty" data-gl-none hidden></p><section class="gl-section" id="gl-customer"><header class="gl-head"><span class="gl-num">1</span><div class="gl-head-text"><h2 class="gl-h">Customers, market and positioning</h2><p class="gl-blurb">Who you serve, how big that is, and why they should pick you. Most founder confusion downstream starts with vagueness here.</p></div><span class="gl-h-n">17</span></header><div class="gl-tablewrap"><table class="gl-table"><thead><tr><th class="gl-c-term">Term</th><th class="gl-c-full">Full Form</th><th class="gl-c-used">What It Is Used For</th><th class="gl-c-means">What It Actually Means</th></tr></thead><tbody><tr data-gl-row="icp ideal customer profile filtering leads, targeting ad spend, writing copy, qualifying deals, deciding what to build next the exact type of customer you are built to win — not everyone who could buy, but the narrow slice where you win fastest, cheapest and most profitably. a sharp icp is a filter you say no with."><td class="gl-c-term">ICP</td><td class="gl-c-full">Ideal Customer Profile</td><td class="gl-c-used">Filtering leads, targeting ad spend, writing copy, qualifying deals, deciding what to build next</td><td class="gl-c-means">The exact type of customer you are built to win — not everyone who could buy, but the narrow slice where you win fastest, cheapest and most profitably. A sharp ICP is a filter you say NO with.</td></tr><tr data-gl-row="buyer persona  aligning marketing, sales and product around one specific human a fictional but evidence-based sketch of one real customer type. powerful when built from actual interviews; useless when invented in a meeting room."><td class="gl-c-term">Buyer Persona</td><td class="gl-c-full">—</td><td class="gl-c-used">Aligning marketing, sales and product around one specific human</td><td class="gl-c-means">A fictional but evidence-based sketch of one real customer type. Powerful when built from actual interviews; useless when invented in a meeting room.</td></tr><tr data-gl-row="tam total addressable market sizing the opportunity in a pitch deck; sanity-checking ambition every rupee that could theoretically be spent on your category. largely a vanity number — nobody has ever captured their tam."><td class="gl-c-term">TAM</td><td class="gl-c-full">Total Addressable Market</td><td class="gl-c-used">Sizing the opportunity in a pitch deck; sanity-checking ambition</td><td class="gl-c-means">Every rupee that could theoretically be spent on your category. Largely a vanity number — nobody has ever captured their TAM.</td></tr><tr data-gl-row="sam serviceable addressable market realistic market sizing for strategy and investor conversations the slice of tam you can actually reach given your model, geography, language and channel."><td class="gl-c-term">SAM</td><td class="gl-c-full">Serviceable Addressable Market</td><td class="gl-c-used">Realistic market sizing for strategy and investor conversations</td><td class="gl-c-means">The slice of TAM you can actually reach given your model, geography, language and channel.</td></tr><tr data-gl-row="som serviceable obtainable market setting believable 1–3 year revenue targets what you can genuinely capture given your team, capital and competition. the only market number worth planning against."><td class="gl-c-term">SOM</td><td class="gl-c-full">Serviceable Obtainable Market</td><td class="gl-c-used">Setting believable 1–3 year revenue targets</td><td class="gl-c-means">What you can genuinely capture given your team, capital and competition. The only market number worth planning against.</td></tr><tr data-gl-row="pmf product–market fit deciding when to stop iterating and start pouring fuel on growth the point where customers pull the product out of your hands instead of you pushing it at them. if you are asking whether you have it, you do not."><td class="gl-c-term">PMF</td><td class="gl-c-full">Product–Market Fit</td><td class="gl-c-used">Deciding when to stop iterating and start pouring fuel on growth</td><td class="gl-c-means">The point where customers pull the product out of your hands instead of you pushing it at them. If you are asking whether you have it, you do not.</td></tr><tr data-gl-row="jtbd jobs to be done product prioritisation, messaging, understanding why people switch people do not buy your product; they hire it to make progress in their life. understand the job, not the demographic."><td class="gl-c-term">JTBD</td><td class="gl-c-full">Jobs To Be Done</td><td class="gl-c-used">Product prioritisation, messaging, understanding why people switch</td><td class="gl-c-means">People do not buy your product; they hire it to make progress in their life. Understand the job, not the demographic.</td></tr><tr data-gl-row="usp unique selling proposition ads, packaging, pitch decks, the one-line answer to 'why you?' the one thing you do that competitors cannot easily copy or credibly claim."><td class="gl-c-term">USP</td><td class="gl-c-full">Unique Selling Proposition</td><td class="gl-c-used">Ads, packaging, pitch decks, the one-line answer to 'why you?'</td><td class="gl-c-means">The one thing you do that competitors cannot easily copy or credibly claim.</td></tr><tr data-gl-row="uvp unique value proposition homepage headline, sales deck opener, cold email first line a plain sentence stating who it is for, what it does, and why it is better. if it takes a paragraph, you do not have one yet."><td class="gl-c-term">UVP</td><td class="gl-c-full">Unique Value Proposition</td><td class="gl-c-used">Homepage headline, sales deck opener, cold email first line</td><td class="gl-c-means">A plain sentence stating who it is for, what it does, and why it is better. If it takes a paragraph, you do not have one yet.</td></tr><tr data-gl-row="positioning  brand strategy, pricing power, defending against competitors the space you occupy in the customer's head relative to alternatives. you do not choose it — you earn it, and the market confirms it."><td class="gl-c-term">Positioning</td><td class="gl-c-full">—</td><td class="gl-c-used">Brand strategy, pricing power, defending against competitors</td><td class="gl-c-means">The space you occupy in the customer's head relative to alternatives. You do not choose it — you earn it, and the market confirms it.</td></tr><tr data-gl-row="segmentation  serving different customer groups with different offers and pricing cutting your market into groups that behave differently enough to deserve different treatment. if the segments behave the same, they are not segments."><td class="gl-c-term">Segmentation</td><td class="gl-c-full">—</td><td class="gl-c-used">Serving different customer groups with different offers and pricing</td><td class="gl-c-means">Cutting your market into groups that behave differently enough to deserve different treatment. If the segments behave the same, they are not segments.</td></tr><tr data-gl-row="beachhead market  choosing where to launch first when you cannot afford to be everywhere the smallest market you can completely dominate before expanding. win small deliberately so you can win big credibly."><td class="gl-c-term">Beachhead Market</td><td class="gl-c-full">—</td><td class="gl-c-used">Choosing where to launch first when you cannot afford to be everywhere</td><td class="gl-c-means">The smallest market you can completely dominate before expanding. Win small deliberately so you can win big credibly.</td></tr><tr data-gl-row="voc voice of customer roadmap decisions, copywriting, reducing churn structured listening to what customers literally say, in their own words — not your polished summary of it."><td class="gl-c-term">VoC</td><td class="gl-c-full">Voice of Customer</td><td class="gl-c-used">Roadmap decisions, copywriting, reducing churn</td><td class="gl-c-means">Structured listening to what customers literally say, in their own words — not your polished summary of it.</td></tr><tr data-gl-row="nps net promoter score tracking loyalty and word-of-mouth potential over time a 0–10 'would you recommend us' score, expressed as promoters minus detractors. directionally useful, easily gamed. watch the trend, not the number."><td class="gl-c-term">NPS</td><td class="gl-c-full">Net Promoter Score</td><td class="gl-c-used">Tracking loyalty and word-of-mouth potential over time</td><td class="gl-c-means">A 0–10 'would you recommend us' score, expressed as promoters minus detractors. Directionally useful, easily gamed. Watch the trend, not the number.</td></tr><tr data-gl-row="csat customer satisfaction score measuring one specific interaction — a delivery, a support ticket, an onboarding call how happy someone was with a single touchpoint. tactical feedback, not a strategic signal."><td class="gl-c-term">CSAT</td><td class="gl-c-full">Customer Satisfaction Score</td><td class="gl-c-used">Measuring one specific interaction — a delivery, a support ticket, an onboarding call</td><td class="gl-c-means">How happy someone was with a single touchpoint. Tactical feedback, not a strategic signal.</td></tr><tr data-gl-row="moat  defensibility conversations with investors, and with yourself whatever stops a better-funded competitor from copying you in six months — network effects, switching costs, brand, data, regulation, or unfair distribution."><td class="gl-c-term">Moat</td><td class="gl-c-full">—</td><td class="gl-c-used">Defensibility conversations with investors, and with yourself</td><td class="gl-c-means">Whatever stops a better-funded competitor from copying you in six months — network effects, switching costs, brand, data, regulation, or unfair distribution.</td></tr><tr data-gl-row="category creation  long-horizon brand strategy when you refuse to be compared inventing a new market instead of competing inside an existing one. expensive, slow, and occasionally worth everything."><td class="gl-c-term">Category Creation</td><td class="gl-c-full">—</td><td class="gl-c-used">Long-horizon brand strategy when you refuse to be compared</td><td class="gl-c-means">Inventing a new market instead of competing inside an existing one. Expensive, slow, and occasionally worth everything.</td></tr></tbody></table></div></section><section class="gl-section" id="gl-product"><header class="gl-head"><span class="gl-num">2</span><div class="gl-head-text"><h2 class="gl-h">Product, build and delivery</h2><p class="gl-blurb">How an idea becomes a shipped, working thing — and the vocabulary your engineers and designers already use.</p></div><span class="gl-h-n">21</span></header><div class="gl-tablewrap"><table class="gl-table"><thead><tr><th class="gl-c-term">Term</th><th class="gl-c-full">Full Form</th><th class="gl-c-used">What It Is Used For</th><th class="gl-c-means">What It Actually Means</th></tr></thead><tbody><tr data-gl-row="mvp minimum viable product testing your riskiest assumption with the least possible spend the smallest thing you can build that still teaches you whether people want it. it is not a cheap version of the full product — it is an experiment with a user interface."><td class="gl-c-term">MVP</td><td class="gl-c-full">Minimum Viable Product</td><td class="gl-c-used">Testing your riskiest assumption with the least possible spend</td><td class="gl-c-means">The smallest thing you can build that still teaches you whether people want it. It is not a cheap version of the full product — it is an experiment with a user interface.</td></tr><tr data-gl-row="mlp minimum lovable product launching into a crowded category where 'viable' is not enough an mvp people actually enjoy using. in a saturated market, merely viable is invisible."><td class="gl-c-term">MLP</td><td class="gl-c-full">Minimum Lovable Product</td><td class="gl-c-used">Launching into a crowded category where 'viable' is not enough</td><td class="gl-c-means">An MVP people actually enjoy using. In a saturated market, merely viable is invisible.</td></tr><tr data-gl-row="poc proof of concept answering 'is this even technically possible?' before committing budget a deliberately throwaway build. never ship a poc — it was not made to survive contact with real users."><td class="gl-c-term">POC</td><td class="gl-c-full">Proof of Concept</td><td class="gl-c-used">Answering 'is this even technically possible?' before committing budget</td><td class="gl-c-means">A deliberately throwaway build. Never ship a POC — it was not made to survive contact with real users.</td></tr><tr data-gl-row="pilot  de-risking a full rollout by running it small and real first a time-boxed live deployment with one or a few real customers, usually paid. the bridge between demo and contract."><td class="gl-c-term">Pilot</td><td class="gl-c-full">—</td><td class="gl-c-used">De-risking a full rollout by running it small and real first</td><td class="gl-c-means">A time-boxed live deployment with one or a few real customers, usually paid. The bridge between demo and contract.</td></tr><tr data-gl-row="roadmap  aligning team, investors and clients on sequence and intent an ordered set of bets, not a delivery promise. anything more than a quarter out is a hypothesis wearing a date."><td class="gl-c-term">Roadmap</td><td class="gl-c-full">—</td><td class="gl-c-used">Aligning team, investors and clients on sequence and intent</td><td class="gl-c-means">An ordered set of bets, not a delivery promise. Anything more than a quarter out is a hypothesis wearing a date.</td></tr><tr data-gl-row="backlog  holding everything you are consciously not doing right now the list of requested-but-not-committed work. if it only ever grows, you are collecting, not prioritising."><td class="gl-c-term">Backlog</td><td class="gl-c-full">—</td><td class="gl-c-used">Holding everything you are consciously not doing right now</td><td class="gl-c-means">The list of requested-but-not-committed work. If it only ever grows, you are collecting, not prioritising.</td></tr><tr data-gl-row="sprint  giving the team a repeatable rhythm and a fixed finish line a short fixed window — usually one or two weeks — in which scope is frozen and something ships."><td class="gl-c-term">Sprint</td><td class="gl-c-full">—</td><td class="gl-c-used">Giving the team a repeatable rhythm and a fixed finish line</td><td class="gl-c-means">A short fixed window — usually one or two weeks — in which scope is frozen and something ships.</td></tr><tr data-gl-row="user story  writing requirements an engineer can actually build from 'as a [user], i want [action], so that [outcome].' forces you to state the why, not just the what."><td class="gl-c-term">User Story</td><td class="gl-c-full">—</td><td class="gl-c-used">Writing requirements an engineer can actually build from</td><td class="gl-c-means">'As a [user], I want [action], so that [outcome].' Forces you to state the why, not just the what.</td></tr><tr data-gl-row="acceptance criteria  ending arguments about whether something is finished the specific, testable conditions that must be true for work to count as done. write them before the work starts."><td class="gl-c-term">Acceptance Criteria</td><td class="gl-c-full">—</td><td class="gl-c-used">Ending arguments about whether something is finished</td><td class="gl-c-means">The specific, testable conditions that must be true for work to count as done. Write them before the work starts.</td></tr><tr data-gl-row="wireframe  agreeing structure before spending money on visual design a grey-box layout showing where things go, deliberately before how they look."><td class="gl-c-term">Wireframe</td><td class="gl-c-full">—</td><td class="gl-c-used">Agreeing structure before spending money on visual design</td><td class="gl-c-means">A grey-box layout showing where things go, deliberately before how they look.</td></tr><tr data-gl-row="prototype  testing a flow with real users before a line of code is written a clickable fake. cheap to throw away, which is the entire point."><td class="gl-c-term">Prototype</td><td class="gl-c-full">—</td><td class="gl-c-used">Testing a flow with real users before a line of code is written</td><td class="gl-c-means">A clickable fake. Cheap to throw away, which is the entire point.</td></tr><tr data-gl-row="design system  keeping a product visually coherent as more people touch it a reusable kit of components, colours, type and rules so nobody reinvents the button on every screen."><td class="gl-c-term">Design System</td><td class="gl-c-full">—</td><td class="gl-c-used">Keeping a product visually coherent as more people touch it</td><td class="gl-c-means">A reusable kit of components, colours, type and rules so nobody reinvents the button on every screen.</td></tr><tr data-gl-row="tech debt technical debt deciding when to slow down and clean up versus keep shipping shortcuts taken to move faster now, on which you pay interest later. some debt is a smart trade; unmanaged debt compounds until velocity dies."><td class="gl-c-term">Tech Debt</td><td class="gl-c-full">Technical Debt</td><td class="gl-c-used">Deciding when to slow down and clean up versus keep shipping</td><td class="gl-c-means">Shortcuts taken to move faster now, on which you pay interest later. Some debt is a smart trade; unmanaged debt compounds until velocity dies.</td></tr><tr data-gl-row="feature creep  diagnosing why launches keep slipping and the product feels bloated the product quietly growing features nobody validated, usually because saying no felt impolite."><td class="gl-c-term">Feature Creep</td><td class="gl-c-full">—</td><td class="gl-c-used">Diagnosing why launches keep slipping and the product feels bloated</td><td class="gl-c-means">The product quietly growing features nobody validated, usually because saying no felt impolite.</td></tr><tr data-gl-row="scope creep  protecting margin and timelines on client or agency work the agreed deliverable expanding while the price and deadline stay exactly where they were."><td class="gl-c-term">Scope Creep</td><td class="gl-c-full">—</td><td class="gl-c-used">Protecting margin and timelines on client or agency work</td><td class="gl-c-means">The agreed deliverable expanding while the price and deadline stay exactly where they were.</td></tr><tr data-gl-row="qa quality assurance catching defects before your customer does systematic testing before release. the cost of skipping it is always paid twice — once in support, once in reputation."><td class="gl-c-term">QA</td><td class="gl-c-full">Quality Assurance</td><td class="gl-c-used">Catching defects before your customer does</td><td class="gl-c-means">Systematic testing before release. The cost of skipping it is always paid twice — once in support, once in reputation.</td></tr><tr data-gl-row="uat user acceptance testing final sign-off before go-live the actual end user confirms it solves their problem — a different question from whether the code runs."><td class="gl-c-term">UAT</td><td class="gl-c-full">User Acceptance Testing</td><td class="gl-c-used">Final sign-off before go-live</td><td class="gl-c-means">The actual end user confirms it solves their problem — a different question from whether the code runs.</td></tr><tr data-gl-row="beta  controlled exposure to real users before public launch a near-finished release given to a limited group who have been told things may break."><td class="gl-c-term">Beta</td><td class="gl-c-full">—</td><td class="gl-c-used">Controlled exposure to real users before public launch</td><td class="gl-c-means">A near-finished release given to a limited group who have been told things may break.</td></tr><tr data-gl-row="ga general availability marking a product as fully, publicly launched open to everyone, fully supported, with no 'we're still testing' excuse available."><td class="gl-c-term">GA</td><td class="gl-c-full">General Availability</td><td class="gl-c-used">Marking a product as fully, publicly launched</td><td class="gl-c-means">Open to everyone, fully supported, with no 'we're still testing' excuse available.</td></tr><tr data-gl-row="iteration  improving something in deliberate cycles rather than one big bet one loop of build → measure → learn. speed of iteration beats the quality of any single decision."><td class="gl-c-term">Iteration</td><td class="gl-c-full">—</td><td class="gl-c-used">Improving something in deliberate cycles rather than one big bet</td><td class="gl-c-means">One loop of build → measure → learn. Speed of iteration beats the quality of any single decision.</td></tr><tr data-gl-row="api application programming interface letting your product talk to other software, and partners plug into you a defined doorway through which one system requests something from another. it is how integrations, partnerships and platforms happen."><td class="gl-c-term">API</td><td class="gl-c-full">Application Programming Interface</td><td class="gl-c-used">Letting your product talk to other software, and partners plug into you</td><td class="gl-c-means">A defined doorway through which one system requests something from another. It is how integrations, partnerships and platforms happen.</td></tr></tbody></table></div></section><button type="button" class="kb-more" data-signin="open the full glossary">205 more in the full library — sign in to see them all <span aria-hidden="true">›</span></button></div>
 </div></div><div class="view-page" data-view="feedback">
 <div class="dc-container" style="padding-bottom:80px">
   <div class="hp-help-header stagger d1">
@@ -7824,7 +9886,7 @@ body.lp-done #landing-page { display:none; }
 
 <script>
 (function(){
-  var TITLES = {"compass":["Overview",null],"ally-chat":["Conversation",'Talk to Ally'],"founder-dna":["Founder first",'Founder DNA'],"business-dna":["Business",'Business DNA'],"diagnosis":["Diagnosis",'Adaptive diagnosis'],"vision":["Long-term",'Your Vision'],"journey":["Momentum",'Journey'],"achievements":["Milestones",'Your Achievements'],"goals":["Outcomes",'Goals'],"recommendations":["What to do next",'Recommendations'],"report":["Executive report",'Founder DNA Report'],"next-steps":["Momentum",'Your next steps'],"plan":["Today",'Plan Your Day'],"discovery-call":["Talk to a human",'Discovery call'],"frameworks":["Thinking toolkit",'Frameworks'],"feedback":["Tell us what you think",'Send feedback'],"profile":["Founder identity",'Founder Profile'],"billing":["Plans & billing",'Plans & billing'],"help":["We're here to help",'Help & Support']};
+  var TITLES = {"compass":["Overview",null],"ally-chat":["Conversation",'Talk to Ally'],"founder-dna":["Founder first",'Founder DNA'],"business-dna":["Business",'Business DNA'],"diagnosis":["Diagnosis",'Adaptive diagnosis'],"vision":["Long-term",'Your Vision Board'],"journey":["Momentum",'Journey'],"achievements":["Milestones",'Your Achievements'],"goals":["Outcomes",'Goals'],"recommendations":["What to do next",'Recommendations'],"report":["Executive report",'Founder DNA Report'],"next-steps":["Momentum",'Your next steps'],"plan":["Today",'Plan Your Day'],"discovery-call":["Talk to a human",'Discovery call'],"frameworks":["Thinking toolkit",'Frameworks'],"knowledge-read":["Knowledge",'Things to read'],"knowledge-watch":["Knowledge",'Things to watch'],"knowledge-learn":["Knowledge",'Things to learn'],"feedback":["Tell us what you think",'Send feedback'],"profile":["Founder identity",'Founder Profile'],"billing":["Plans & billing",'Plans & billing'],"help":["We're here to help",'Help & Support']};
   var greetEls = document.querySelectorAll('[data-greet]');
   function greeting(){ var h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':'Good evening'; }
   greetEls.forEach(function(el){ el.textContent = greeting(); });
@@ -8002,57 +10064,143 @@ body.lp-done #landing-page { display:none; }
       setTimeout(function(){ addMsg('me', p); allyReply(p); }, 250); }
   });
 
-  /* ---------- plan your day ---------- */
+  /* ---------- plan your day (mirrors the platform's PlanYourDay.jsx) ---------- */
   function tickClock(){
     var el=document.getElementById('plan-clock'); if(!el) return;
-    var d=new Date();
-    el.textContent = d.toLocaleTimeString('en-IN',{hour12:false});
-    document.getElementById('plan-date-label').textContent =
-      d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+    el.textContent = new Date().toLocaleTimeString('en-IN',{hour12:false});
     setTimeout(tickClock, 1000-(Date.now()%1000));
   }
   tickClock();
-  var tasks=[
-    {t:'Message the five lost prospects (from your report)',done:false},
-    {t:'Draft the value-case section of the proposal',done:false},
-    {t:'Demo with Meera Crafts — 4:30 pm',done:false}
+  function dkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function addDays(n){ var d=new Date(); d.setDate(d.getDate()+n); return dkey(d); }
+  function stamp(n, hh, mm){ var d=new Date(); d.setDate(d.getDate()+n); d.setHours(hh,mm,0,0); return d.toISOString(); }
+  var TODAY=dkey(new Date());
+  var REM={0:'at the time',5:'5m before',10:'10m before',15:'15m before',30:'30m before',60:'1h before',120:'2h before',1440:'1d before'};
+  var plTasks=[
+    {t:'Demo with Meera Crafts', p:'high', due:TODAY, time:'16:30', rem:30},
+    {t:'Message the five lost prospects (from your report)', p:'high', due:TODAY, time:'11:00', rem:15},
+    {t:'Draft the value-case section of the proposal', p:'medium', due:TODAY, rem:30},
+    {t:'Book the factory visit', p:'low'},
+    {t:'Call Rajesh about the new pricing', p:'medium', due:addDays(1), time:'10:30', rem:10},
+    {t:'Review churn numbers with Ankit', p:'low', due:addDays(3), rem:60},
+    {t:'Send the retention one-pager to Arjun', p:'medium', due:TODAY, done:stamp(0,10,12)},
+    {t:'Reply to the two churned stores', p:'high', due:addDays(-1), done:stamp(-1,17,40)},
+    {t:'Update the pricing page copy', p:'low', due:addDays(-1), done:stamp(-1,12,5)}
   ];
-  var list=document.getElementById('pl-list');
-  function renderTasks(){
-    list.innerHTML='';
-    tasks.forEach(function(task,i){
-      var row=document.createElement('div');
-      row.className='pl-goal-row'+(task.done?' completed':'');
-      row.style.cssText='display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--bd)';
-      row.innerHTML='<button class="pl-checkbox" role="checkbox" aria-checked="'+task.done+'" aria-label="Mark done">'+
-        (task.done?'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="1em" height="1em"><path d="M20 6 9 17l-5-5"/></svg>':'')+'</button>'+
-        '<span style="flex:1;font-size:14px;'+(task.done?'text-decoration:line-through;color:var(--muted)':'')+'"></span>';
-      row.querySelector('span').textContent=task.t;
-      row.querySelector('.pl-checkbox').addEventListener('click',function(){ task.done=!task.done; renderTasks(); });
-      list.appendChild(row);
-    });
-    var open=tasks.filter(function(t){return !t.done;}).length;
-    document.getElementById('plan-count').textContent=open+' open';
+  var plSel=TODAY, plAll=false, calCur=null;
+  var RANK={high:0,medium:1,low:2};
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function isToday(iso){ return !!iso && iso.slice(0,10)===new Date().toISOString().slice(0,10); }
+  function dueLabel(t){ if(!t.due) return ''; if(t.due===TODAY) return 'Today'; if(t.due<TODAY) return 'Overdue';
+    return new Date(t.due+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'}); }
+  function timeOf(iso){ return new Date(iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+  var CK='<svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2 6 5 9 10 3"/></svg>';
+  var MENU='<div class="pl-task-menu"><button type="button" class="pl-task-menu-btn" aria-label="Task options" data-signin="edit or delete a task"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button></div>';
+  function doneRow(t){ return '<div class="pl-completed-row" role="checkbox" aria-checked="true" tabindex="0" style="cursor:pointer" data-signin="reopen a task"><div class="pl-checkbox" aria-hidden="true">'+CK+'</div><div class="pl-completed-content"><h4 class="pl-completed-title">'+esc(t.t)+'</h4><span class="pl-completed-time">Completed at '+timeOf(t.done)+'</span></div>'+MENU+'</div>'; }
+  function renderPlan(){
+    var viewingToday = plSel===TODAY;
+    var active = plTasks.filter(function(t){ return !t.done; }).sort(function(a,b){ return RANK[a.p]-RANK[b.p]; });
+    var day = plAll ? active : active.filter(function(t){ return viewingToday ? (!t.due || t.due<=plSel) : t.due===plSel; });
+    var hidden = active.length-day.length;
+    var dayLbl = viewingToday ? 'Today' : new Date(plSel+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+    document.getElementById('plan-date-label').textContent = new Date(plSel+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+    document.getElementById('pl-manual-task').placeholder = viewingToday ? 'Add a task for today…' : 'Add a task for '+dayLbl+'…';
+    document.getElementById('pl-day-title').textContent = plAll ? 'All open tasks' : viewingToday ? "Today's goals" : dayLbl;
+    document.getElementById('pl-todo').textContent = day.length+' to do';
+    var sa=document.getElementById('pl-showall'); sa.hidden=!(plAll||hidden>0);
+    sa.textContent = plAll ? 'Show this day only' : 'Show all ('+active.length+')';
+    var list=document.getElementById('pl-list');
+    if(!day.length){
+      list.innerHTML='<div class="plan-empty" style="background:#fff;padding:24px;border-radius:14px;border:1px solid var(--bd);text-align:left">'+
+        (viewingToday ? '<h3 style="font-size:15px;font-weight:700;margin:0 0 4px">All caught up.</h3><p style="font-size:12.5px;color:var(--muted);margin:0;max-width:none">Nothing left on today\'s list.</p>'
+          : '<h3 style="font-size:15px;font-weight:700;margin:0 0 4px">Nothing on '+esc(dayLbl)+'.</h3><p style="font-size:12.5px;color:var(--muted);margin:0;max-width:none">Add a task above and it\'ll land on this day'+(hidden>0?', or show all '+active.length+' open tasks.':'.')+'</p>')+'</div>';
+    } else {
+      list.innerHTML = day.map(function(t){
+        var meta = t.due ? '<span class="pl-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>due '+t.due+(t.time?' · '+t.time:'')+' · remind '+REM[t.rem]+'</span>' : '';
+        return '<div class="pl-goal-row"><button class="pl-checkbox" type="button" role="checkbox" aria-checked="false" aria-label="Mark &quot;'+esc(t.t)+'&quot; as done" data-signin="tick off tasks">'+CK+'</button>'+
+          '<div class="pl-goal-content"><h4 class="pl-goal-title">'+esc(t.t)+'</h4><div class="pl-goal-badges"><span class="pl-badge '+t.p+'">'+t.p+'</span>'+meta+'</div></div>'+MENU+'</div>';
+      }).join('');
+    }
+    var done=plTasks.filter(function(t){ return t.done; });
+    var today=done.filter(function(t){ return isToday(t.done); });
+    document.getElementById('pl-done-count').textContent=today.length+' done';
+    document.getElementById('pl-done').innerHTML = today.length ? today.map(doneRow).join('')
+      : '<div class="plan-empty" style="background:transparent;padding:16px;border:1.5px dashed var(--bd);border-radius:12px;text-align:center"><p style="font-size:12.5px;color:var(--muted);margin:0 auto">Nothing completed today yet — see Completed history below for earlier days.</p></div>';
+    var groups={}; done.filter(function(t){ return !isToday(t.done); }).forEach(function(t){ (groups[t.done.slice(0,10)]=groups[t.done.slice(0,10)]||[]).push(t); });
+    var keys=Object.keys(groups).sort().reverse();
+    document.getElementById('pl-history').innerHTML = keys.length ? '<div class="sec-row" style="margin-top:28px"><div class="sec-title" style="font-size:15px;font-weight:750">Completed history</div></div>'+
+      keys.map(function(k){ var g=groups[k]; return '<div style="margin-bottom:18px"><div style="font-size:12px;font-weight:700;color:var(--muted-2);margin:0 0 8px">'+new Date(g[0].done).toLocaleDateString(undefined,{day:'numeric',month:'short'})+' · '+g.length+' completed</div><div class="pl-completed-list">'+g.map(doneRow).join('')+'</div></div>'; }).join('') : '';
+    var total=active.length+today.length, pct=total?Math.round(today.length/total*100):0;
+    document.getElementById('pl-ring').style.strokeDashoffset = 308-(pct/100)*308;
+    document.getElementById('pl-pct-n').textContent=pct;
+    document.getElementById('pl-total').textContent=total;
+    document.getElementById('pl-completed').textContent=today.length;
+    document.getElementById('pl-prog-msg').textContent = pct>=100 ? "Excellent! You've crushed all targets today." : pct>=50 ? "You're halfway there. Keep going." : 'Start your engine. Let us get to work.';
+    var next=active.filter(function(t){ return t.due; }).sort(function(a,b){ return a.due.localeCompare(b.due); })[0];
+    document.getElementById('pl-next').innerHTML = next ? '<div class="pl-reminder-kicker">Next due</div><div class="pl-reminder-card"><div class="pl-reminder-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="pl-reminder-content"><span class="pl-reminder-time">'+dueLabel(next)+'</span><span class="pl-reminder-title">'+esc(next.t)+'</span></div></div><p class="pl-reminder-hint">Ally nudges you about overdue or due-today tasks while you\'re in the app.</p>' : '';
+    renderCal();
   }
-  renderTasks();
-  document.getElementById('tab-ally').addEventListener('click',function(){ setTab(true); });
-  document.getElementById('tab-manual').addEventListener('click',function(){ setTab(false); });
-  function setTab(ally){
-    document.getElementById('tab-ally').classList.toggle('active',ally);
-    document.getElementById('tab-ally').setAttribute('aria-selected',ally);
-    document.getElementById('tab-manual').classList.toggle('active',!ally);
-    document.getElementById('tab-manual').setAttribute('aria-selected',!ally);
-    document.getElementById('panel-ally').style.display=ally?'':'none';
-    document.getElementById('panel-manual').style.display=ally?'none':'';
+  /* MonthCalendar.jsx: Monday-first, fixed-height cells, dots for tasks. */
+  var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function renderCal(){
+    if(!calCur){ var n=new Date(); calCur={y:n.getFullYear(),m:n.getMonth()}; }
+    var first=new Date(calCur.y,calCur.m,1), lead=(first.getDay()+6)%7, start=new Date(calCur.y,calCur.m,1-lead);
+    var by={}; plTasks.forEach(function(t){ if(!t.due) return; var c=by[t.due]=by[t.due]||{total:0,done:0}; c.total++; if(t.done) c.done++; });
+    var cells=''; for(var i=0;i<42;i++){ var d=new Date(start); d.setDate(start.getDate()+i); var k=dkey(d), c=by[k];
+      var cls='cal-day'+(d.getMonth()!==calCur.m?' cal-day-out':'')+(k===TODAY?' cal-day-today':'')+(k===plSel?' cal-day-selected':'');
+      var dots=''; if(c){ for(var j=0;j<Math.min(c.total,2);j++) dots+='<span class="cal-dot'+(j<c.done?' cal-dot-done':'')+'"></span>'; if(c.total>2) dots+='<span class="cal-dot cal-dot-more"></span>'; dots='<span class="cal-day-dots" aria-hidden="true">'+dots+'</span>'; }
+      cells+='<button type="button" class="'+cls+'" data-day="'+k+'" aria-pressed="'+(k===plSel)+'"'+(k===TODAY?' aria-current="date"':'')+' aria-label="'+k+(c?', '+c.total+' task'+(c.total===1?'':'s'):'')+'"><span class="cal-day-num">'+d.getDate()+'</span>'+dots+'</button>'; }
+    var yrs=''; for(var y=calCur.y-1;y<=calCur.y+1;y++) yrs+='<option value="'+y+'"'+(y===calCur.y?' selected':'')+'>'+y+'</option>';
+    document.getElementById('pl-cal').innerHTML='<div class="cal-head"><button type="button" class="cal-nav-btn" data-step="-1" aria-label="Previous month">‹</button><div class="cal-selects"><select class="cal-select" id="cal-month" aria-label="Month">'+
+      MONTHS.map(function(n,i){ return '<option value="'+i+'"'+(i===calCur.m?' selected':'')+'>'+n+'</option>'; }).join('')+'</select><select class="cal-select cal-select-year" id="cal-year" aria-label="Year">'+yrs+'</select></div><button type="button" class="cal-nav-btn" data-step="1" aria-label="Next month">›</button></div>'+
+      '<div class="cal-weekdays">'+['M','T','W','T','F','S','S'].map(function(w,i){ return '<abbr title="'+['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][i]+'">'+w+'</abbr>'; }).join('')+'</div><div class="cal-grid">'+cells+'</div>'+
+      '<div class="cal-foot"><button type="button" class="cal-today" data-day="'+TODAY+'">Today</button><span class="cal-foot-hint">'+(plSel===TODAY?'Adding to today':'Adding to '+new Date(plSel+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'}))+'</span></div>';
   }
-  document.getElementById('pl-plan-btn').addEventListener('click',function(){
-    var v=document.getElementById('pl-day').value.trim(); if(!v) return;
-    v.split(',').map(function(s){return s.trim();}).filter(Boolean).forEach(function(t){ tasks.push({t:t,done:false}); });
-    document.getElementById('pl-day').value=''; renderTasks(); toast('Added to your day');
+  var calEl=document.getElementById('pl-cal');
+  calEl.addEventListener('click', function(e){
+    var s=e.target.closest('[data-step]'); if(s){ var n=new Date(calCur.y,calCur.m+Number(s.dataset.step),1); calCur={y:n.getFullYear(),m:n.getMonth()}; renderCal(); return; }
+    var d=e.target.closest('[data-day]'); if(d){ plSel=d.dataset.day; plAll=false; var p=new Date(plSel+'T00:00:00'); calCur={y:p.getFullYear(),m:p.getMonth()}; renderPlan(); }
   });
-  document.getElementById('pl-add-btn').addEventListener('click',function(){
-    var el=document.getElementById('pl-manual-in'); var v=el.value.trim(); if(!v) return;
-    tasks.push({t:v,done:false}); el.value=''; renderTasks();
+  calEl.addEventListener('change', function(e){
+    if(e.target.id==='cal-month') calCur.m=Number(e.target.value);
+    if(e.target.id==='cal-year') calCur.y=Number(e.target.value);
+    renderCal();
+  });
+  document.getElementById('pl-showall').addEventListener('click', function(){ plAll=!plAll; renderPlan(); });
+  document.getElementById('pl-prio').addEventListener('click', function(e){
+    var b=e.target.closest('[data-p]'); if(!b) return;
+    [].forEach.call(this.children, function(x){ var on=x===b; x.classList.toggle('active',on); x.setAttribute('aria-checked',on); });
+  });
+  function remindHint(){
+    var m=Number(document.getElementById('pl-manual-reminder').value), tm=document.getElementById('pl-manual-time').value;
+    document.getElementById('pl-remind-hint').textContent = (m===0 ? 'At '+(tm||'9:00')+", when it's due." : REM[m]+' '+(tm||'9:00')+(tm?'':' — the default hour for a task with no time')+'.')+' Connect your calendar to get the reminder.';
+  }
+  document.getElementById('pl-manual-reminder').addEventListener('change', remindHint);
+  document.getElementById('pl-manual-time').addEventListener('input', remindHint);
+  document.getElementById('pl-manual-task').addEventListener('keydown', function(e){ if(e.key==='Enter') openGate('add tasks to your day'); });
+  renderPlan();
+
+  /* ---------- knowledge libraries ---------- */
+  document.querySelectorAll('.kb-page').forEach(function(pg){
+    pg.addEventListener('click', function(e){
+      var t=e.target.closest('[data-kb-tab]');
+      if(t){ pg.querySelectorAll('[data-kb-tab]').forEach(function(b){ var on=b===t; b.classList.toggle('is-active',on); b.setAttribute('aria-selected',on); });
+        pg.querySelectorAll('[data-kb-panel]').forEach(function(p){ p.hidden = p.dataset.kbPanel!==t.dataset.kbTab; }); return; }
+      var j=e.target.closest('[data-gl-jump]');
+      if(j){ e.preventDefault(); var s=document.getElementById(j.getAttribute('href').slice(1)); if(s) s.scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
+    var q=pg.querySelector('[data-gl-search]'); if(!q) return;
+    var count=pg.querySelector('[data-gl-count]'), none=pg.querySelector('[data-gl-none]'), base=count.textContent;
+    q.addEventListener('input', function(){
+      var v=q.value.trim().toLowerCase(), n=0;
+      pg.querySelectorAll('.gl-section').forEach(function(sec){ var any=0;
+        sec.querySelectorAll('[data-gl-row]').forEach(function(r){ var hit=!v||r.dataset.glRow.indexOf(v)>-1; r.hidden=!hit; if(hit){any++;n++;} });
+        sec.hidden=!any; });
+      pg.querySelector('.gl-jump').hidden=!!v;
+      count.textContent = v ? n+' found in this sample' : base;
+      none.hidden = !(v && !n);
+      if(v && !n) none.textContent='Nothing in this sample matches \u201c'+q.value.trim()+'\u201d. The full glossary is in the app.';
+    });
   });
 
   /* ---------- goals ---------- */
