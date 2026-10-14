@@ -1708,7 +1708,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       box.setAttribute('data-dir', dir > 0 ? 'next' : 'prev');
       show(i);
     }
-    function choose(i, dir){ manual = true; go(i, dir); }
+    function choose(i, dir){ manual = true; go(i, dir); sync(); }   /* sync too: picking the slide already open changes nothing, but still stops the turning */
     var wall = document.getElementById('heroWall'), wallKeys = wall ? [].slice.call(wall.querySelectorAll('.hw-key')).sort(function(a, b){ return a.dataset.n - b.dataset.n; }) : [], wallT = [];
     function wallStop(){ wallT.forEach(clearTimeout); wallT = []; if (!wall) return; wall.classList.remove('end'); wallKeys.forEach(function(w){ w.classList.remove('pop', 'lit'); }); }
     function wallPlay(){
@@ -2291,6 +2291,11 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     meetCard.addEventListener('click', openViewer);
     vClose.addEventListener('click', closeViewer);
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !viewer.hidden) closeViewer(); });
+    /* Tab presses inside the dashboard frame happen in the frame's own page and
+       never reach the listener below, so tabbing past its last control used to
+       land on the page behind the dialog. Any focus that arrives outside the open
+       viewer is sent back to Close. */
+    document.addEventListener('focusin', function(e){ if (!viewer.hidden && !viewer.contains(e.target)) vClose.focus(); });
     /* keep Tab inside the dialog: the close button and the dashboard frame */
     viewer.addEventListener('keydown', function(e){
       if (e.key !== 'Tab') return;
@@ -2414,7 +2419,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   var form = document.getElementById('askForm'), input = document.getElementById('askInput');
   var log = document.getElementById('askLog'), chips = document.getElementById('askChips');
   if (!form) return;
-  var busy = false;
+  var busy = false, waiting = null;   /* a question asked while Ally is still answering waits its turn */
 
   /* phones: the question box and the suggestions move into the card, under
      the conversation, like a chat app; wider screens keep them beside it */
@@ -2462,7 +2467,8 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
   function ask(text){
     text = String(text || '').trim();
-    if (!text || busy) return;
+    if (!text) return;
+    if (busy) { waiting = text; input.value = ''; return; }
     busy = true; input.value = '';
     bubble('me', text);
     var stageEl = log.closest('.ask-stage');
@@ -2474,7 +2480,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     dots.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(dots); log.scrollTop = log.scrollHeight;
 
     var settled = false;
-    function finish(fn){ if (settled) return; settled = true; dots.remove(); fn(); busy = false; }
+    function finish(fn){ if (settled) return; settled = true; dots.remove(); fn(); busy = false; if (waiting) { var next = waiting; waiting = null; ask(next); } }
     function offline(){ var hits = search(text); if (hits.length) bubble('ally', hits[0].a); else miss(); }
 
     /* Prices are answered here, from the same figures as the plans below:
