@@ -537,13 +537,23 @@ h1 em, h2 em{ font-style:italic; color:var(--emerald); }
 @keyframes descIn{ from{ opacity:0; transform:translateY(10px); } }   /* two lines held open whatever the length, so nothing shifts between sayings */
 /* where it could be: the guess is picked first, then the pick moves on */
 .lens{ display:flex; flex-wrap:wrap; gap:0.5rem; margin:1.125rem 0 0; }
-.lens span{ padding:0.4375rem 0.8125rem; border-radius:999px; background:rgba(255,253,249,.7); box-shadow:inset 0 0 0 1px var(--border-2); font-size:max(13px, 0.8125rem); font-weight:600; color:var(--muted); }
+.lens > *{ padding:0.4375rem 0.8125rem; border-radius:999px; background:rgba(255,253,249,.7); box-shadow:inset 0 0 0 1px var(--border-2); font-size:max(13px, 0.8125rem); font-weight:600; color:var(--muted); }
 .answer.is-current .lens .guess{ animation:lensGuess 1.6s var(--ease) both; }
 .answer.is-current .lens .hit{ animation:lensHit 1.6s var(--ease) both; }
 @keyframes lensGuess{ 0%,35%{ background:var(--ink); color:var(--card); box-shadow:none; text-decoration:none; } 55%,100%{ background:rgba(255,253,249,.7); color:var(--muted-2); text-decoration:line-through; } }
 @keyframes lensHit{ 0%,45%{ background:rgba(255,253,249,.7); color:var(--muted); } 65%,100%{ background:var(--emerald); color:var(--forest-night); box-shadow:none; } }
 .answer:not(.is-current) .lens .hit{ background:var(--emerald); color:var(--forest-night); box-shadow:none; }
 .answer:not(.is-current) .lens .guess{ text-decoration:line-through; color:var(--muted-2); }
+/* the chips open: tap one and the card's text becomes what Ally reads there;
+   tap it again (or another) to move on. Same size as the line it replaces, so
+   nothing below moves. */
+.lens .chip-btn{ border:0; font-family:inherit; line-height:inherit; cursor:pointer; transition:background-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease); }
+.lens .chip-btn:hover{ transform:translateY(-1px); }
+.lens .chip-btn:focus-visible{ outline:2px solid var(--forest); outline-offset:2px; }
+.lens .chip-btn[aria-pressed="true"]{ background:var(--forest); color:#fff; box-shadow:none; text-decoration:none; animation:none; }
+.answer .looks.is-note{ animation:noteIn .35s var(--ease); }
+@keyframes noteIn{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .answer .looks.is-note{ animation:none; } .lens .chip-btn{ transition:none; } }
 .answer .looks{ margin:0; padding:1.5rem 1.625rem; border-radius:1.5rem; background:var(--card); font-size:1.125rem; line-height:1.55; box-shadow:0 1px 2px rgba(22,36,28,.05), 0 16px 36px -18px rgba(22,36,28,.2); }
 .closer-foot{ margin:3.5rem auto 0; text-align:center; font:italic 500 clamp(22px,2.2vw,28px)/1.3 var(--serif); color:var(--forest); max-width:45rem; }
 
@@ -714,7 +724,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 
 /* ── plans ────────────────────────────────────────────────── */
 .plans{ padding:2.5rem 0 7.5rem; }
-.plans, #product, #how, #why, #meet, #ask, #start{ scroll-margin-top:5.25rem; }   /* in-page links land below the floating header */
+.plans, #product, #how, #works, #meet, #ask, #start{ scroll-margin-top:5.25rem; }   /* in-page links land below the floating header */
 .plan-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
 .plan{ display:flex; flex-direction:column; padding:2rem; border-radius:var(--r-card); background:var(--card); box-shadow:inset 0 0 0 1px var(--border); }
 .plan.is-pro{ position:relative; background:linear-gradient(170deg,var(--forest),var(--forest-deep)); color:var(--on-dark); box-shadow:0 30px 60px -30px rgba(6,20,13,.55); }
@@ -922,7 +932,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   .step-result{ padding-top:0.75rem; font-size:1.0313rem; }
   .step::after{ height:46%; bottom:-30%; }
   .how-foot{ margin-top:1.625rem; font-size:1rem; }
-  /* Look closer, stacked: the saying is already the heading above its card */
+  /* How Ally works, stacked: the step is already the heading above its card */
   .closer.is-stacked .answer > .who:not(.ally), .closer.is-stacked .answer blockquote, .closer.is-stacked .trail{ display:none; }
   .closer.is-stacked .answer, .closer.is-stacked .answer[hidden]{ margin:0.875rem 0 1rem; padding:1.25rem 1.125rem 1.125rem; }
   .closer.is-stacked .q-btn{ padding-top:1.125rem; }
@@ -1231,56 +1241,60 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     </div>
   </section>
 
-  <!-- ════════════ LOOK CLOSER ════════════ -->
-  <section class="closer" id="why" aria-labelledby="closer-title">
+  <!-- ════════════ HOW ALLY WORKS ════════════
+       Was "Look closer" (four founder sayings and what Ally sees behind them).
+       Now the method itself, from the What is GoXL Ally page: founder context,
+       business context, the real constraint, the next move. Same markup and
+       classes, so the pinned reel, autoplay and phone stacking are unchanged. -->
+  <section class="closer" id="works" aria-labelledby="closer-title">
     <div class="closer-pin">
     <div class="wrap">
       <div class="closer-grid">
         <div class="closer-left">
-          <p class="eyebrow">Look closer</p>
-          <h2 id="closer-title">The problem you see isn’t always the problem <em>you need to solve.</em></h2>
-          <p>Most people start by searching for answers. Ally starts by understanding the problem.</p>
-          <ul class="q-list" role="tablist" aria-label="What founders say" aria-orientation="vertical">
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-0" aria-controls="a-0" aria-selected="true"><span class="q-num">01</span><span class="q-said">“Is my idea good enough?”</span><span class="q-desc"><span>Before judging the idea, Ally checks who it is for and how badly they need it.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-1" aria-controls="a-1" aria-selected="false" tabindex="-1"><span class="q-num">02</span><span class="q-said">“My team isn’t performing.”</span><span class="q-desc"><span>Ally looks at how goals are set and shared before it looks at the people.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-2" aria-controls="a-2" aria-selected="false" tabindex="-1"><span class="q-num">03</span><span class="q-said">“I don’t have enough time.”</span><span class="q-desc"><span>Ally maps where the hours go against what actually moves the business.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
-            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-3" aria-controls="a-3" aria-selected="false" tabindex="-1"><span class="q-num">04</span><span class="q-said">“My business isn’t growing.”</span><span class="q-desc"><span>Ally traces growth back through retention, pricing and product before marketing.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+          <p class="eyebrow">How Ally works</p>
+          <h2 id="closer-title">Diagnosis first. <em>Advice after context.</em></h2>
+          <p>Most tools start with your question. Ally starts with you, your business and what is happening now — then finds what deserves your attention first.</p>
+          <ul class="q-list" role="tablist" aria-label="How Ally works" aria-orientation="vertical">
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-0" aria-controls="a-0" aria-selected="true"><span class="q-num">01</span><span class="q-said">It learns how you lead.</span><span class="q-desc"><span>Founder DNA: how you decide, what drives you, where you are strong and where you get stuck.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-1" aria-controls="a-1" aria-selected="false" tabindex="-1"><span class="q-num">02</span><span class="q-said">It reads how your business really runs.</span><span class="q-desc"><span>Business DNA: model, revenue, team and operations, read together so no symptom is judged alone.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-2" aria-controls="a-2" aria-selected="false" tabindex="-1"><span class="q-num">03</span><span class="q-said">It finds what’s really in the way.</span><span class="q-desc"><span>The loudest symptom is often not the cause. Ally traces it back and checks it against your industry.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
+            <li class="q-item"><button class="q-btn" type="button" role="tab" id="q-3" aria-controls="a-3" aria-selected="false" tabindex="-1"><span class="q-num">04</span><span class="q-said">It turns that into your next move.</span><span class="q-desc"><span>A few concrete steps you can act on now — then Ally reassesses as the business changes.</span></span><span class="q-track" aria-hidden="true"><span class="q-fill"></span></span></button></li>
           </ul>
         </div>
         <div class="closer-right">
           <div class="answer-stage">
             <div class="answer-reel">
             <div class="answer" role="tabpanel" id="a-0" aria-labelledby="q-0">
+              <p class="who">Founder DNA</p>
+              <blockquote>“Who is making the decision?”</blockquote>
+              <span class="trail" aria-hidden="true"></span>
+              <p class="who ally">What Ally reads</p>
+              <p class="looks" aria-live="polite">Fifteen parameters of you as a founder — from core motivation and decision style to risk appetite, stress response and blind spots.</p>
+              <p class="lens" role="group" aria-label="Tap one to see what Ally reads there"><button type="button" class="chip-btn" aria-pressed="false" data-note="Why you are doing this — freedom, impact, money or mastery. It shapes which trade-offs feel right to you, and which you quietly avoid.">Core motivation</button><button type="button" class="chip-btn hit" aria-pressed="false" data-note="How you decide under pressure — fast on instinct or slow on evidence. Ally weighs its advice against the way you actually decide.">Decision style</button><button type="button" class="chip-btn" aria-pressed="false" data-note="The patterns you are too close to see, like taking every decision yourself or pricing last. Ally names them, with the answers that point to them.">Blind spots</button></p>
+            </div>
+            <div class="answer" role="tabpanel" id="a-1" aria-labelledby="q-1">
+              <p class="who">Business DNA</p>
+              <blockquote>“What system is being changed?”</blockquote>
+              <span class="trail" aria-hidden="true"></span>
+              <p class="who ally">What Ally reads</p>
+              <p class="looks" aria-live="polite">Growth, product, finance, team and operations side by side — so fixing one part doesn’t quietly break another.</p>
+              <p class="lens" role="group" aria-label="Tap one to see what Ally reads there"><button type="button" class="chip-btn" aria-pressed="false" data-note="How money actually comes in — who pays, how often and at what margin. A growth plan that ignores it can simply grow the losses.">Revenue model</button><button type="button" class="chip-btn hit" aria-pressed="false" data-note="How work gets done day to day — systems, handoffs and who decides what. Often the quiet reason growth stalls.">Operations</button><button type="button" class="chip-btn" aria-pressed="false" data-note="Who does what, and whether roles and expectations are clear. Ally separates a people problem from a system problem.">Team</button></p>
+            </div>
+            <div class="answer" role="tabpanel" id="a-2" aria-labelledby="q-2">
               <p class="who">Founder thinks</p>
               <blockquote>“Is my idea good enough?”</blockquote>
               <span class="trail" aria-hidden="true"></span>
               <p class="who ally">How Ally looks at</p>
-              <p class="looks">Maybe the question isn’t the idea itself — it’s whether the right people need it badly enough to pay for it.</p>
-              <p class="lens" aria-label="Where Ally looks: Customer need"><span class="guess" aria-hidden="true">The idea</span><span class="hit">Customer need</span><span aria-hidden="true">Who pays</span></p>
-            </div>
-            <div class="answer" role="tabpanel" id="a-1" aria-labelledby="q-1">
-              <p class="who">Founder thinks</p>
-              <blockquote>“My team isn’t performing.”</blockquote>
-              <span class="trail" aria-hidden="true"></span>
-              <p class="who ally">How Ally looks at</p>
-              <p class="looks">Maybe expectations were never made clear — performance is hard to give when the target keeps shifting.</p>
-              <p class="lens" aria-label="Where Ally looks: Clear targets"><span class="guess" aria-hidden="true">The people</span><span class="hit">Clear targets</span><span aria-hidden="true">Hiring</span></p>
-            </div>
-            <div class="answer" role="tabpanel" id="a-2" aria-labelledby="q-2">
-              <p class="who">Founder thinks</p>
-              <blockquote>“I don’t have enough time.”</blockquote>
-              <span class="trail" aria-hidden="true"></span>
-              <p class="who ally">How Ally looks at</p>
-              <p class="looks">Maybe there’s enough time, but attention is going to the wrong priorities — busy isn’t the same as important.</p>
-              <p class="lens" aria-label="Where Ally looks: Priorities"><span class="guess" aria-hidden="true">More hours</span><span class="hit">Priorities</span><span aria-hidden="true">Delegation</span></p>
+              <p class="looks" aria-live="polite">Maybe the question isn’t the idea itself — it’s whether the right people need it badly enough to pay for it.</p>
+              <p class="lens" role="group" aria-label="Tap one to see what Ally reads there"><button type="button" class="chip-btn guess" aria-pressed="false" data-note="Doubting the idea is where most founders start. Ally checks it — but an idea rarely fails on its own; it fails with the wrong customer or price.">The idea</button><button type="button" class="chip-btn hit" aria-pressed="false" data-note="Who has this problem, how badly, and how they solve it today. When the need is real and urgent, the idea has room to work.">Customer need</button><button type="button" class="chip-btn" aria-pressed="false" data-note="The person who uses it and the person who pays are not always the same. Ally checks who decides, who signs and what they would pay for.">Who pays</button></p>
             </div>
             <div class="answer" role="tabpanel" id="a-3" aria-labelledby="q-3">
-              <p class="who">Founder thinks</p>
-              <blockquote>“My business isn’t growing.”</blockquote>
+              <p class="who">Your next move</p>
+              <blockquote>“Build one reliable way to get customers.”</blockquote>
               <span class="trail" aria-hidden="true"></span>
-              <p class="who ally">How Ally looks at</p>
-              <p class="looks">Maybe the real problem isn’t marketing at all — it could be retention, pricing, or a product gap upstream.</p>
-              <p class="lens" aria-label="Where Ally looks: Retention"><span class="guess" aria-hidden="true">Marketing</span><span class="hit">Retention</span><span aria-hidden="true">Product gap</span></p>
+              <p class="who ally">Then Ally keeps going</p>
+              <p class="looks" aria-live="polite">Act, see what changes, and look again. As the business moves, so does the priority — and Ally builds on what it already knows.</p>
+              <p class="lens" role="group" aria-label="Tap one to see what Ally reads there"><button type="button" class="chip-btn" aria-pressed="false" data-note="One or two concrete steps you can start this week — small enough to do, clear enough to see whether they worked.">Act</button><button type="button" class="chip-btn" aria-pressed="false" data-note="Every step brings new evidence: a reply, a sale, a no. Bring it back to Ally, and the next decision rests on it.">Learn</button><button type="button" class="chip-btn hit" aria-pressed="false" data-note="When the picture changes, the priority can change too. Ally revisits the plan with you instead of letting it go stale.">Reassess</button></p>
             </div>
             </div>
           </div>
@@ -1989,7 +2003,7 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     scSync();
   }
 
-  /* 4. Look closer: advances on its own while it is on screen, stops for good
+  /* 4. How Ally works (was Look closer): advances on its own while it is on screen, stops for good
      the moment someone chooses, pauses under the pointer or keyboard focus,
      and never moves at all under reduced motion. */
   /* On wide, tall screens it is pinned instead: the scroll through the
@@ -2164,6 +2178,33 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
     setStack();
     cMode();
   }
+
+  /* 4b. How Ally works: the chips in each card open. One at a time per card;
+     the card's line comes back when the open chip is tapped again or the
+     card is left. Clicks stay inside the card -- they never move the reel. */
+  (function(){
+    var sec = document.getElementById('works'); if (!sec) return;
+    function reset(card){
+      var looks = card.querySelector('.looks');
+      if (looks && looks.dataset.line) { looks.textContent = looks.dataset.line; looks.classList.remove('is-note'); }
+      [].forEach.call(card.querySelectorAll('.chip-btn'), function(b){ b.setAttribute('aria-pressed', 'false'); });
+    }
+    sec.addEventListener('click', function(e){
+      var b = e.target.closest('.chip-btn'); if (!b) return;
+      e.stopPropagation();
+      var card = b.closest('.answer'), looks = card.querySelector('.looks');
+      if (!looks.dataset.line) looks.dataset.line = looks.textContent;
+      var open = b.getAttribute('aria-pressed') === 'true';
+      reset(card);
+      if (open) return;
+      b.setAttribute('aria-pressed', 'true');
+      looks.textContent = b.getAttribute('data-note');
+      looks.classList.remove('is-note'); void looks.offsetWidth; looks.classList.add('is-note');
+    });
+    /* leaving a card puts its own line back, so it reads right next time */
+    new MutationObserver(function(ms){ ms.forEach(function(m){ var a = m.target; if (a.classList.contains('answer') && !a.classList.contains('is-current')) reset(a); }); })
+      .observe(sec, { subtree:true, attributes:true, attributeFilter:['class'] });
+  })();
 
   /* 9. Signed in already: the platform sets ally_hint=in|out on the shared
      goxlally.ai domain. "in" turns every Log in into the way back to the
