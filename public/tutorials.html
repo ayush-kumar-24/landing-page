@@ -126,6 +126,8 @@ img,svg{ display:block; max-width:100%; }
 .tut-meta .len{ color:var(--muted-2); font-weight:600; letter-spacing:.04em; }
 .tut-body h2{ font-family:var(--serif); font-weight:500; font-size:20px; line-height:1.25; color:var(--ink); }
 .tut-body p{ font-size:14px; line-height:1.55; color:var(--muted); }
+.tut-yt{ align-self:flex-start; margin-top:6px; font-size:13px; font-weight:600; color:#0c7a54; }
+.tut-yt:hover{ text-decoration:underline; }
 .tut-empty{ text-align:center; color:var(--muted-2); font-size:14px; padding:24px 0 0; }
 
 /* ---------- close, dark like the landing page's dark bands ---------- */
@@ -355,7 +357,8 @@ img,svg{ display:block; max-width:100%; }
           '<button class="tut-play" type="button" aria-label="Play: ' + esc(v.title) + '"><span>' + PLAY + '</span></button>'
         : '<div class="tut-soon">' + SOON + 'Coming soon</div>') + '</div>' +
       '<div class="tut-body"><div class="tut-meta">' + esc(v.topic) + (v.length ? '<span class="len">· ' + esc(v.length) + '</span>' : '') + '</div>' +
-      '<h2>' + esc(v.title) + '</h2><p>' + esc(v.text) + '</p></div>';
+      '<h2>' + esc(v.title) + '</h2><p>' + esc(v.text) + '</p>' +
+      (id ? '<a class="tut-yt" href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener noreferrer">Watch on YouTube <span aria-hidden="true">&#8599;</span></a>' : '') + '</div>';
     if (id) card.querySelector('.tut-play').addEventListener('click', function(){
       var f = document.createElement('iframe');
       f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
