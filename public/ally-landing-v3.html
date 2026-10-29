@@ -769,6 +769,17 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
 .foot-brand strong{ font:700 1.5rem/1 var(--sans); letter-spacing:-.02em; color:var(--on-dark); }
 .foot-brand strong span{ color:var(--emerald-bright); font-weight:600; }
 .foot-legal{ margin:0; font-size:max(13px, 0.8125rem); color:var(--on-dark-muted); text-align:right; }
+/* Recognised & Registered: a light card listing what GoXL actually holds (spec:
+   LANDING_SITE_TRUST_FOOTER_SPEC.md). Official artwork only, no identifiers. */
+.foot-trust{ display:flex; align-items:flex-start; gap:2.5rem; margin-top:3.5rem; padding-top:1.75rem; border-top:1px solid rgba(234,243,238,.12); }
+.foot-trust-label{ margin:0; padding-top:0.875rem; font:700 max(12px,0.75rem)/1.4 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--on-dark-muted); min-width:9.5rem; }
+.trust-card{ margin:0; padding:0.5rem 0; list-style:none; width:100%; max-width:24rem; background:#fbfaf6; border:1px solid rgba(15,42,30,.08); border-radius:1rem; box-shadow:0 2px 14px rgba(0,0,0,.28); }
+.trust-card li{ display:flex; align-items:center; gap:1rem; padding:0.75rem 1.125rem; }
+.trust-card li + li{ border-top:1px solid rgba(15,42,30,.07); }
+.trust-logo{ flex:0 0 6.5rem; height:3rem; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid rgba(15,42,30,.08); border-radius:0.625rem; padding:0.375rem; }
+.trust-logo img{ max-width:100%; max-height:100%; object-fit:contain; display:block; }
+.trust-logo--text{ font:800 0.8125rem/1.1 var(--sans); letter-spacing:.06em; color:#0f2a1e; text-align:center; }
+.trust-name{ font:600 max(15px,0.9375rem)/1.3 var(--sans); color:#14201a; }
 
 /* ── responsive ───────────────────────────────────────────── */
 /* six named tabs need ~1090px: below that, only the open tab says its name */
@@ -889,6 +900,9 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
   .foot-cols{ grid-template-columns:1fr 1fr; }
   .foot-bottom{ flex-direction:column; align-items:flex-start; }
   .foot-legal{ text-align:left; }
+  .foot-trust{ flex-direction:column; gap:1rem; }
+  .foot-trust-label{ padding-top:0; }
+  .trust-card{ max-width:none; }
   .hero-ctas .btn{ width:100%; max-width:21.25rem; }
 }
 
@@ -1558,6 +1572,20 @@ html.viewer-lock, html.viewer-lock body{ overflow:hidden; }
       </div>
     </nav>
   </div>
+  <!-- Recognised & Registered. Only what GoXL actually holds; no registration
+       numbers, CIN, GSTIN or address (spec §3.3). Confirm the DPIIT and Udyam
+       certificates' legal entity before this goes live (spec §6.2). The State
+       Emblem appears in the DPIIT and MSME header art and must not be used by a
+       private company, so the Startup India mark is used and Udyam is text-only
+       until an emblem-free official mark is supplied. -->
+  <section class="foot-trust" aria-labelledby="foot-trust-label">
+    <p class="foot-trust-label" id="foot-trust-label">Recognised &amp; registered</p>
+    <ul class="trust-card">
+      <li><span class="trust-logo"><img src="/assets/trust/startupindia.v1.png" alt="Startup India" width="300" height="82" loading="lazy"></span><span class="trust-name">DPIIT Recognised Startup</span></li>
+      <li><span class="trust-logo trust-logo--text" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#0f2a1e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 12.5h6"/><circle cx="12" cy="17" r="2"/></svg></span><span class="trust-name">Udyam Registered MSME</span></li>
+      <li><span class="trust-logo"><img src="/assets/trust/razorpay-badge.v1.png" alt="Payments powered by Razorpay" width="226" height="91" loading="lazy"></span><span class="trust-name">Payments secured by Razorpay</span></li>
+    </ul>
+  </section>
   <div class="foot-bottom">
     <div class="foot-brand"><img src="/assets/logo-123.v1.png" alt="" width="40" height="40"><strong>GoXL <span>Ally</span></strong></div>
     <p class="foot-legal">© 2026 GoXL Consulting Solutions Pvt. Ltd.</p>
