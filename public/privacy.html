@@ -150,6 +150,40 @@
     background:rgba(47,227,172,0.05);
   }
   .contact-box p{ margin:0; color:var(--text); }
+  /* "What happens to what you tell Ally": a plain-English summary of the Ally
+     app's policy, set apart from this page's own clauses (which cover beta
+     registrations only) so the two are never read as one document. */
+  .ally-summary{
+    margin:0 0 8px;
+    padding:22px 22px 8px;
+    border:1px solid rgba(47,227,172,0.28);
+    border-radius:16px;
+    background:rgba(47,227,172,0.05);
+  }
+  .ally-summary h2{ margin-top:0; }
+  .ally-summary .summary-note{ font-size:14.5px; color:var(--text-mute); }
+  .ally-summary a{ color:var(--accent); }
+  .ally-summary a:hover{ text-decoration:underline; }
+  .ally-points{ list-style:none; margin:0 0 14px; padding:0; counter-reset:pt; }
+  .ally-points li{
+    position:relative;
+    padding:0 0 0 38px;
+    margin:0 0 16px;
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text-dim);
+    counter-increment:pt;
+  }
+  .ally-points li::before{
+    content:counter(pt);
+    position:absolute; left:0; top:2px;
+    width:26px; height:26px; border-radius:50%;
+    display:grid; place-items:center;
+    font-family:var(--font-mono); font-size:12px; font-weight:600;
+    color:var(--accent);
+    border:1px solid rgba(47,227,172,0.4);
+  }
+  .ally-points li strong{ display:block; }
   .contact-box a{ color:var(--accent); }
   .contact-box a:hover{ text-decoration:underline; }
   .close{
@@ -212,6 +246,26 @@
     <h1>How we handle your data.</h1>
     <p class="lede">This page explains what we collect when you register for the Ally beta, why we collect it, and how you can control it.</p>
     <p class="updated">Version v1.3 · Effective 29 October 2026 · Applies to beta registrations at www.goxlally.ai</p>
+
+    <!-- A summary of the Ally APP's policy (app.goxlally.ai/privacy), which
+         stays the legal document for Ally data. Keep every line in step with
+         that policy. Never write here that data "does not leave India", that
+         we use "no advertising networks", or that we "do not train AI".
+         Still to add once decided: a contact point (support@ / security@,
+         if those mailboxes exist) and how we improve Ally with data. -->
+    <section class="ally-summary" aria-labelledby="ally-data">
+      <h2 id="ally-data">What happens to what you tell Ally</h2>
+      <p>You share real problems from your business with Ally. Here is where that information goes and who can see it, in plain English.</p>
+      <p class="summary-note">This is a summary of how the Ally app handles your data. The full Ally Privacy Policy is at <a href="https://app.goxlally.ai/privacy" rel="noopener">app.goxlally.ai/privacy</a>, and it is the one that applies. The rest of this page covers beta registrations on this website.</p>
+      <ol class="ally-points">
+        <li><strong>Stored in India</strong>Your Ally data is stored on Amazon Web Services in the Mumbai region. One exception, which we would rather name than hide: to answer you, Ally sends your answers and messages to AI providers based outside India, mainly in the United States. They process it only to generate Ally's reply, under contracts that forbid them from training their models on it.</li>
+        <li><strong>Encrypted</strong>Encrypted while travelling to us and encrypted while stored, including our database backups.</li>
+        <li><strong>We never sell your data</strong>No data brokers. Your diagnosis answers, reports and conversations with Ally are never sent to advertising or analytics companies. If you allow marketing cookies in the Ally app, we tell Meta only that you created an account or bought a plan, with your email scrambled (hashed) &mdash; never what you told Ally. On this website, analytics and advertising cookies are used only if you allow them &mdash; see <a href="#cookies">Cookies</a> below.</li>
+        <li><strong>Your diagnosis is yours</strong>It is visible in your own account. Inside GoXL, access is limited to the people who need it to run and support Ally, and every access is logged.</li>
+        <li><strong>Delete it whenever you want</strong>Delete your account from the Privacy Centre inside Ally, or email us at <a href="mailto:info@goxlally.ai?subject=Delete%20my%20Ally%20account">info@goxlally.ai</a>, and we delete your data &mdash; except records the law requires us to keep, such as payment records.</li>
+        <li><strong>Payments</strong>Payments are handled by Razorpay. We never see or store your card number, UPI PIN or bank details.</li>
+      </ol>
+    </section>
 
     <h2>What we collect</h2>
     <p>When you register for Ally Beta, we collect:</p>
