@@ -8,7 +8,7 @@
      host. GA4 is configured inside the container; there is no gtag.js here.
      async: nothing blocks rendering, and GTM cannot run before the defaults
      because this file is the only thing that loads it. -->
-<script async src="/assets/consent.v6.js"></script>
+<script async src="/assets/consent.v7.js"></script>
 <!-- consent:end -->
 <link rel="icon" href="/assets/logo-123.v1.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/logo-123.v1.png">
@@ -150,6 +150,40 @@
     background:rgba(47,227,172,0.05);
   }
   .contact-box p{ margin:0; color:var(--text); }
+  /* "What happens to what you tell Ally": a plain-English summary of the Ally
+     app's policy, set apart from this page's own clauses (which cover beta
+     registrations only) so the two are never read as one document. */
+  .ally-summary{
+    margin:0 0 8px;
+    padding:22px 22px 8px;
+    border:1px solid rgba(47,227,172,0.28);
+    border-radius:16px;
+    background:rgba(47,227,172,0.05);
+  }
+  .ally-summary h2{ margin-top:0; }
+  .ally-summary .summary-note{ font-size:14.5px; color:var(--text-mute); }
+  .ally-summary a{ color:var(--accent); }
+  .ally-summary a:hover{ text-decoration:underline; }
+  .ally-points{ list-style:none; margin:0 0 14px; padding:0; counter-reset:pt; }
+  .ally-points li{
+    position:relative;
+    padding:0 0 0 38px;
+    margin:0 0 16px;
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text-dim);
+    counter-increment:pt;
+  }
+  .ally-points li::before{
+    content:counter(pt);
+    position:absolute; left:0; top:2px;
+    width:26px; height:26px; border-radius:50%;
+    display:grid; place-items:center;
+    font-family:var(--font-mono); font-size:12px; font-weight:600;
+    color:var(--accent);
+    border:1px solid rgba(47,227,172,0.4);
+  }
+  .ally-points li strong{ display:block; }
   .contact-box a{ color:var(--accent); }
   .contact-box a:hover{ text-decoration:underline; }
   .close{
@@ -211,7 +245,27 @@
     <p class="eye">Privacy Policy</p>
     <h1>How we handle your data.</h1>
     <p class="lede">This page explains what we collect when you register for the Ally beta, why we collect it, and how you can control it.</p>
-    <p class="updated">Version v1.2 · Effective 9 October 2026 · Applies to beta registrations at www.goxlally.ai</p>
+    <p class="updated">Version v1.3 · Effective 29 October 2026 · Applies to beta registrations at www.goxlally.ai</p>
+
+    <!-- A summary of the Ally APP's policy (app.goxlally.ai/privacy), which
+         stays the legal document for Ally data. Keep every line in step with
+         that policy. Never write here that data "does not leave India", that
+         we use "no advertising networks", or that we "do not train AI".
+         Still to add once decided: a contact point (support@ / security@,
+         if those mailboxes exist) and how we improve Ally with data. -->
+    <section class="ally-summary" aria-labelledby="ally-data">
+      <h2 id="ally-data">What happens to what you tell Ally</h2>
+      <p>You share real problems from your business with Ally. Here is where that information goes and who can see it, in plain English.</p>
+      <p class="summary-note">This is a summary of how the Ally app handles your data. The full Ally Privacy Policy is at <a href="https://app.goxlally.ai/privacy" rel="noopener">app.goxlally.ai/privacy</a>, and it is the one that applies. The rest of this page covers beta registrations on this website.</p>
+      <ol class="ally-points">
+        <li><strong>Stored in India</strong>Your Ally data is stored on Amazon Web Services in the Mumbai region. One exception, which we would rather name than hide: to answer you, Ally sends your answers and messages to AI providers based outside India, mainly in the United States. They process it only to generate Ally's reply, under contracts that forbid them from training their models on it.</li>
+        <li><strong>Encrypted</strong>Encrypted while travelling to us and encrypted while stored, including our database backups.</li>
+        <li><strong>We never sell your data</strong>No data brokers. Your diagnosis answers, reports and conversations with Ally are never sent to advertising or analytics companies. If you allow marketing cookies in the Ally app, we tell Meta only that you created an account or bought a plan, with your email scrambled (hashed) &mdash; never what you told Ally. On this website, analytics and advertising cookies are used only if you allow them &mdash; see <a href="#cookies">Cookies</a> below.</li>
+        <li><strong>Your diagnosis is yours</strong>It is visible in your own account. Inside GoXL, access is limited to the people who need it to run and support Ally, and every access is logged.</li>
+        <li><strong>Delete it whenever you want</strong>Delete your account from the Privacy Centre inside Ally, or email us at <a href="mailto:info@goxlally.ai?subject=Delete%20my%20Ally%20account">info@goxlally.ai</a>, and we delete your data &mdash; except records the law requires us to keep, such as payment records.</li>
+        <li><strong>Payments</strong>Payments are handled by Razorpay. We never see or store your card number, UPI PIN or bank details.</li>
+      </ol>
+    </section>
 
     <h2>What we collect</h2>
     <p>When you register for Ally Beta, we collect:</p>
@@ -243,8 +297,8 @@
       <li>A <strong>database hosting provider</strong>, to store your registration securely.</li>
       <li>An <strong>email delivery provider</strong>, to send your confirmation email and, internally, to notify our team of a new registration.</li>
     </ul>
-    <p>Separately, Google's tag on this site sends Google a limited signal of your consent choice, and usage data about your visit only once you allow Analytics; Microsoft Clarity receives usage data about your visit only once you allow Analytics (see <a href="#cookies">Cookies</a>). None of this is linked to your registration details.</p>
-    <p>We do not share your information with any other third party, we do not sell or rent it, and we do not use it to build advertising or profiling audiences.</p>
+    <p>Separately, Google's tag on this site sends Google a limited signal of your consent choice, and usage data about your visit only once you allow Analytics; Microsoft Clarity receives usage data about your visit only once you allow Analytics; and Meta (Facebook and Instagram) receives information about your visit to the home, pricing and about pages only once you allow Advertising (see <a href="#cookies">Cookies</a>). None of this is linked to your registration details.</p>
+    <p>We do not share your registration details with any other third party, we do not sell or rent them, and we never use them to build advertising or profiling audiences. Visits to this website are used for advertising measurement only if you allow Advertising.</p>
 
     <h2>How long we keep it</h2>
     <p>We keep your registration for <strong>up to 24 months</strong> from the day you register. After that the purpose you gave it for has been served, and we delete it.</p>
@@ -284,9 +338,9 @@
     <ul class="plain">
       <li><strong>Necessary</strong> — always active. Your browser keeps your registration status, the campaign link you arrived from (so we know how founders find Ally), and your cookie choice itself. None of this identifies you to anyone else or is used for advertising.</li>
       <li><strong>Analytics</strong> — optional, off by default. Analytics cookies and storage stay switched off unless you allow Analytics. Before you do, Google Consent Mode may still send Google limited cookieless signals about your consent state and basic page and request context — the address of the page and the ordinary technical details any web request carries. We do not intentionally send your name, email, phone number, form responses or any Ally content through these analytics signals. If you allow Analytics, Google Analytics (loaded through Google Tag Manager) may then set its own cookies in your browser, named <code>_ga</code> and <code>_ga_</code> followed by an ID, to recognise repeat visits and show us which pages founders read and where they get stuck. If you later withdraw, we tell Google your choice has changed and remove those cookies from your browser.<br><br>If you allow Analytics, we also use <strong>Microsoft Clarity</strong> (loaded through Google Tag Manager) on the home, pricing and about pages only &mdash; never on the sign-in page or inside the Ally app. Clarity records how visitors use those pages, such as clicks, scrolling and mouse movement, and shows us heatmaps and replays of visits so we can see where founders get stuck. It may set its own cookies, such as <code>_clck</code> and <code>_clsk</code>. Microsoft processes this data under the <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener">Microsoft Privacy Statement</a>. Clarity does not run unless you allow Analytics.</li>
-      <li><strong>Advertising</strong> — optional, off by default. Advertising storage and signals stay denied unless you allow Advertising. No advertising vendor's tag is installed on this site today; if that changes, this page will say so before it does.</li>
+      <li><strong>Advertising</strong> — optional, off by default. Advertising storage and signals stay denied unless you allow Advertising. If you allow it, we load the <strong>Meta Pixel</strong> (Meta Platforms, for Facebook and Instagram ads), through Google Tag Manager, on the home, pricing and about pages only &mdash; never on the sign-in page or inside the Ally app. It tells Meta that you visited those pages, viewed our pricing, or clicked to sign up, so we can see which of our ads work and show them to people likely to find Ally useful. It may set its own cookie, <code>_fbp</code>. From 12 November 2026, Meta also uses the Pixel to automatically measure common actions on these pages, such as button clicks, in your browser to recognise conversions; Meta states that no identifying customer information from this process is shared with it. Meta processes this data under the <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta Privacy Policy</a>. None of this runs unless you allow Advertising. If you later create an Ally account, the Ally app's own policy explains the separate signup and purchase measurement it uses.</li>
     </ul>
-    <p>Whatever you choose, we do not intentionally send Google or Microsoft your name, email, phone number, anything you type into the registration form, or any of your Ally content. Diagnosis answers, Founder DNA answers, chat messages and business details do not exist on this website at all: they live inside the Ally app, which is covered by its own policy.</p>
+    <p>Whatever you choose, we do not intentionally send Google, Microsoft or Meta your name, email, phone number, anything you type into the registration form, or any of your Ally content. Diagnosis answers, Founder DNA answers, chat messages and business details do not exist on this website at all: they live inside the Ally app, which is covered by its own policy.</p>
     <p>Your choice is stored in your browser together with the date and the version of this cookie section it was made under. If this section changes in substance, the banner will ask you again.</p>
     <p>We also keep a copy of the choice itself on our own server, because a record that exists only in your browser is one we cannot produce if you or a regulator ask us to show it. That copy holds four things: what you allowed, when you clicked, which version of this section you saw, and a random reference number generated in your browser at that moment. It holds <strong>no IP address, no device or browser details, and nothing that links it to a beta registration or to any other visit</strong> — we drop your IP rather than store it. Each time you change your choice a new, unconnected record is created, so these cannot be joined together into a picture of you. Your browser keeps the reference number of your latest one, so you can ask us for that exact record.</p>
 
